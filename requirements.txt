@@ -1,0 +1,10 @@
+blabel==0.1.6
+py-cord==2.5.0
+python-dotenv==1.0.1
+tinydb==4.8.0
+pdf2image==1.17.0
+python-poppler==0.4.1
+pillow==10.4.0
+PyYAML==6.0.1
+pyusb==1.2.1
+brother_ql==0.9.4

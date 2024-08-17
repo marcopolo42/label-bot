@@ -1,0 +1,28 @@
+@page {
+    width: 610mm;
+    height: 100mm;
+    padding: 0.5mm;
+}
+
+.qr_code{
+    height: 9.4mm;
+    display: inline-block;
+    vertical-align: middle;
+    image-rendering: pixelated;
+}
+
+.picture{
+    height: 9.4mm;
+    display: inline-block;
+    vertical-align: middle;
+    image-rendering: pixelated;
+}
+
+.label {
+    font-family: Arial, Verdana, Helvetica, sans;
+    font-weight: bold;
+    vertical-align: middle;
+    display: inline-block;
+    font-size: 11px;
+}
+  

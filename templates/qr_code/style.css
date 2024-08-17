@@ -1,0 +1,12 @@
+@page {
+    width: 61mm;
+    height: 61mm;
+    padding: 0.5mm;
+}
+
+.qr_code{
+    height: 60mm;
+    display: inline-block;
+    vertical-align: middle;
+    image-rendering: pixelated;
+}

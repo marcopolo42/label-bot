@@ -1,0 +1,148 @@
+templates:
+  - label: "student Food Sticker" #Title displayed in the UI
+    value: "student_food" # This is the value that will be used to identify the template (use the same for the template folder)
+    description: "The label to use for student_food in the fridge and freezer"
+    emoji: "❄️"
+    expiration: 6 # The expiration time in days
+    max: 10 # The maximum number of stickers that can be printed per day per user
+    roles:
+      - Student # The roles that can use this template
+
+  - label: "Swimmers Food Label"
+    value: "swimmer_food"
+    description: "The label to use for student_food in the fridge and freezer"
+    emoji: "❄️"
+    expiration: 2
+    roles:
+      - Piscine
+
+  - label: "42 Logo"
+    value: "42_logo"
+    description: "a big 42 logo"
+    emoji: "4️⃣"
+    roles:
+      - Student
+      - Piscine
+
+  - label: "FragboxGaming Cable"
+    value: "frag_cable"
+    description: "Petit label Fragbox Gaming a enrouler autour d'un cable."
+    emoji: "🟦"
+    roles:
+      - Fragbox
+
+  - label: "FragboxGaming Logo"
+    value: "frag_logo"
+    description: "Your favourite colour is yellow"
+    emoji: "🟨"
+    roles:
+      - Fragbox
+
+  - label: "FragboxGaming Text and Logo"
+    value: "frag_text"
+    description: "Your favourite colour is orange"
+    emoji: "🟧"
+    roles:
+      - Fragbox
+
+  - label: "Luggage"
+    value: "luggage"
+    description: "Big Sticker for big items"
+    emoji: "🟪"
+    roles:
+      - Student
+      - Bocal
+      - Piscine
+
+  - label: "Happy Birthday"
+    value: "birthday"
+    description: "Your favourite colour is pink"
+    emoji: "🌸"
+    roles:
+      - Student
+      - Bocal
+
+  - label: "Servez-vous !"
+    value: "free"
+    description: "Your favourite colour is black"
+    emoji: "⬛"
+    roles:
+      - Student
+      - Bocal
+      - Piscine
+
+  - label: "QR Code"
+    value: "qr_code"
+    description: "A Big custom QR_code"
+    emoji: "⬜"
+    roles:
+      - Student
+      - Bocal
+      - Piscine
+
+  - label: "Bocal Food"
+    value: "bocal_food"
+    description: "Your favourite colour is brown"
+    emoji: "🟫"
+    roles:
+      - Student
+      - Bocal
+
+  - label: "Bocal Luggage"
+    value: "bocal_luggage"
+    description: "Your favourite colour is grey"
+    emoji: "🟨"
+    roles:
+      - Student
+      - Bocal
+
+  - label: "BDE Luggage"
+    value: "bde_luggage"
+    description: "Your favourite colour is cyan"
+    emoji: "🟦"
+    roles:
+      - Student
+      - Bocal
+
+  - label: "BDE 42"
+    value: "bde_42"
+    description: "Your favourite colour is magenta"
+    emoji: "🟪"
+    roles:
+      - Student
+      - Bocal
+
+  - label: "BDE Small"
+    value: "bde_small"
+    description: "Your favourite colour is lime"
+    emoji: "🟩"
+    roles:
+      - Student
+      - Bocal
+
+  - label: "Test"
+    value: "test"
+    description: "Your favourite colour is red"
+    emoji: "🧪"
+    roles:
+      - Student
+      - Bocal
+
+    fields: # Additional fields (maximum 5) that the template may need to ask the user for (can only be of type text)
+      - label: "Name or Title"
+        max_length: 20
+        placeholder: "max 20 characters"
+        name: "name"
+      - label: "Description or Text"
+        max_length: 100
+        placeholder: "max 100 characters"
+        name: "description"
+      - label: "Picture URL"
+        max_length: 100
+        placeholder: "use pasteboard.co to upload your image."
+        name: "picture"
+      - label: "QR Code URL"
+        max_length: 100
+        placeholder: "the url that will be encoded in the QR code."
+        name: "qr_code"
+

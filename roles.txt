@@ -1,0 +1,26 @@
+Bocal
+Padawans
+Tutor
+Senior
+
+Student
+Piscine
+Squatteur
+
+Rank 01
+Rank 02
+Rank 03
+Rank 04
+Rank 05
+Common Core
+
+Asgard
+Gotham
+SSD
+
+House of Cores
+
+2021
+2022
+2023
+2024

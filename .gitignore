@@ -1,0 +1,12 @@
+# Project exclude paths
+/.venv/
+/.git/
+/.idea/
+/.vscode/
+/.pytest_cache/
+/.mypy_cache/
+.env
+pdf/
+image/
+preview/
+og_templates/

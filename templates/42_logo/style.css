@@ -1,0 +1,12 @@
+@page {
+    width: 610mm;
+    height: 380mm;
+    padding: 0.5mm;
+}
+
+.picture{
+    height: 37mm;
+    display: inline-block;
+    vertical-align: middle;
+}
+  
