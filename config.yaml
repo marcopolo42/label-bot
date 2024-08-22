@@ -13,6 +13,7 @@ templates:
     description: "The label to use for student_food in the fridge and freezer"
     emoji: "❄️"
     expiration: 2
+    max: 3
     roles:
       - Piscine
 
@@ -20,6 +21,7 @@ templates:
     value: "42_logo"
     description: "a big 42 logo"
     emoji: "4️⃣"
+    max: 10
     roles:
       - Student
       - Piscine
@@ -28,6 +30,7 @@ templates:
     value: "frag_cable"
     description: "Petit label Fragbox Gaming a enrouler autour d'un cable."
     emoji: "🟦"
+    max: 10
     roles:
       - Fragbox
 
@@ -35,6 +38,7 @@ templates:
     value: "frag_logo"
     description: "Your favourite colour is yellow"
     emoji: "🟨"
+    max: 10
     roles:
       - Fragbox
 
@@ -42,6 +46,7 @@ templates:
     value: "frag_text"
     description: "Your favourite colour is orange"
     emoji: "🟧"
+    max: 10
     roles:
       - Fragbox
 
@@ -49,6 +54,7 @@ templates:
     value: "luggage"
     description: "Big Sticker for big items"
     emoji: "🟪"
+    max: 10
     roles:
       - Student
       - Bocal
@@ -58,6 +64,7 @@ templates:
     value: "birthday"
     description: "Your favourite colour is pink"
     emoji: "🌸"
+    max: 10
     roles:
       - Student
       - Bocal
@@ -66,6 +73,7 @@ templates:
     value: "free"
     description: "Your favourite colour is black"
     emoji: "⬛"
+    max: 10
     roles:
       - Student
       - Bocal
@@ -75,6 +83,7 @@ templates:
     value: "qr_code"
     description: "A Big custom QR_code"
     emoji: "⬜"
+    max: 10
     roles:
       - Student
       - Bocal
@@ -84,6 +93,7 @@ templates:
     value: "bocal_food"
     description: "Your favourite colour is brown"
     emoji: "🟫"
+    max: 10
     roles:
       - Student
       - Bocal
@@ -92,6 +102,7 @@ templates:
     value: "bocal_luggage"
     description: "Your favourite colour is grey"
     emoji: "🟨"
+    max: 10
     roles:
       - Student
       - Bocal
@@ -108,6 +119,7 @@ templates:
     value: "bde_42"
     description: "Your favourite colour is magenta"
     emoji: "🟪"
+    max: 10
     roles:
       - Student
       - Bocal
@@ -116,6 +128,7 @@ templates:
     value: "bde_small"
     description: "Your favourite colour is lime"
     emoji: "🟩"
+    max: 10
     roles:
       - Student
       - Bocal
@@ -124,6 +137,7 @@ templates:
     value: "test"
     description: "Your favourite colour is red"
     emoji: "🧪"
+    max: 10
     roles:
       - Student
       - Bocal

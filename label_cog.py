@@ -226,7 +226,6 @@ async def ask_for_additional_data(interaction, label, view):
             if len(label.fields) > 5:
                 raise ValueError("Too many extra fields, the modal can only handle 5 fields")
             for f in label.fields:
-                print(f"Adding MFjeiofesif {f}")
                 print(f"Adding field {f.get("label")} with max length {f.get("max_length")}")
                 if f.get("max_length") > 20:
                     style = discord.InputTextStyle.long
@@ -255,13 +254,13 @@ async def choose_label(ctx):
         @discord.ui.select(placeholder="Choose your label...", custom_id="LabelTypeSelect", options=get_role_options(ctx.author))
         async def label_type_select(self, select, interaction):
             label.update_type(select.values[0])
-            # Set the default value to the selected label so that the view doesn't reset the choice
+            # Set the default value to the selected label value so that the view doesn't reset the choice
             for i in select.options:
                 if i.value == label.type:
                     i.default = True
                 else:
                     i.default = False
-            self.children[1].options = [discord.SelectOption(label=str(i), value=str(i)) for i in range(1, 3)]
+            self.children[1].options = [discord.SelectOption(label=str(i), value=str(i)) for i in range(1, get_template_info(label.type, "max") + 1)]
             await ask_for_additional_data(interaction, label, self)
             await update_preview(interaction, label, view)
 
@@ -325,7 +324,6 @@ class LabelCog(commands.Cog):
         if label.validated is True:
             preview = label.make()
         label.print()
-
 
 
 def setup(bot):
