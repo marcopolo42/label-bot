@@ -87,8 +87,8 @@ def get_role_options(author):
     options = []
     for template in templates:
         for t_role in template["roles"]:
-            print("role t:", t_role.lower())
-            if t_role.lower() in a_roles:
+            print("role t:", str(t_role).lower())
+            if str(t_role).lower() in a_roles:
                 print("common Role found:", t_role)
                 print("template:", template)
                 options.append(discord.SelectOption(label=template["label"], value=template["value"], description=template["description"], emoji=template["emoji"]))
@@ -100,12 +100,12 @@ def get_role_options(author):
 
 def ft_print(image):
     im = Image.open(image)
-    im = im.resize((991, 306))
     #print image size
     print(im.size)
 
     backend = 'pyusb'  # 'pyusb', 'linux_kernal', 'network'
     model = 'QL-600'  # your printer model.
+    model = 'QL-710W'
     printer = 'usb://0x04f9:0x20c0'  # Get these values from the Windows usb driver filter.  Linux/Raspberry Pi uses '/dev/usb/lp0'. Macos use 'lsusb' from homebrew.
     if printer is None:
         raise ValueError("Printer ID is missing")
@@ -116,8 +116,8 @@ def ft_print(image):
 
         qlr=qlr,
         images=[im],  # Takes a list of file names or PIL objects.
-        label='29x90',
-        rotate='90',  # 'Auto', '0', '90', '270'
+        label='62',
+        rotate=('0' if im.size[0] > im.size[1] else '90'),  # 'Auto', '0', '90', '270'
         threshold=70.0,  # Black and white threshold in percent.
         dither=False,
         compress=False,
@@ -253,6 +253,7 @@ async def choose_label(ctx):
 
         @discord.ui.select(placeholder="Choose your label...", custom_id="LabelTypeSelect", options=get_role_options(ctx.author))
         async def label_type_select(self, select, interaction):
+            await interaction.response.defer()
             label.update_type(select.values[0])
             # Set the default value to the selected label value so that the view doesn't reset the choice
             for i in select.options:
