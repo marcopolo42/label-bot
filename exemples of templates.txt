@@ -12,3 +12,108 @@ discord.SelectOption(label="Student Food Label", description="Your favourite col
                 discord.SelectOption(label="BDE Luggage", description="Your favourite colour is cyan", emoji="🟦"),
                 discord.SelectOption(label="BDE 42", description="Your favourite colour is magenta", emoji="🟪"),
                 discord.SelectOption(label="BDE Small", description="Your favourite colour is lime", emoji="🟩"),
+                id card with company logo and name
+                panneau access interdit long
+                texte custom en masse si il ya retour a la ligne une autre etiquette est creee
+                carte de casier
+                imprimer des stickers pour chaques postes 42.
+
+
+
+  - frag_cable:
+      name: "FragboxGaming Cable"
+      value: "frag_cable"
+      description: "Petit label Fragbox Gaming a enrouler autour d'un cable."
+      emoji: "🟦"
+      roles:
+        Fragbox: 1
+
+  - frag_logo:
+      name: "FragboxGaming Logo"
+      value: "frag_logo"
+      description: "Your favourite colour is yellow"
+      emoji: "🟨"
+      roles:
+        Fragbox: 1
+
+  - frag_text:
+      name: "FragboxGaming Text and Logo"
+      value: "frag_text"
+      description: "Your favourite colour is orange"
+      emoji: "🟧"
+      roles:
+        Fragbox: 1
+
+  - luggage:
+      name: "Luggage"
+      value: "luggage"
+      description: "Big Sticker for big items"
+      emoji: "🟪"
+      roles:
+        Student: 1
+        Bocal: 1
+        Piscine: 1
+
+  - birthday:
+      name: "Happy Birthday"
+      value: "birthday"
+      description: "Your favourite colour is pink"
+      emoji: "🌸"
+      roles:
+        Student: 1
+        Bocal: 1
+
+  - free:
+      name: "Servez-vous !"
+      value: "free"
+      description: "Your favourite colour is black"
+      emoji: "⬛"
+      roles:
+        Student: 1
+        Bocal: 1
+        Piscine: 1
+
+  - bocal_food:
+      name: "Bocal Food"
+      value: "bocal_food"
+      description: "Your favourite colour is brown"
+      emoji: "🟫"
+      roles:
+        Student: 1
+        Bocal: 1
+
+  - bocal_luggage:
+      name: "Bocal Luggage"
+      value: "bocal_luggage"
+      description: "Your favourite colour is grey"
+      emoji: "🟨"
+      roles:
+        Student: 1
+        Bocal: 1
+
+  - bde_luggage:
+      name: "BDE Luggage"
+      value: "bde_luggage"
+      description: "Your favourite colour is cyan"
+      emoji: "🟦"
+      roles:
+        Student: 1
+        Bocal: 1
+
+  - bde_42:
+      name: "BDE 42"
+      value: "bde_42"
+      description: "Your favourite colour is magenta"
+      emoji: "🟪"
+      roles:
+        Student: 1
+        Bocal: 1
+
+  - bde_small:
+      name: "BDE Small"
+      value: "bde_small"
+      description: "Your favourite colour is lime"
+      emoji: "🟩"
+      roles:
+        Student: 1
+        Bocal: 1

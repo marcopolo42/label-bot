@@ -6,7 +6,6 @@
 /.pytest_cache/
 /.mypy_cache/
 .env
-pdf/
-image/
-preview/
+pdfs/
+images/
 og_templates/

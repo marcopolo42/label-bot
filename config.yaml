@@ -1,162 +1,103 @@
 templates:
-  - label: "student Food Sticker" #Title displayed in the UI
-    value: "student_food" # This is the value that will be used to identify the template (use the same for the template folder)
+  - key: "student_food"  # This is the key that will be used to identify the template (use the same for the template folder)
+    name: "Student Food Sticker"  # Title displayed in the UI
     description: "The label to use for student_food in the fridge and freezer"
     emoji: "❄️"
-    expiration: 6 # The expiration time in days
-    max: 10 # The maximum number of stickers that can be printed per day per user
-    roles:
-      - Student # The roles that can use this template
+    settings:  # settings are optional data used by the sticker
+      expiration: 6  # The expiration time in days
+    allowed_roles:  # The roles that can use this template. (case insensitive) to authorize all roles use "@everyone"
+      - student
+    daily_role_limits:  # The number of stickers each role can print per day (default is 25)
+      student: 5
 
-  - label: "Swimmers Food Label"
-    value: "swimmer_food"
-    description: "The label to use for student_food in the fridge and freezer"
+  - key: "swimmer_food"
+    name: "Swimmers Food Label"
+    description: "The label to use for swimmer_food in the fridge and freezer"
     emoji: "❄️"
-    expiration: 2
-    max: 3
-    roles:
-      - Piscine
+    settings:
+      expiration: 2
+    allowed_roles:
+      - piscine
+    daily_role_limits:
+      piscine: 5
 
-  - label: "42 Logo"
-    value: "42_logo"
-    description: "a big 42 logo"
+  - key: "logo_42"
+    name: "Logo 42"
+    description: "A big 42 logo"
     emoji: "4️⃣"
-    max: 10
-    roles:
-      - Student
-      - Piscine
+    allowed_roles:
+      - student
+      - piscine
+      - BDE
+      - tuteur
+      - bocal
+    daily_role_limits:
+      student: 1
+      piscine: 0
+      BDE: 5
+      tuteur: 2
 
-  - label: "FragboxGaming Cable"
-    value: "frag_cable"
-    description: "Petit label Fragbox Gaming a enrouler autour d'un cable."
-    emoji: "🟦"
-    max: 10
-    roles:
-      - Fragbox
-
-  - label: "FragboxGaming Logo"
-    value: "frag_logo"
-    description: "Your favourite colour is yellow"
-    emoji: "🟨"
-    max: 10
-    roles:
-      - Fragbox
-
-  - label: "FragboxGaming Text and Logo"
-    value: "frag_text"
-    description: "Your favourite colour is orange"
-    emoji: "🟧"
-    max: 10
-    roles:
-      - Fragbox
-
-  - label: "Luggage"
-    value: "luggage"
-    description: "Big Sticker for big items"
-    emoji: "🟪"
-    max: 10
-    roles:
-      - Student
+  - key: "qr_code"
+    name: "QR Code"
+    description: "A Big custom QR code"
+    emoji: "🔗"
+    allowed_roles:
       - Bocal
-      - Piscine
+    fields:
+      - name: "QR Code URL"
+        key: "qr_code"
+        max_length: 100
+        placeholder: "The URL that will be encoded in the QR code."
 
-  - label: "Happy Birthday"
-    value: "birthday"
-    description: "Your favourite colour is pink"
-    emoji: "🌸"
-    max: 10
-    roles:
-      - Student
-      - Bocal
-
-  - label: "Servez-vous !"
-    value: "free"
-    description: "Your favourite colour is black"
-    emoji: "⬛"
-    max: 10
-    roles:
-      - Student
-      - Bocal
-      - Piscine
-
-  - label: "QR Code"
-    value: "qr_code"
-    description: "A Big custom QR_code"
-    emoji: "⬜"
-    max: 10
-    roles:
-      - Student
-      - Bocal
-      - Piscine
-
-  - label: "Bocal Food"
-    value: "bocal_food"
-    description: "Your favourite colour is brown"
-    emoji: "🟫"
-    max: 10
-    roles:
-      - Student
-      - Bocal
-
-  - label: "Bocal Luggage"
-    value: "bocal_luggage"
-    description: "Your favourite colour is grey"
-    emoji: "🟨"
-    max: 10
-    roles:
-      - Student
-      - Bocal
-
-  - label: "BDE Luggage"
-    value: "bde_luggage"
-    description: "Your favourite colour is cyan"
-    emoji: "🟦"
-    roles:
-      - Student
-      - Bocal
-
-  - label: "BDE 42"
-    value: "bde_42"
-    description: "Your favourite colour is magenta"
-    emoji: "🟪"
-    max: 10
-    roles:
-      - Student
-      - Bocal
-
-  - label: "BDE Small"
-    value: "bde_small"
-    description: "Your favourite colour is lime"
-    emoji: "🟩"
-    max: 10
-    roles:
-      - Student
-      - Bocal
-
-  - label: "Test"
-    value: "test"
+  - key: "test"
+    name: "Test"
     description: "Your favourite colour is red"
     emoji: "🧪"
-    max: 10
-    roles:
-      - Student
-      - Bocal
-
-    fields: # Additional fields (maximum 5) that the template may need to ask the user for (can only be of type text)
-      - label: "Name or Title"
+    allowed_roles:
+      Student: 1
+      Bocal: 1
+    fields:  # Additional fields (maximum 5) that the template may need to ask the user for (can only be of type text)
+      - key: "name"
+        name: "Name or Title"
         max_length: 20
         placeholder: "max 20 characters"
-        name: "name"
-      - label: "Description or Text"
+      - key: "description"
+        name: "Description or Text"
         max_length: 100
         placeholder: "max 100 characters"
-        name: "description"
-      - label: "Picture URL"
+      - key: "picture"
+        name: "Picture URL"
         max_length: 100
-        placeholder: "use pasteboard.co to upload your image."
-        name: "picture"
-      - label: "QR Code URL"
+        placeholder: "Use pasteboard.co to upload your images."
+      - key: "qr_code"
+        name: "QR Code URL"
         max_length: 100
-        placeholder: "the url that will be encoded in the QR code."
-        name: "qr_code"
+        placeholder: "The URL that will be encoded in the QR code."
 
+
+#roles that can print the same stickers as the bocal role
+bocal_like_roles:
+  - experience
+  - ADM
+  - intern
+  - comité
+  - padawans
+
+
+unlimited_users: # List of users that can print unlimited stickers
+  - id: 0000
+    name: "Marco Belarbi"
+    reason: "creator of the project"
+    agreement: "I agree to use the printer responsibly and to purchase a refill when using it frequently."
+  - id: 0000
+    name: "Jerome Jaquemet"
+    reason: "contributor in the development of the project"
+    agreement: "I agree to use the printer responsibly and to purchase a refill when using it frequently."
+
+unlimited_roles: # List of roles that can print unlimited stickers
+  - name: "Bocal"
+    reason: "Bocal members"
+  - name: "Fragbox"
+    reason: "Fragbox members"
+  - name: "BDE"
+    reason: "BDE members"

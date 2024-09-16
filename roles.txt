@@ -1,12 +1,23 @@
+42 Lausanne Discord
+
 Bocal
+Experience (do not forget to include with bocal)
+ADM (same as experience)
+Intern (steve ect)
+Comité (sandro ect)
 Padawans
 Tutor
-Senior
+Senior (Tutor Senior)
+BDE
 
 Student
 Piscine
+Closed
+Frozen
+
 Squatteur
 
+Rank 00
 Rank 01
 Rank 02
 Rank 03
@@ -19,6 +30,8 @@ Gotham
 SSD
 
 House of Cores
+House of Processes
+House of Treads
 
 2021
 2022
