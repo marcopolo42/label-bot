@@ -37,3 +37,7 @@ House of Treads
 2022
 2023
 2024
+
+#colors
+42 blue #1E1E1E 53B7BA
+discord help 0x5A64EA

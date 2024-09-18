@@ -63,6 +63,26 @@ def add_log(log, author, label, conn):
     conn.commit()
 
 
+# count the number of label prints today using the user id and the label.count
+def prints_count_today(author, conn):
+    cursor = conn.cursor()
+    cursor.execute("SELECT SUM(label_count) FROM logs WHERE user_id = ? AND creation_date >= date('now')", (author.id,))
+    count = cursor.fetchone()
+    if count is None:
+        return 0
+    if count[0] is None:
+        return 0
+    return count[0]
+
+
+def prints_available_today(author, template, conn):
+    limit = template.get_daily_limit(author.roles)
+    available = limit - prints_count_today(author, conn)
+    if available < 0:
+        return 0
+    return available
+
+
 def create_tables():
     conn = sqlite3.connect('label_db.sqlite')
     cursor = conn.cursor()
@@ -106,60 +126,10 @@ def display_logs(conn):
 #Configuration file functions
 def load_config():
     config_file = os.getenv("CONFIG_FILE")
-    if not os.path.exists(config_file):
-        raise FileNotFoundError(f"Config file {config_file} is missing")
     config = yaml.safe_load(open(config_file))
     if config is None:
         raise ValueError("Configuration file is empty or invalid")
     return config
-
-
-def get_template(type, key):
-    if type is None:
-        raise ValueError("Type is missing")
-    if key is None:
-        raise ValueError("Key is missing")
-    config = load_config()
-    templates = config.get("templates")
-    if templates is None:
-        raise ValueError("Templates are missing in the config file")
-    template = None
-    for t in templates:
-        if t["key"] == type:
-            template = t
-            break
-    if template is None:
-        raise ValueError(f"Template {type} not found in config file")
-    if key not in template:
-        return None
-    return template[key]
-
-
-def get_select_options(user_roles):
-    config = load_config()
-    templates = config.get("templates")
-    u_roles = [role.name.lower() for role in user_roles]
-    options = []
-    for template in templates:
-        print(template.values())
-        for a_role in template.get("allowed_roles"):
-            if str(a_role).lower() in u_roles:
-                options.append(discord.SelectOption(
-                    label=template["name"],
-                    value=template["key"],
-                    description=template["description"],
-                    emoji=template["emoji"]
-                ))
-                break
-    return options
-
-
-def get_first_option_type(roles):
-    config = load_config()
-    templates = config.get("templates")
-    for role in roles:
-        if role.name != "@everyone":
-            return role.name.lower()
 
 
 def ql_brother_print_usb(image, count=1):
@@ -267,13 +237,10 @@ class Label:
             os.remove(self.pdf)
         if self.image is not None:
             os.remove(self.image)
-        # checks if the label can be made
         if self.template is None:
-            print("Type is missing")
-            return None
+            return
         if self.count < 1:
-            print("Count is invalid")
-            return None
+            return
 
         # the folder name of the template should be the same as the value
         directory = f"{os.getcwd()}/templates/{self.template.key}"
@@ -282,8 +249,10 @@ class Label:
         label_writer = LabelWriter(item_template_path=f"{directory}/template.html",
                                    default_stylesheets=(f"templates/{self.template.key}/style.css",))
 
-        # Set information that don't need user input but are based on the config file
-        self.data["expiration_date"] = get_time(get_template(self.template.key, "expiration"))
+        # Set the settings from the template to the data available for the label creation
+        if self.template.settings:
+            for key, value in self.template.settings.items():
+                self.data.update({key: value})
 
         # Makes multiple copies of the label #todo will be removed in the future because we will print the images not the pdfs
         records = []
@@ -293,7 +262,6 @@ class Label:
         # Writes the labels to a PDF file with a unique file name using the author's ID and the current timestamp
         self.pdf = f"pdfs/{self.data.get("user_name")}_{datetime.now().strftime('%d-%m-%Y-%Hh%Mm%Ss')}.pdfs"
         label_writer.write_labels(records, target=self.pdf)
-
         self.image = pdf_to_image(self.pdf)
         convert_to_grayscale(self.image)
 
@@ -308,33 +276,6 @@ class Label:
         self.template = None
         self.count = 0
         self.validated = False
-        self.fields = None
-
-
-async def update_preview(interaction, label, view):
-    label.make()
-    if label.image is None:
-        return None
-
-    embed = discord.Embed(title="Preview of your label", description="This is how your label will look like.", color=0x00ff00)
-    #debug
-    for key, value in label.data.items():
-        embed.add_field(name=key, value=value)
-    file = None
-    if label.image is not None:
-        print(f"Adding images to the embed: {label.image}")
-        embed.set_image(url=f"attachment://{os.path.basename(label.image)}")
-        file = discord.File(label.image)
-    if interaction.response.is_done(): # todo maybe remove the case where the response is not done
-        if file is None:
-            await interaction.edit_original_response(embed=embed, view=view)
-        else:
-            await interaction.edit_original_response(embed=embed, view=view, file=file)
-    else:
-        if file is None:
-            await interaction.response.edit_message(embed=embed, view=view)
-        else:
-            await interaction.response.edit_message(embed=embed, view=view, file=file)
 
 
 # Modal to ask for additional data using a modal form
@@ -354,12 +295,18 @@ async def ask_for_additional_data(interaction, label):
                     style = discord.InputTextStyle.long
                 else:
                     style = discord.InputTextStyle.short
-                self.add_item(discord.ui.InputText(label=f.get("name"), max_length=f.get("max_length"), placeholder=f.get("placeholder"), style=style))
+                # check if the field has already been filled before and add the old value back
+                previous_value = label.data.get(f.get("key"))
+                if previous_value is not None:
+                    self.add_item(discord.ui.InputText(label=f.get("name"), max_length=f.get("max_length"), placeholder=f.get("placeholder"), style=style, value=previous_value))
+                else:
+                    self.add_item(discord.ui.InputText(label=f.get("name"), max_length=f.get("max_length"), placeholder=f.get("placeholder"), style=style))
 
         async def callback(self, interaction: discord.Interaction):
             for idx, item in enumerate(self.label.template.fields):
                 self.label.data.update({item["key"]: self.children[idx].value})
-            await interaction.response.defer()
+            embed = discord.Embed(title="Creating the label !", description="please wait ...", color=0x53B7BA)
+            await interaction.response.edit_message(embed=embed, files=[])
 
     modal = MyModal(label)
     await interaction.response.send_modal(modal)
@@ -367,7 +314,52 @@ async def ask_for_additional_data(interaction, label):
     return None
 
 
-async def choose_label(ctx):
+async def update_preview(interaction, label):
+    # if the response is not done, we defer it, because the image may take some time to be generated.
+    if not interaction.response.is_done():
+        embed = discord.Embed(title="Creating the label !", description="please wait ...", color=0x53B7BA)
+        # remove the discord file from the previous message
+        await interaction.response.edit_message(embed=embed, files=[])
+    label.make()
+    if label.image is None:
+        embed = discord.Embed(title="The label could not be generated", description="An error occurred while generating the label", color=0xff0000)
+        await interaction.edit_original_response(embed=embed)
+        return
+    #debug
+    #for key, value in label.data.items():
+    #   embed.add_field(name=key, value=value)
+    file = None
+    if label.image is not None:
+        file = discord.File(label.image)
+    if file is None:
+        embed = discord.Embed(title="The label could not be displayed", description="An error occurred while generating the label", color=0xff0000)
+        await interaction.edit_original_response(embed=embed)
+    else:
+        embed = discord.Embed(title="Preview of your label", description="This is how your label will look like.", color=0x53B7BA)
+        embed.set_image(url=f"attachment://{os.path.basename(label.image)}")
+        await interaction.edit_original_response(embed=embed, file=file)
+
+
+def get_select_options(user_roles):
+    config = load_config()
+    templates = config.get("templates")
+    u_roles = [role.name.lower() for role in user_roles]
+    options = []
+    for template in templates:
+        print(template.values())
+        for a_role in template.get("allowed_roles"):
+            if str(a_role).lower() in u_roles:
+                options.append(discord.SelectOption(
+                    label=template["name"],
+                    value=template["key"],
+                    description=template["description"],
+                    emoji=template["emoji"]
+                ))
+                break
+    return options
+
+
+async def choose_label(ctx, conn):
     label = Label(ctx.author)
 
     class ChooseLabelView(discord.ui.View):
@@ -383,9 +375,13 @@ async def choose_label(ctx):
                     i.default = True
                 else:
                     i.default = False
-            self.children[1].options = [discord.SelectOption(label=str(i), value=str(i)) for i in range(1, label.template.get_daily_limit(ctx.author.roles) + 1)]
+            available_prints = prints_available_today(ctx.author, label.template, conn)
+            if available_prints == 0:
+                await interaction.response.send_message(f"You have reached the daily limit of {label.template.name} labels", ephemeral=True)
+                return
+            self.children[1].options = [discord.SelectOption(label=str(i), value=str(i)) for i in range(1, available_prints + 1)]
             await ask_for_additional_data(interaction, label)
-            await update_preview(interaction, label, view)
+            await update_preview(interaction, label)
 
         @discord.ui.select(placeholder="Choose the number of labels...", custom_id="LabelCountSelect", options=[
             discord.SelectOption(label=str(i), value=str(i)) for i in range(1, 11)])
@@ -396,34 +392,50 @@ async def choose_label(ctx):
         @discord.ui.button(label="Print", custom_id="PrintBtn", style=discord.ButtonStyle.green, emoji="🖨️")
         async def validation_button(self, button, interaction):
             label.validated = True
-            self.disable_all_items()
-            await interaction.response.edit_message(view=self)
-            self.stop()
+            await self.close(interaction)
 
         @discord.ui.button(label="Stop", style=discord.ButtonStyle.secondary, emoji="🚫")
         async def cancel_button(self, button, interaction):
             label.clear()
-            self.disable_all_items()
-            await interaction.response.edit_message(view=self)
-            self.stop()
+            await self.close(interaction)
 
         @discord.ui.button(label="Help", style=discord.ButtonStyle.blurple, emoji="📖")
         async def help_button(self, button, interaction):
-            await interaction.response.send_message("This is a help message", ephemeral=True)
+            embed = discord.Embed(title="Help", description="This is a help message", color=0x5A64EA)
+            await interaction.response.edit_message(embed=embed, view=view, files=[])
+
 
         async def on_timeout(self):
             label.clear()
-            self.disable_all_items()
-            #taken form discord.py source code
-            if not self._message or self._message.flags.ephemeral:
-                message = self.parent
-            else:
-                message = self.message
+            await self.close()
 
-            if message:
-                m = await message.edit(view=self)
-                if m:
-                    self._message = m
+        #async def on_error(self, error, item, interaction):
+        #    print(f"An error occurred: {error}")
+        #    label.validated = False
+        #    self.stop()
+
+        async def close(self, interaction=None):
+            self.disable_all_items()
+            if interaction is not None:
+                if interaction.response.is_done():
+                    print("interaction is")
+                    await interaction.edit_original_message(view=self)
+                else:
+                    print("interaction is not done")
+                    await interaction.response.edit_message(view=self)
+            else:
+                print("interaction none")
+                # taken form discord.py source code
+                if not self._message or self._message.flags.ephemeral:
+                    message = self.parent
+                else:
+                    message = self.message
+
+                if message:
+                    m = await message.edit(view=self)
+                    if m:
+                        self._message = m
+            self.stop()
 
     view = ChooseLabelView()
     await ctx.respond(view=view, ephemeral=True)
@@ -489,7 +501,7 @@ class LabelCog(commands.Cog):
     async def slash_label(self, ctx):
         conn = sqlite3.connect('label_db.sqlite')
 
-        label = await choose_label(ctx)
+        label = await choose_label(ctx, conn)
         if label.validated is None:
             add_log("Operation timed out", ctx.author, label, conn)
             print("interaction timed out...")
