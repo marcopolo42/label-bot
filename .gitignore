@@ -6,6 +6,6 @@
 /.pytest_cache/
 /.mypy_cache/
 .env
-pdfs/
-images/
-og_templates/
+label_cog/pdfs/
+label_cog/images/
+label_cog/og_templates/

@@ -9,7 +9,7 @@ dotenv.load_dotenv()
 bot = discord.Bot()
 
 # Add the cog to the bot
-bot.load_extension("label_cog")
+bot.load_extension("label_cog.main")
 
 # Run the bot with the token
 bot.run(os.getenv('DISCORD_TOKEN'))
