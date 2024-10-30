@@ -14,6 +14,8 @@ from label_cog.src.views import ChangeLanguageView, ChooseLabelView
 
 from label_cog.src.config import Config
 
+from label_cog.src.printer_utils import ql_brother_print_usb
+
 dotenv.load_dotenv()
 
 
@@ -57,7 +59,7 @@ class LabelCog(commands.Cog):
         session = Session(ctx.author)
         label = Label(ctx.author)
         view = ChooseLabelView(session, label)
-        message = await ctx.respond(embed=get_embed("help", session.lang), view=view, ephemeral=True, timeout=60)
+        message = await ctx.respond(embed=get_embed("help", session.lang), view=view, ephemeral=True)
         await view.wait()
 
         if label.validated is None:
@@ -71,7 +73,7 @@ class LabelCog(commands.Cog):
         elif label.validated is True:
             await change_displayed_status("printing", session.lang, original_message=message)
             add_log(f"Label {label.template.key} {label.count} was printed", ctx.author, label, session.conn)
-            #ql_brother_print_usb(label.image, label.count)
+            ql_brother_print_usb(label.image, label.count)
             print(f"You have chosen to print the label {label.template.key} {label.count} times and validated: {label.validated}")
         get_logs(session.conn)
 

@@ -16,10 +16,3 @@ class Config(dict):
         config_file = os.path.join(os.getcwd(), "label_cog/config.yaml")
         config_data = yaml.safe_load(open(config_file))
         self.update(config_data)
-
-
-# Example usage:
-singleton1 = Config()
-singleton2 = Config()
-
-print(singleton1 is singleton2)  # Output: True

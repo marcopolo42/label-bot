@@ -29,7 +29,7 @@ class Label:
             return
 
         # the folder name of the template should be the same as the value
-        directory = f"{os.getcwd()}/label_cog/templates/{self.template.key}"
+        directory = os.path.join(os.getcwd(), 'label_cog', 'templates', self.template.key)
         if not os.path.exists(directory):
             raise FileNotFoundError(f"Template folder for {self.template.key} is missing")
         label_writer = LabelWriter(item_template_path=f"{directory}/template.html",
@@ -46,7 +46,7 @@ class Label:
             records.append(self.data)
 
         # Writes the labels to a PDF file with a unique file name using the author's ID and the current timestamp
-        self.pdf = f"{os.getcwd()}/label_cog/pdfs/{self.data.get("user_name")}_{datetime.now().strftime('%d-%m-%Y-%Hh%Mm%Ss')}.pdfs"
+        self.pdf = os.path.join(os.getcwd(), 'label_cog', 'pdfs', f"{self.data.get("user_name")}_{datetime.now().strftime('%d-%m-%Y-%Hh%Mm%Ss')}.pdfs")
         label_writer.write_labels(records, target=self.pdf)
         self.image = pdf_to_image(self.pdf)
         convert_to_grayscale(self.image)

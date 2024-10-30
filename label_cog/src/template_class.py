@@ -2,14 +2,16 @@ from label_cog.src.db_utils import get_today_prints_count
 
 from label_cog.src.config import Config
 
+from label_cog.src.utils import get_lang
+
 
 class Template:
     def __init__(self, type, lang):
         lang = lang
         raw = self.load_template(type)
         self.key = raw.get("key")
-        self.name = raw.get("name").get(lang)
-        self.description = raw.get("description").get(lang)
+        self.name = get_lang(raw.get("name"), lang)
+        self.description = get_lang(raw.get("description"), lang)
         self.emoji = raw.get("emoji")
 
         self.settings = raw.get("settings")

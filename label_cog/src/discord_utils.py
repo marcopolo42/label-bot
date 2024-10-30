@@ -6,6 +6,14 @@ from label_cog.src.db_utils import get_user_language
 from label_cog.src.utils import get_lang
 
 
+def set_current_as_default(select, key):
+    for i in select.options:
+        if i.value == key:
+            i.default = True
+        else:
+            i.default = False
+
+
 def get_embed(key, lang, image=None):
     display_messages = Config().get("display_messages")
     if display_messages is None:

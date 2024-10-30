@@ -4,23 +4,6 @@ from brother_ql.raster import BrotherQLRaster
 
 from PIL import Image
 
-def print_usb(image, validated, count, lang):
-
-    if validated is None:
-        await change_displayed_status("timeout", lang, original_message=message)
-        print("interaction timed out...")
-
-    elif label.validated is False:
-        await change_displayed_status("canceled", session.lang, original_message=message)
-        print("The operation was canceled...")
-
-    elif label.validated is True:
-        await change_displayed_status("printing", session.lang, original_message=message)
-        add_log(f"Label {label.template.key} {label.count} was printed", ctx.author, label, session.conn)
-        # ql_brother_print_usb(label.image, label.count)
-        print(
-            f"You have chosen to print the label {label.template.key} {label.count} times and validated: {label.validated}")
-    get_logs(session.conn)
 
 def ql_brother_print_usb(image, count=1):
     if image is None:
@@ -28,6 +11,7 @@ def ql_brother_print_usb(image, count=1):
     im = Image.open(image)
     #print images size
     print(im.size) #todo remove debug
+    print(f"height {im.size[0]} width {im.size[1]}") #todo remove debug
     backend = 'pyusb'  # 'pyusb', 'linux_kernel', 'network'
     model = 'QL-710W'
     printer = 'usb://0x04f9:0x20c0/000D9Z773204'  # Get these values from the Windows usb driver filter.  Linux/Raspberry Pi uses '/dev/usb/lp0'. Macos use 'lsusb' from homebrew.

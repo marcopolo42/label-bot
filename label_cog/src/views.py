@@ -1,6 +1,6 @@
 import discord
 
-from label_cog.src.discord_utils import change_displayed_status
+from label_cog.src.discord_utils import set_current_as_default, change_displayed_status
 
 from label_cog.src.template_class import Template
 
@@ -10,7 +10,7 @@ from label_cog.src.modals import CustomLabelModal
 
 from label_cog.src.config import Config
 
-from label_cog.src.utils import get_translation
+from label_cog.src.utils import get_translation, get_lang
 
 
 class ChooseLabelView(discord.ui.View):
@@ -69,11 +69,7 @@ class ChooseLabelView(discord.ui.View):
     async def select_type_callback(self, interaction):
         self.label.template = Template(self.select_type.values[0], self.lang)
         # to prevent the view from resetting the choice when reloading
-        for i in self.select_type.options:
-            if i.value == self.label.template.key:
-                i.default = True
-            else:
-                i.default = False
+        set_current_as_default(self.select_type, self.select_type.values[0])
         await self.get_custom_label_fields(interaction, self.label)
         await self.update_select_count_options(interaction)
         await self.update_view(interaction)
@@ -144,9 +140,9 @@ class ChooseLabelView(discord.ui.View):
             for a_role in template.get("allowed_roles"):
                 if str(a_role).lower() in u_roles:
                     options.append(discord.SelectOption(
-                        label=template.get("name").get(self.lang),
+                        label=get_lang(template.get("name"), self.lang),
                         value=template.get("key"),
-                        description=template.get("description").get(self.lang),
+                        description=get_lang(template.get("description"), self.lang),
                         emoji=template.get("emoji")
                     ))
                     break

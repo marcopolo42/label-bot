@@ -55,7 +55,7 @@ def pdf_to_image(pdf):
     page = doc.load_page(0)
     # get the pixmap of the page at 600 dpi
     pix = page.get_pixmap(alpha=False, dpi=600)  # todo does 600 instead of 300 work better ?
-    image_path = f"{os.getcwd()}/label_cog/images/{os.path.splitext(os.path.basename(pdf))[0]}.png"
+    image_path = os.path.join(os.getcwd(), 'label_cog', 'images', f"{os.path.splitext(os.path.basename(pdf))[0]}.png")
     pix.save(image_path)
     doc.close()
     return image_path
