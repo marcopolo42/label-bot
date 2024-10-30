@@ -46,7 +46,7 @@ class Label:
             records.append(self.data)
 
         # Writes the labels to a PDF file with a unique file name using the author's ID and the current timestamp
-        self.pdf = os.path.join(os.getcwd(), 'label_cog', 'pdfs', f"{self.data.get("user_name")}_{datetime.now().strftime('%d-%m-%Y-%Hh%Mm%Ss')}.pdfs")
+        self.pdf = os.path.join(os.getcwd(), 'label_cog', 'pdfs', f"{self.data.get('user_name')}_{datetime.now().strftime('%d-%m-%Y-%Hh%Mm%Ss')}.pdfs")
         label_writer.write_labels(records, target=self.pdf)
         self.image = pdf_to_image(self.pdf)
         convert_to_grayscale(self.image)
