@@ -1,0 +1,12 @@
+[Unit]
+Description=Discord LabelBot
+After=network.target
+
+[Service]
+ExecStart=/home/admin/label-bot/venv/bin/python /home/admin/label-bot/bot.py
+WorkingDirectory=/home/admin/label-bot
+Restart=always
+User=admin
+
+[Install]
+WantedBy=multi-user.target
