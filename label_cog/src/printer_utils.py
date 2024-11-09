@@ -4,27 +4,30 @@ from brother_ql.raster import BrotherQLRaster
 
 from PIL import Image
 
+import os
+import dotenv
+dotenv.load_dotenv()
 
-def ql_brother_print_usb(image, count=1):
+
+def ql_brother_print_usb(image, count):
+    printer = os.getenv("PRINTER_ID")
+    backend = 'pyusb'  # 'pyusb', 'linux_kernel', 'network'
+    model = os.getenv("PRINTER_MODEL")
     if image is None:
         return
     im = Image.open(image)
-    #print images size
-    print(im.size) #todo remove debug
-    print(f"height {im.size[0]} width {im.size[1]}") #todo remove debug
-    backend = 'pyusb'  # 'pyusb', 'linux_kernel', 'network'
-    model = 'QL-710W'
-    printer = 'usb://0x04f9:0x20c0/000D9Z773204'  # Get these values from the Windows usb driver filter.  Linux/Raspberry Pi uses '/dev/usb/lp0'. Macos use 'lsusb' from homebrew.
     qlr = BrotherQLRaster(model)
     qlr.exception_on_warning = True #todo remove for production
+    if im.size[0] > 1465 and im.size[1] > 1465: # todo enable proper error handling and test this
+        print("Image is too big to be printed in a 62mm label")
+        raise ValueError("Image is too big to be printed in a 62mm label")
     instructions = convert(
-
         qlr=qlr,
-        images=[im],  # Takes a list of file names or PIL objects.
+        images=[im] * count, # Takes a list of file names or PIL objects.
         label='62',
-        rotate=('0' if im.size[0] > im.size[1] else '90'),  # 'Auto', '0', '90', '270'
+        rotate=('0' if im.size[0] <= 1465 else '90'),  # 'Auto', '0', '90', '270'. 1465 is the width of a 62mm label in pixels
         threshold=70.0,  # Black and white threshold in percent.
-        dither=False,
+        dither=True,
         compress=False,
         red=False,  # Only True if using Red/Black 62 mm label tape.
         dpi_600=False,

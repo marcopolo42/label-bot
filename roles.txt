@@ -1,19 +1,21 @@
-42 Lausanne Discord
+42 Lausanne Discord Roles
 
 Bocal
-Experience (do not forget to include with bocal)
-ADM (same as experience)
+Experience
+ADM
 Intern (steve ect)
 Comité (sandro ect)
 Padawans
 Tutor
-Senior (Tutor Senior)
+Senior (Senior Tutor)
 BDE
+
+Fragbox
 
 Student
 Piscine
 Closed
-Frozen
+Frozens
 
 Squatteur
 
@@ -31,13 +33,9 @@ SSD
 
 House of Cores
 House of Processes
-House of Treads
+House of Threads
 
 2021
 2022
 2023
 2024
-
-#colors
-42 blue #1E1E1E 53B7BA
-discord help 0x5A64EA
