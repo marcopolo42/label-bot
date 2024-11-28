@@ -31,7 +31,6 @@ class CustomLabelModal(discord.ui.Modal):
                     max_length=f.get("max_length"),
                     placeholder=get_lang(f.get("placeholder"), lang),
                     style=style))
-            #self.children[-1].value = previous_value
 
     async def callback(self, interaction: discord.Interaction):
         for idx, item in enumerate(self.label.template.fields):

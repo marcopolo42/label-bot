@@ -1,6 +1,6 @@
 import discord
 
-from label_cog.src.discord_utils import set_current_as_default, change_displayed_status
+from label_cog.src.discord_utils import set_current_value_as_default, change_displayed_status
 
 from label_cog.src.template_class import Template
 
@@ -67,21 +67,16 @@ class ChooseLabelView(discord.ui.View):
         self.add_item(self.help_button)
 
     async def select_type_callback(self, interaction):
+        self.label.reset()
         self.label.template = Template(self.select_type.values[0], self.lang)
-        # to prevent the view from resetting the choice when reloading
-        set_current_as_default(self.select_type, self.select_type.values[0])
+        set_current_value_as_default(self.select_type, self.select_type.values[0])
         await self.get_custom_label_fields(interaction, self.label)
         await self.update_select_count_options(interaction)
         await self.update_view(interaction)
 
     async def select_count_callback(self, interaction):
         self.label.count = int(self.select_count.values[0])
-        # to prevent the view from resetting the choice when reloading
-        for i in self.select_count.options:
-            if i.value == str(self.label.count):
-                i.default = True
-            else:
-                i.default = False
+        set_current_value_as_default(self.select_count, self.select_count.values[0])
         await interaction.response.defer()
 
     async def print_button_callback(self, interaction):
@@ -124,21 +119,28 @@ class ChooseLabelView(discord.ui.View):
             return None
         modal = CustomLabelModal(label, self.lang)
         await interaction.response.send_modal(modal)
+        # disable the print button and select count so the user can't click on if they decide to not fill the fields.
+        self.print_button.disabled = True
+        self.select_count.disabled = True
+        # I wanted to change the status before the modal is sent, but it seems that I can't send the modal only as a direct response to the interaction.
+        await change_displayed_status("waiting_fields", self.lang, interaction=interaction, view=self)
         await modal.wait()
         return None
 
+    def is_bocal_role(self, user_roles):
+        bocal_roles = [role.lower() for role in Config().get("bocal_roles")]
+        return any(role in [role.name.lower() for role in user_roles] for role in bocal_roles)
+
     def get_select_type_options(self, user_roles):
         templates = Config().get("templates")
-        u_roles = [role.name.lower() for role in user_roles]
-        #adds the bocal role if the user has one of the bocal_roles defined in the config file
-        bocal_roles = [role.lower() for role in Config().get("bocal_roles")]
-        if any(role in u_roles for role in bocal_roles):
+        roles = [role.name.lower() for role in user_roles]
+        if self.is_bocal_role(user_roles):
             print("User has a bocal role")
-            u_roles.append("bocal")
+            roles.append("bocal")
         options = []
         for template in templates:
             for a_role in template.get("allowed_roles"):
-                if str(a_role).lower() in u_roles:
+                if str(a_role).lower() in roles:
                     options.append(discord.SelectOption(
                         label=get_lang(template.get("name"), self.lang),
                         value=template.get("key"),
@@ -152,31 +154,35 @@ class ChooseLabelView(discord.ui.View):
         available_prints = self.label.template.prints_available_today(self.author, self.conn)
         if available_prints == 0:
             self.select_count.options = [discord.SelectOption(label="0", value="0")]
-            self.select_count.disabled = True
-            self.print_button.disabled = True
-            self.label.count = 0
-            self.select_count.options[0].default = True
-            self.label.clear()
         else:
             self.select_count.options = [discord.SelectOption(label=str(i), value=str(i)) for i in range(1, available_prints + 1)]
-            self.select_count.disabled = False
-            self.print_button.disabled = False
-            self.label.count = 1
-            self.select_count.options[0].default = True
+        self.label.count = int(self.select_count.options[0].value)
+        self.select_count.options[0].default = True
+
+    def are_custom_fields_filled(self):
+        if self.label.template is None or self.label.template.fields is None:
+            return True
+        for field in self.label.template.fields:
+            if self.label.data.get(field.get("key")) is None:
+                return False
+        return True
 
     async def update_view(self, interaction):
+        self.select_count.disabled = True
+        self.print_button.disabled = True
         if self.label.count < 1:
             await change_displayed_status("daily_limit_reached", self.lang, interaction=interaction, view=self)
             return
-        self.label.clear()
+        if not self.are_custom_fields_filled():
+            await change_displayed_status("missing_fields", self.lang, interaction=interaction, view=self)
+            return
         print("Creating the label embed ...")
         await change_displayed_status("creating", self.lang, interaction=interaction, view=self)
         print("label.make() ...")
         self.label.make()
-        if self.label.image is None:
-            await change_displayed_status("error_generate", self.lang, interaction=interaction, view=self)
-            return
-        await change_displayed_status("preview", self.lang, image=self.label.image, interaction=interaction, view=self)
+        self.select_count.disabled = False
+        self.print_button.disabled = False
+        await change_displayed_status("preview", self.lang, image=self.label.preview, interaction=interaction, view=self)
 
 
 class ChangeLanguageView(discord.ui.View):

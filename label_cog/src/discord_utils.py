@@ -6,7 +6,7 @@ from label_cog.src.db_utils import get_user_language
 from label_cog.src.utils import get_lang
 
 
-def set_current_as_default(select, key):
+def set_current_value_as_default(select, key):
     for i in select.options:
         if i.value == key:
             i.default = True

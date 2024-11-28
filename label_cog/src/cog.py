@@ -16,13 +16,14 @@ from label_cog.src.config import Config
 
 from label_cog.src.printer_utils import ql_brother_print_usb
 
+from label_cog.src.cleanup_thread import start_cleanup
+
 dotenv.load_dotenv()
 
 
 def cog_setup():
     current_dir = os.path.join(os.getcwd(), "label_cog")
-    os.makedirs(os.path.join(current_dir, "pdfs"), exist_ok=True)
-    os.makedirs(os.path.join(current_dir, "images"), exist_ok=True)
+    os.makedirs(os.path.join(current_dir, "cache"), exist_ok=True)
     if not os.path.exists(os.path.join(current_dir, "templates")):
         raise FileNotFoundError("Templates folder 'templates' is missing")
     if not os.listdir(os.path.join(current_dir, "templates")):
@@ -33,6 +34,11 @@ def cog_setup():
         os.remove(os.path.join(current_dir, "database.sqlite")) # todo dev only
     if not os.path.exists(os.path.join(current_dir, "database.sqlite")):
         create_tables()
+    # start the cleanup thread that will delete old files every 24 hours
+    start_cleanup(
+        [os.path.join(current_dir, "cache")],
+        1,
+        24)
 
 
 class Session:
@@ -73,9 +79,8 @@ class LabelCog(commands.Cog):
         elif label.validated is True:
             await change_displayed_status("printing", session.lang, original_message=message)
             add_log(f"Label {label.template.key} {label.count} was printed", ctx.author, label, session.conn)
-            ql_brother_print_usb(label.image, label.count)
             print(f"You have chosen to print the label {label.template.key} {label.count} times and validated: {label.validated}")
-        get_logs(session.conn)
+            ql_brother_print_usb(label.image, label.count)
 
     @discord.slash_command(name="change_language", description="Change the language used for the label bot")
     async def slash_change_language(self, ctx):

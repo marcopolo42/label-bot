@@ -59,18 +59,55 @@ templates:
       BDE: 5
       tuteur: 2
 
-  - key: "square_image"
+  - key: "custom_square_image"
     name:
-      en: "Square Image Label"
-      fr: "Étiquette d'image carrée"
-      de: "Quadratisches Bildetikett"
+      en: "Custom Square Image Label"
+      fr: "Étiquette d'image carrée personnalisée"
+      de: "Benutzerdefiniertes quadratisches Bildetikett"
     description:
-      en: "The label to use for square image stickers"
-      fr: "L'étiquette à utiliser pour les stickers d'image carrée"
-      de: "Das Etikett für quadratische Bildsticker"
+      en: "Use an URL to provide your own image"
+      fr: "Utilisez une URL pour fournir votre propre image"
+      de: "Verwenden Sie eine URL, um Ihr eigenes Bild bereitzustellen"
     emoji: "🖼️"
     allowed_roles:
       - bocal
+    fields:
+      - key: "image"
+        max_length: 200
+        name:
+            en: "Image URL"
+            fr: "URL de l'image"
+            de: "Bild-URL"
+        placeholder:
+            en: "Use this site to host your image: img.doerig.dev"
+            fr: "Utilisez ce site pour héberger votre image : img.doerig.dev"
+            de: "Verwenden Sie diese Website, um Ihr Bild zu hosten: img.doerig.dev"
+
+  - key: "frag_cable"
+    name:
+      en: "Fragbox label for a cable"
+      fr: "Étiquette Fragbox pour un câble"
+      de: "Fragbox-Etikett für ein Kabel"
+    description:
+      en: "can be used to label a cable or a small object"
+      fr: "peut être utilisé pour étiqueter un câble ou un petit objet"
+      de: "kann verwendet werden, um ein Kabel oder ein kleines Objekt zu kennzeichnen"
+    emoji: "🖼️"
+    allowed_roles:
+      - fragbox
+
+  - key: "frag_logo"
+    name:
+      en: "Fragbox Logo"
+      fr: "Logo Fragbox"
+      de: "Fragbox-Logo"
+    description:
+      en: "Un logo Fragbox de 61 mm sur 61 mm"
+      fr: "Un logo Fragbox de 61 mm sur 61 mm"
+      de: "Un logo Fragbox de 61 mm sur 61 mm"
+    emoji: "🖼️"
+    allowed_roles:
+      - fragbox
 
   - key: "qr_code"
     name:
@@ -95,6 +132,30 @@ templates:
           en:  "The URL that will be encoded in the QR code."
           fr:  "L'URL qui sera encodée dans le code QR."
           de:  "Die URL, die im QR-Code codiert wird."
+
+  - key: "custom_text_small"
+    name:
+      en: "Small Custom Text Label"
+      fr: "Petite étiquette de texte personnalisé"
+      de: "Kleines benutzerdefiniertes Textetikett"
+    description:
+      en: "Small custom text stickers (max 18 characters)"
+      fr: "Petits stickers de texte personnalisé (max 18 caractères)"
+      de: "Kleine benutzerdefinierte Textsticker (max 18 Zeichen)"
+    emoji: "📝"
+    allowed_roles:
+      - Bocal
+    fields:
+      - key: "text"
+        max_length: 18
+        name:
+            en: "Please enter the text you want on the label"
+            fr: "Veuillez entrer le texte que vous voulez sur l'étiquette"
+            de: "Bitte geben Sie den Text ein, den Sie auf dem Etikett möchten"
+        placeholder:
+            en: "max 18 characters"
+            fr: "max 18 caractères"
+            de: "max 18 Zeichen"
 
   - key: "test"
     name:
@@ -161,6 +222,7 @@ display_messages:
         en: "it means that the message that was supposed to be displayed is not in the configuration file."
         fr: "cela signifie que le message qui devait être affiché n'est pas dans le fichier de configuration."
         de: "Das bedeutet, dass die anzuzeigende Nachricht nicht in der Konfigurationsdatei steht."
+
   preview:
     color: 0x53B7BA
     title:
@@ -193,6 +255,17 @@ display_messages:
         en: "You have reached the daily limit for this label."
         fr: "Vous avez atteint la limite quotidienne pour cette étiquette."
         de: "Sie haben das Tageslimit für dieses Etikett erreicht."
+
+  waiting_fields:
+    color: 0x53B7BA
+    title:
+        en: "Please fill the requested fields."
+        fr: "Veuillez remplir les champs demandés."
+        de: "Bitte füllen Sie die angeforderten Felder aus."
+    description:
+        en: "You must fill all the fields to create the label."
+        fr: "Vous devez remplir tous les champs pour créer l'étiquette."
+        de: "Sie müssen alle Felder ausfüllen, um das Etikett zu erstellen."
 
   timeout:
     color: 0xFF0000

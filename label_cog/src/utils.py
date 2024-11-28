@@ -1,11 +1,5 @@
-import os
 from datetime import datetime, timedelta
-from PIL import Image, ImageOps
-import fitz
-import yaml
 from label_cog.src.config import Config
-
-Image.MAX_IMAGE_PIXELS = 8294400  # Increase pixel limit for the PIL dependency (4K)
 
 
 def get_lang(dict, lang):
@@ -44,18 +38,3 @@ def get_discord_url(id):
     return "https://discordapp.com/users/" + str(id)
 
 
-def convert_to_grayscale(image_path):
-    image = Image.open(image_path)
-    grayscale_image = ImageOps.grayscale(image)
-    grayscale_image.save(image_path)
-
-
-def pdf_to_image(pdf):
-    doc = fitz.open(pdf)  # we are using pymupdf because it is easier to install than pdf2image(poppler)
-    page = doc.load_page(0)
-    # get the pixmap of the page at 600 dpi
-    pix = page.get_pixmap(alpha=False, dpi=600)  # todo does 600 instead of 300 work better ?
-    image_path = os.path.join(os.getcwd(), 'label_cog', 'images', f"{os.path.splitext(os.path.basename(pdf))[0]}.png")
-    pix.save(image_path)
-    doc.close()
-    return image_path

@@ -1,7 +1,8 @@
 import os
 from datetime import datetime
-from label_cog.src.utils import pdf_to_image, convert_to_grayscale, get_time, get_discord_url
+from label_cog.src.utils import get_time, get_discord_url
 from blabel import LabelWriter
+from label_cog.src.image_utils import pdf_to_image, convert_to_grayscale, add_margin
 
 
 class Label:
@@ -11,14 +12,18 @@ class Label:
         self.validated = None
         # default information that is always available. More info can be added based on the template config
         self.data = dict(
-            user_name=author.display_name,
+            user_display_name=author.display_name,
+            user_name=author.name,
+            user_at=f"@{author.name}",
             user_picture=author.avatar,
             user_url=get_discord_url(str(author.id)),
-            creation_date=get_time()
+            user_id=author.id,
+            creation_date=get_time(),
         )
         #return files
         self.pdf = None
         self.image = None
+        self.preview = None
 
     def make(self):
         # removes previous files
@@ -33,23 +38,34 @@ class Label:
         if not os.path.exists(directory):
             raise FileNotFoundError(f"Template folder for {self.template.key} is missing")
         label_writer = LabelWriter(item_template_path=f"{directory}/template.html",
-                                   default_stylesheets=(f"{directory}/style.css",)) # todo check if this works for images
+                                   default_stylesheets=(f"{directory}/style.css",))
 
-        # Set the settings from the template to the data available for the label creation
+        # Set the data from the template
         if self.template.settings:
             for key, value in self.template.settings.items():
                 self.data.update({key: value})
+        #Set the data that need processing
+        self.data.update({"expiration_date": get_time(self.data.get("expiration"))})
 
         # Makes multiple copies of the label #todo will be removed in the future because we will print the images not the pdfs
         records = []
         for i in range(self.count):
             records.append(self.data)
 
-        # Writes the labels to a PDF file with a unique file name using the author's ID and the current timestamp
-        self.pdf = os.path.join(os.getcwd(), 'label_cog', 'pdfs', f"{self.data.get('user_name')}_{datetime.now().strftime('%d-%m-%Y-%Hh%Mm%Ss')}.pdfs")
+        # the file name is created using the author's ID and the current timestamp
+        base_name = f"{self.data.get('user_name')}_{datetime.now().strftime('%d-%m-%Y_%H-%M-%S')}"
+
+        self.pdf = os.path.join(os.getcwd(), 'label_cog', 'cache', f"{base_name}.pdf")
+        self.image = os.path.join(os.getcwd(), 'label_cog', 'cache', f"{base_name}.png")
+        self.preview = os.path.join(os.getcwd(), 'label_cog', 'cache', f"{base_name}_preview.png")
+
+        #pdf creation
         label_writer.write_labels(records, target=self.pdf)
-        self.image = pdf_to_image(self.pdf)
+        #image creation
+        pdf_to_image(self.pdf, self.image)
         convert_to_grayscale(self.image)
+        #preview creation from the image
+        add_margin(self.image, self.preview, margin_mm=3, dpi=300)
 
     def clear(self):
         print("clearing label files")
