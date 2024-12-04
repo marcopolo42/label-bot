@@ -1,0 +1,10 @@
+@page {
+    width: 61mm;
+    height: 61mm;
+}
+
+.qr_code{
+    height: 61mm;
+    width: 61mm;
+    image-rendering: pixelated;
+}

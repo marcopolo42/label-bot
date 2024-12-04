@@ -1,5 +1,5 @@
 settings:
-#maybe usefull later
+#maybe usefull later #todo
 
 
 templates:
@@ -15,6 +15,7 @@ templates:
     emoji: "❄️"
     settings:  # settings are optional data used by the sticker
       expiration: 6  # The expiration time in days
+      reload_button: true  # enable the reload button for stickers that have a random element that users may want to refresh
     allowed_roles:  # The roles that can use this template. (case insensitive) to authorize all roles use "@everyone"
       - student
     daily_role_limits:  # The number of stickers each role can print per day (default is 25)
@@ -59,10 +60,49 @@ templates:
       BDE: 5
       tuteur: 2
 
+  - key: "random_meme"
+    name:
+        en: "Random Reddit Meme"
+        fr: "Meme Reddit aléatoire"
+        de: "Zufälliges Reddit-Meme"
+    description:
+        en: "Get a random meme from Reddit"
+        fr: "Obtenez un meme aléatoire de Reddit"
+        de: "Holen Sie sich ein zufälliges Meme von Reddit"
+    emoji: "🖼️"
+    allowed_roles:
+      - bocal
+    settings:
+      reload_button: true
+
+  - key: "custom_small_text"
+    name:
+      en: "Small Custom Text"
+      fr: "Petit texte personnalisé"
+      de: "Kleiner benutzerdefinierter Text"
+    description:
+      en: "Small custom text stickers (max 18 characters)"
+      fr: "Petits stickers de texte personnalisé (max 18 caractères)"
+      de: "Kleine benutzerdefinierte Textsticker (max 18 Zeichen)"
+    emoji: "📝"
+    allowed_roles:
+      - Bocal
+    fields:
+      - key: "text"
+        max_length: 18
+        name:
+          en: "Please enter the text you want on the label"
+          fr: "Veuillez entrer le texte que vous voulez sur l'étiquette"
+          de: "Bitte geben Sie den Text ein, den Sie auf dem Etikett möchten"
+        placeholder:
+          en: "max 18 characters"
+          fr: "max 18 caractères"
+          de: "max 18 Zeichen"
+
   - key: "custom_square_image"
     name:
-      en: "Custom Square Image Label"
-      fr: "Étiquette d'image carrée personnalisée"
+      en: "Custom Square Image"
+      fr: "image carrée personnalisée"
       de: "Benutzerdefiniertes quadratisches Bildetikett"
     description:
       en: "Use an URL to provide your own image"
@@ -83,11 +123,35 @@ templates:
             fr: "Utilisez ce site pour héberger votre image : img.doerig.dev"
             de: "Verwenden Sie diese Website, um Ihr Bild zu hosten: img.doerig.dev"
 
-  - key: "frag_cable"
+  - key: "custom_qr_code"
     name:
-      en: "Fragbox label for a cable"
-      fr: "Étiquette Fragbox pour un câble"
-      de: "Fragbox-Etikett für ein Kabel"
+      en: "QR Code"
+      fr: "QR Code"
+      de: "QR-Code"
+    description:
+      en: "Create a 61 mm x 61 mm QR code"
+      fr: "Créez un code QR de 61 mm x 61 mm"
+      de: "Erstellen Sie einen 61 mm x 61 mm QR-Code"
+    emoji: "🔗"
+    allowed_roles:
+      - Bocal
+    fields:
+      - key: "qr_code"
+        max_length: 200
+        name:
+          en: "QR Code URL"
+          fr: "URL du code QR"
+          de: "QR-Code-URL"
+        placeholder:
+          en: "The URL that will be encoded in the QR code."
+          fr: "L'URL qui sera encodée dans le code QR."
+          de: "Die URL, die im QR-Code codiert wird."
+
+  - key: "fragbox_cable"
+    name:
+      en: "Fragbox cable"
+      fr: "câble Fragbox"
+      de: "Fragbox-Kabel"
     description:
       en: "can be used to label a cable or a small object"
       fr: "peut être utilisé pour étiqueter un câble ou un petit objet"
@@ -96,7 +160,7 @@ templates:
     allowed_roles:
       - fragbox
 
-  - key: "frag_logo"
+  - key: "fragbox_logo"
     name:
       en: "Fragbox Logo"
       fr: "Logo Fragbox"
@@ -108,54 +172,6 @@ templates:
     emoji: "🖼️"
     allowed_roles:
       - fragbox
-
-  - key: "qr_code"
-    name:
-      en: "QR Code Label"
-      fr: "Étiquette de code QR"
-      de: "QR-Code-Etikett"
-    description:
-      en: "The label to use for QR code stickers"
-      fr: "L'étiquette à utiliser pour les stickers de code QR"
-      de: "Das Etikett für QR-Code-Sticker"
-    emoji: "🔗"
-    allowed_roles:
-      - Bocal
-    fields:
-      - key: "qr_code"
-        max_length: 100
-        name:
-          en:  "QR Code URL"
-          fr:  "URL du code QR"
-          de:  "QR-Code-URL"
-        placeholder:
-          en:  "The URL that will be encoded in the QR code."
-          fr:  "L'URL qui sera encodée dans le code QR."
-          de:  "Die URL, die im QR-Code codiert wird."
-
-  - key: "custom_text_small"
-    name:
-      en: "Small Custom Text Label"
-      fr: "Petite étiquette de texte personnalisé"
-      de: "Kleines benutzerdefiniertes Textetikett"
-    description:
-      en: "Small custom text stickers (max 18 characters)"
-      fr: "Petits stickers de texte personnalisé (max 18 caractères)"
-      de: "Kleine benutzerdefinierte Textsticker (max 18 Zeichen)"
-    emoji: "📝"
-    allowed_roles:
-      - Bocal
-    fields:
-      - key: "text"
-        max_length: 18
-        name:
-            en: "Please enter the text you want on the label"
-            fr: "Veuillez entrer le texte que vous voulez sur l'étiquette"
-            de: "Bitte geben Sie den Text ein, den Sie auf dem Etikett möchten"
-        placeholder:
-            en: "max 18 characters"
-            fr: "max 18 caractères"
-            de: "max 18 Zeichen"
 
   - key: "test"
     name:
@@ -198,7 +214,7 @@ templates:
           en: "The URL of the picture to display on the label."
           fr: "L'URL de l'image à afficher sur l'étiquette."
           de: "Die URL des Bildes, das auf dem Etikett angezeigt werden soll."
-      - key: "qr_code"
+      - key: "custom_qr_code"
         max_length: 100
         name:
           en: "QR Code URL"

@@ -35,4 +35,21 @@ class CustomLabelModal(discord.ui.Modal):
     async def callback(self, interaction: discord.Interaction):
         for idx, item in enumerate(self.label.template.fields):
             self.label.data.update({item["key"]: self.children[idx].value})
-        await interaction.response.defer()
+            #easter egg
+            # if the value contains a 69
+            if "69" in self.children[idx].value:
+                await interaction.response.send_message("69... Nice 😎👌🔥!", ephemeral=True)
+            elif "42" in self.children[idx].value:
+                await interaction.response.send_message("42... The answer to life, the universe, and everything 🌌🔥!", ephemeral=True)
+            elif "gg" in self.children[idx].value.lower():
+                await interaction.response.send_message("GG 🎮🔥!", ephemeral=True)
+            elif "64" in self.children[idx].value:
+                await interaction.response.send_message("64... Nintendo 64 🎮🔥!", ephemeral=True)
+            elif "smash" in self.children[idx].value.lower():
+                await interaction.response.send_message("Smash Bros 🎮🔥!", ephemeral=True)
+            elif "canard" in self.children[idx].value.lower() or "duck" in self.children[idx].value.lower():
+                await interaction.response.send_message("Quack 🦆🔥!", ephemeral=True)
+            elif "pika" in self.children[idx].value.lower():
+                await interaction.response.send_message("Pika Pika ⚡🔥!", ephemeral=True)
+            else:
+                await interaction.response.defer()

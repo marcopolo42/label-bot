@@ -1,18 +1,10 @@
 @page {
     width: 61mm;
     height: 38mm;
-    padding: 0.5mm;
 }
 
-.picture{
-    height: 10mm;
-    display: inline-block;
-    vertical-align: middle;
-}
 svg{
-    padding: 1mm;
     width: 61mm;
-    display: inline-block;
     vertical-align: middle;
 }
   

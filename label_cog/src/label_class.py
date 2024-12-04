@@ -2,7 +2,8 @@ import os
 from datetime import datetime
 from label_cog.src.utils import get_time, get_discord_url
 from blabel import LabelWriter
-from label_cog.src.image_utils import pdf_to_image, convert_to_grayscale, add_margin
+from label_cog.src.image_utils import pdf_to_image, convert_to_grayscale, add_margin, invert_image, mirror_image
+import random
 
 
 class Label:
@@ -19,6 +20,7 @@ class Label:
             user_url=get_discord_url(str(author.id)),
             user_id=author.id,
             creation_date=get_time(),
+            random_number=random.randint(0, 100)
         )
         #return files
         self.pdf = None
@@ -64,8 +66,14 @@ class Label:
         #image creation
         pdf_to_image(self.pdf, self.image)
         convert_to_grayscale(self.image)
-        #preview creation from the image
+        #creation of the preview from the printed image
         add_margin(self.image, self.preview, margin_mm=3, dpi=300)
+        # easter egg random one out of 100 labels
+        if "food" in self.template.key: #todo update with final templates names
+            if random.randint(0, 100) == 0:
+                invert_image(self.preview)
+            if random.randint(0, 100) == 0:
+                mirror_image(self.preview)
 
     def clear(self):
         print("clearing label files")

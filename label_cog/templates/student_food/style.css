@@ -1,28 +1,57 @@
 @page {
-    width: 61mm;
-    height: 10mm;
-    padding: 0.5mm;
-}
-
-.qr_code{
-    height: 9.4mm;
-    display: inline-block;
-    vertical-align: middle;
-    image-rendering: pixelated;
-}
-
-.picture{
-    height: 9.4mm;
-    display: inline-block;
-    vertical-align: middle;
-    image-rendering: pixelated;
+    height: 13mm;
+    width: 62mm;
+    margin: 0;
+    padding: 0;
 }
 
 .label {
-    font-family: Arial, Verdana, Helvetica, sans;
-    font-weight: bold;
-    vertical-align: middle;
-    display: inline-block;
-    font-size: 11px;
+    display: grid;
+    grid-template-areas:
+        "picture text qr_code";
+    grid-template-columns: 13mm 1fr 13mm; /* Fixed width for picture and QR code, flexible for text */
+    align-items: center; /* Align items vertically */
+    gap: 0.5mm; /* Space between items */
+    height: 13mm;
+    width: 62mm;
 }
-  
+
+.picture {
+    grid-area: picture;
+    height: 13mm;
+    width: 13mm;
+    object-fit: contain;
+    image-rendering: pixelated;
+    border-radius: 50%;
+}
+
+.qr_code {
+    grid-area: qr_code;
+    height: 13mm;
+    width: 13mm;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+.text {
+    grid-area: text;
+    width: 35mm;
+    font-family: Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    word-wrap: break-word;     /* Allows breaking long words */
+    overflow-wrap: break-word; /* Ensures wrapping works across browsers */
+    white-space: normal;       /* Makes text wrap to the next line */
+    hyphens: auto;             /* Adds hyphens when the word breaks */
+}
+
+.date
+{
+    font-weight: bold;
+    color: #666;
+}

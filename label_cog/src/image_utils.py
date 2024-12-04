@@ -18,7 +18,6 @@ def pdf_to_image(pdf, image_path):
     pix = page.get_pixmap(alpha=False, dpi=600)  # todo does 600 instead of 300 work better ?
     pix.save(image_path)
     doc.close()
-    return image_path
 
 
 def add_margin(image_path, output_path, margin_mm, dpi=300):
@@ -49,3 +48,15 @@ def add_margin(image_path, output_path, margin_mm, dpi=300):
     # Save the resulting image
     new_img.save(output_path)
     print(f"Image with margin saved to {output_path}")
+
+
+def invert_image(image_path):
+    image = Image.open(image_path)
+    inverted_image = ImageOps.invert(image)
+    inverted_image.save(image_path)
+
+
+def mirror_image(image_path):
+    image = Image.open(image_path)
+    mirrored_image = ImageOps.mirror(image)
+    mirrored_image.save(image_path)

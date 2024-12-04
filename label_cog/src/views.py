@@ -15,7 +15,7 @@ from label_cog.src.utils import get_translation, get_lang
 
 class ChooseLabelView(discord.ui.View):
     def __init__(self, session, label):
-        super().__init__(timeout=300)  # 5 minutes timeout
+        super().__init__(timeout=None)
         self.conn = session.conn
         self.author = session.author
         self.lang = session.lang
@@ -59,6 +59,13 @@ class ChooseLabelView(discord.ui.View):
         )
         self.help_button.callback = self.help_button_callback
 
+        self.reload_button = discord.ui.Button(
+            label="Reload",
+            style=discord.ButtonStyle.secondary,
+            emoji="🔄",
+        )
+        self.reload_button.callback = self.select_type_callback
+
         #add items to the view
         self.add_item(self.select_type)
         self.add_item(self.select_count)
@@ -71,6 +78,7 @@ class ChooseLabelView(discord.ui.View):
         self.label.template = Template(self.select_type.values[0], self.lang)
         set_current_value_as_default(self.select_type, self.select_type.values[0])
         await self.get_custom_label_fields(interaction, self.label)
+        self.update_reload_button(self.label.template)
         await self.update_select_count_options(interaction)
         await self.update_view(interaction)
 
@@ -91,8 +99,7 @@ class ChooseLabelView(discord.ui.View):
         await change_displayed_status("help", self.lang, interaction=interaction, view=self)
 
     async def on_timeout(self):
-        self.label.reset()
-        await self.close()
+        self.label.clear()
 
     # Close the view and disable all items
     async def close(self, interaction=None):
@@ -113,6 +120,18 @@ class ChooseLabelView(discord.ui.View):
                 if m:
                     self._message = m
         self.stop()
+
+    def update_reload_button(self, template):
+        if template.settings is None:
+            value = None
+        else:
+            value = template.settings.get("reload_button")
+        if value:
+            if self.reload_button not in self.children:
+                self.add_item(self.reload_button)
+        else:
+            self.remove_item(self.reload_button)
+
 
     async def get_custom_label_fields(self, interaction, label):
         if label.template.fields is None:
