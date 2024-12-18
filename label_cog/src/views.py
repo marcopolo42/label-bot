@@ -2,7 +2,7 @@ import discord
 
 from label_cog.src.discord_utils import set_current_value_as_default, change_displayed_status
 
-from label_cog.src.template_class import Template
+from label_cog.src.template_class import Template, TemplateException
 
 from label_cog.src.db_utils import update_user_language, get_user_language
 
@@ -75,12 +75,18 @@ class ChooseLabelView(discord.ui.View):
 
     async def select_type_callback(self, interaction):
         self.label.reset()
-        self.label.template = Template(self.select_type.values[0], self.lang)
-        set_current_value_as_default(self.select_type, self.select_type.values[0])
-        await self.get_custom_label_fields(interaction, self.label)
-        self.update_reload_button(self.label.template)
-        await self.update_select_count_options(interaction)
-        await self.update_view(interaction)
+        try:
+            self.label.template = Template(self.select_type.values[0], self.lang)
+        except TemplateException as e:
+            await self.display_and_disable(interaction, e)
+        except Exception as e:
+            raise e
+        else:
+            set_current_value_as_default(self.select_type, self.select_type.values[0])
+            await self.get_custom_label_fields(interaction, self.label)
+            self.update_reload_button(self.label.template)
+            await self.update_select_count_options(interaction)
+            await self.update_view(interaction)
 
     async def select_count_callback(self, interaction):
         self.label.count = int(self.select_count.values[0])
@@ -88,22 +94,23 @@ class ChooseLabelView(discord.ui.View):
         await interaction.response.defer()
 
     async def print_button_callback(self, interaction):
-        self.label.validated = True
         await self.close(interaction)
 
     async def cancel_button_callback(self, interaction):
-        self.label.reset()
+        self.label.clear_files()
         await self.close(interaction)
 
     async def help_button_callback(self, interaction):
         await change_displayed_status("help", self.lang, interaction=interaction, view=self)
 
     async def on_timeout(self):
-        self.label.clear()
+        self.label.clear_files()
+        self.label = None
 
-    # Close the view and disable all items
+    # disable all items and close the view
     async def close(self, interaction=None):
         self.disable_all_items()
+        #taken from pycord source code
         if interaction is not None:
             if interaction.response.is_done():
                 await interaction.edit_original_message(view=self)
@@ -126,7 +133,7 @@ class ChooseLabelView(discord.ui.View):
             value = None
         else:
             value = template.settings.get("reload_button")
-        if value:
+        if value is not None:
             if self.reload_button not in self.children:
                 self.add_item(self.reload_button)
         else:
@@ -167,6 +174,12 @@ class ChooseLabelView(discord.ui.View):
                         emoji=template.get("emoji")
                     ))
                     break
+        if len(options) == 0:
+            options.append(discord.SelectOption(
+                label="No templates available",
+                value="no_templates",
+                description="You don't have access to any templates",
+            ))
         return options
 
     async def update_select_count_options(self, interaction):
@@ -185,6 +198,10 @@ class ChooseLabelView(discord.ui.View):
             if self.label.data.get(field.get("key")) is None:
                 return False
         return True
+
+    async def display_and_disable(self, interaction, status):
+        self.disable_all_items()
+        await change_displayed_status(str(status), self.lang, interaction=interaction, view=self)
 
     async def update_view(self, interaction):
         self.select_count.disabled = True
@@ -230,7 +247,7 @@ class ChangeLanguageView(discord.ui.View):
         self.language_select.callback = self.language_select_callback
         self.add_item(self.language_select)
 
-    #todo set the current language as default
+    #todo set the current discord language as default
     async def language_select_callback(self, interaction):
         value = self.language_select.values[0]
         update_user_language(interaction.user, value, self.conn)

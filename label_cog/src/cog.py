@@ -67,19 +67,14 @@ class LabelCog(commands.Cog):
         view = ChooseLabelView(session, label)
         message = await ctx.respond(embed=get_embed("help", session.lang), view=view, ephemeral=True)
         await view.wait()
-
-        if label.validated is None:
-            await change_displayed_status("timeout", session.lang, original_message=message)
-            print("interaction timed out...")
-
-        elif label.validated is False:
+        print (f"lable.image: {label.image}")
+        if label.image is None:
             await change_displayed_status("canceled", session.lang, original_message=message)
-            print("The operation was canceled...")
-
-        elif label.validated is True:
+            print("Interaction timed out or was cancelled")
+        else:
             await change_displayed_status("printing", session.lang, original_message=message)
             add_log(f"Label {label.template.key} {label.count} was printed", ctx.author, label, session.conn)
-            print(f"You have chosen to print the label {label.template.key} {label.count} times and validated: {label.validated}")
+            print(f"You have chosen to print the label {label.template.key} {label.count} times.")
             ql_brother_print_usb(label.image, label.count)
 
     @discord.slash_command(name="change_language", description="Change the language used for the label bot")

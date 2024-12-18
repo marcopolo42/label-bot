@@ -15,7 +15,6 @@ templates:
     emoji: "❄️"
     settings:  # settings are optional data used by the sticker
       expiration: 6  # The expiration time in days
-      reload_button: true  # enable the reload button for stickers that have a random element that users may want to refresh
     allowed_roles:  # The roles that can use this template. (case insensitive) to authorize all roles use "@everyone"
       - student
     daily_role_limits:  # The number of stickers each role can print per day (default is 25)
@@ -69,6 +68,51 @@ templates:
         en: "Get a random meme from Reddit"
         fr: "Obtenez un meme aléatoire de Reddit"
         de: "Holen Sie sich ein zufälliges Meme von Reddit"
+    emoji: "🖼️"
+    allowed_roles:
+      - bocal
+    settings:
+      reload_button: true # enable the reload button for stickers that have a random element that users may want to refresh
+
+  - key: "random_french_meme"
+    name:
+        en: "Random French Meme"
+        fr: "Meme français aléatoire"
+        de: "Zufälliges französisches Meme"
+    description:
+        en: "Get a random meme from the FrenchMemes subreddit"
+        fr: "Obtenez un meme aléatoire du subreddit FrenchMemes"
+        de: "Holen Sie sich ein zufälliges Meme aus dem FrenchMemes-Subreddit"
+    emoji: "🖼️"
+    allowed_roles:
+      - bocal
+    settings:
+        reload_button: true
+
+  - key: "random_smash_reddit"
+    name:
+        en: "Random Smash Reddit Image"
+        fr: "Image Reddit Smash aléatoire"
+        de: "Zufälliges Smash Reddit-Bild"
+    description:
+        en: "Get a random image from the SmashBrosUltimate subreddit"
+        fr: "Obtenez une image aléatoire du subreddit SmashBrosUltimate"
+        de: "Holen Sie sich ein zufälliges Bild aus dem SmashBrosUltimate-Subreddit"
+    emoji: "🖼️"
+    allowed_roles:
+      - bocal
+    settings:
+      reload_button: true
+
+  - key: "random_dev_meme"
+    name:
+      en: "Random Dev Meme"
+      fr: "Meme de Dev aléatoire"
+      de: "Zufälliges Dev-Meme"
+    description:
+      en: "Get a random meme from the ProgrammerHumor subreddit"
+      fr: "Obtenez un meme aléatoire du subreddit ProgrammerHumor"
+      de: "Holen Sie sich ein zufälliges Meme aus dem ProgrammerHumor-Subreddit"
     emoji: "🖼️"
     allowed_roles:
       - bocal
@@ -184,8 +228,7 @@ templates:
       de: "Das Etikett für Tests"
     emoji: "🧪"
     allowed_roles:
-      Student: 1
-      Bocal: 1
+      - bocal
     fields:  # Additional fields (maximum 5) that the template may need to ask the user for (can only be of type text)
       - key: "name"
         max_length: 20
@@ -295,16 +338,15 @@ display_messages:
         de: "Sie haben zu lange gebraucht, um das Etikett zu erstellen."
 
   canceled:
-    color: 0xFF0000
+    color: 0x808080
     title:
         en: "Canceled"
         fr: "Annulé"
         de: "Abgebrochen"
     description:
-        en: "The creation of the label has been canceled."
-        fr: "La création de l'étiquette a été annulée."
-        de: "Die Erstellung des Etiketts wurde abgebrochen."
-
+        en: "The creation of the label has been canceled. This message will disappear shortly."
+        fr: "La création de l'étiquette a été annulée. Ce message disparaîtra sous peu."
+        de: "Die Erstellung des Etiketts wurde abgebrochen. Diese Nachricht wird in Kürze verschwinden."
   printing:
     color: 0x53B7BA
     title:
@@ -348,6 +390,39 @@ display_messages:
         en: "An error occurred while generating the label."
         fr: "Une erreur est survenue lors de la génération de l'étiquette."
         de: "Beim Generieren des Etiketts ist ein Fehler aufgetreten."
+
+  no_templates:
+    color: 0xFF0000
+    title:
+        en: "No templates are available to you !"
+        fr: "Aucun modèle n'est disponible pour vous !"
+        de: "Keine Vorlagen sind für Sie verfügbar !"
+    description:
+        en: "You don't have access to any templates probably because you are not part of any roles that can print stickers."
+        fr: "Vous n'avez pas accès à de modèles probablement parce que vous ne faites pas partie de rôles qui peuvent imprimer des stickers."
+        de: "Sie haben wahrscheinlich keinen Zugriff auf Vorlagen, weil Sie nicht Teil von Rollen sind, die Aufkleber drucken können."
+
+  missing_template_config:
+    color: 0xFF0000
+    title:
+        en: "Missing template configuration !"
+        fr: "Configuration du template manquante !"
+        de: "Fehlende Vorlagenkonfiguration !"
+    description:
+        en: "The configuration for the template you are trying to use is missing."
+        fr: "La configuration du template que vous essayez d'utiliser est manquante."
+        de: "Die Konfiguration für die Vorlage, die Sie verwenden möchten, fehlt."
+
+  missing_template_folder:
+    color: 0xFF0000
+    title:
+        en: "Missing template folder !"
+        fr: "Dossier du template manquant !"
+        de: "Fehlender Vorlagenordner !"
+    description:
+        en: "The folder for the template you are trying to use is missing."
+        fr: "Le dossier du template que vous essayez d'utiliser est manquant."
+        de: "Der Ordner für die Vorlage, die Sie verwenden möchten, fehlt."
 
   language_changed:
     color: 0x00FF00
