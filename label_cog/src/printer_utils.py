@@ -17,7 +17,7 @@ def ql_brother_print_usb(image, count):
         return
     im = Image.open(image)
     qlr = BrotherQLRaster(model)
-    qlr.exception_on_warning = True #todo remove for production
+    qlr.exception_on_warning = True #todo check what it does
     if im.size[0] > 1465 and im.size[1] > 1465: # todo enable proper error handling and test this
         print("Image is too big to be printed in a 62mm label")
         raise ValueError("Image is too big to be printed in a 62mm label")
@@ -35,5 +35,6 @@ def ql_brother_print_usb(image, count):
         cut=True
 
     )
-    send(instructions=instructions, printer_identifier=printer, backend_identifier=backend, blocking=True)
+    status = send(instructions=instructions, printer_identifier=printer, backend_identifier=backend, blocking=True) #blocking means that the function will wait for the printer to finish printing before returning
+    return status
 

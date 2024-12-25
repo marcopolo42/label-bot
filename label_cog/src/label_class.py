@@ -1,26 +1,15 @@
 import os
 from datetime import datetime
-from label_cog.src.utils import get_time, get_discord_url
+from label_cog.src.utils import get_discord_url
 from blabel import LabelWriter
 from label_cog.src.image_utils import pdf_to_image, convert_to_grayscale, add_margin, invert_image, mirror_image
 import random
 
 
 class Label:
-    def __init__(self, author):
+    def __init__(self):
         self.template = None
         self.count = 1
-        # default information that is always available. More info can be added based on the template config
-        self.data = dict(
-            user_display_name=author.display_name,
-            user_name=author.name,
-            user_at=f"@{author.name}",
-            user_picture=author.avatar,
-            user_url=get_discord_url(str(author.id)),
-            user_id=author.id,
-            creation_date=get_time(),
-            random_number=random.randint(0, 100)
-        )
         #return files
         self.pdf = None
         self.image = None
@@ -32,12 +21,8 @@ class Label:
         if self.template is None or self.count < 1:
             return
 
-        # adds the template data to the label data
-        if self.template.data:
-            self.data.update(self.template.data)
-
         # the file name is created using the author's ID and the current timestamp
-        file_name = f"{self.data.get('user_name')}_{datetime.now().strftime('%d-%m-%Y_%H-%M-%S')}"
+        file_name = f"{self.template.data.get('user_name')}_{datetime.now().strftime('%d-%m-%Y_%H-%M-%S')}"
         base_path = os.path.join(os.getcwd(), 'label_cog', 'cache', file_name)
         self.pdf = base_path + ".pdf"
         self.image = base_path + ".png"
@@ -46,7 +31,7 @@ class Label:
         label_writer = LabelWriter(item_template_path=f"{self.template.folder_path}/template.html",
                                    default_stylesheets=(f"{self.template.folder_path}/style.css",))
         #pdf creation
-        records = [self.data]
+        records = [self.template.data]
         label_writer.write_labels(records, target=self.pdf)
         #image creation
         pdf_to_image(self.pdf, self.image)

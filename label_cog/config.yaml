@@ -3,39 +3,51 @@ settings:
 
 
 templates:
-  - key: "student_food"  # This is the key that will be used to identify the template (use the same for the template folder)
+  - key: "fridge"  # This is the key that will be used to identify the template (use the same for the template folder)
     name:
-      en: "Student Food Label"  # The name of the template in different languages
-      fr: "Étiquette de nourriture étudiante"
-      de: "Studentenfutteretikett"
+      en: "Fridge Label" # The name of the template
+      fr: "Étiquette frigo"
+      de: "Kühlschranketikett"
     description:
-      en: "The label to use for student_food in the fridge and freezer"  # The description of the template in different languages
-      fr: "L'étiquette à utiliser pour la nourriture étudiante dans le réfrigérateur et le congélateur"
-      de: "Das Etikett für Studentenfutter im Kühlschrank und Gefrierschrank"
-    emoji: "❄️"
-    settings:  # settings are optional data used by the sticker
-      expiration: 6  # The expiration time in days
+      en: "use for fridge items"
+      fr: "utilisé pour les articles au frigo"
+      de: "für Kühlschrankartikel verwenden"
+    emoji: "<:fridge:1320873241773998090>" # The emoji that will be used to represent the template here it is a custom emoji
+    settings:  # settings are optional data used by the sticker template or backend
+      expiration_alumni: 6  # The expiration time in days
+      expiration_student: 6
+      expiration_piscine: 2
+      reload_button: true
     allowed_roles:  # The roles that can use this template. (case insensitive) to authorize all roles use "@everyone"
       - student
+      - piscine
+      - bocal
+      - alumni
     daily_role_limits:  # The number of stickers each role can print per day (default is 25)
       student: 5
 
-  - key: "swimmer_food"
+  - key: "freezer"
     name:
-      en: "Swimmer Food Label"
-      fr: "Étiquette de nourriture de nageur"
-      de: "Schwimmerfutteretikett"
+        en: "Freezer label"
+        fr: "Étiquette congélateur"
+        de: "Gefrierschranketikett"
     description:
-      en: "The label to use for swimmer_food in the fridge and freezer"
-      fr: "L'étiquette à utiliser pour la nourriture de nageur dans le réfrigérateur et le congélateur"
-      de: "Das Etikett für Schwimmerfutter im Kühlschrank und Gefrierschrank"
-    emoji: "❄️"
+        en: "use for freezer items"
+        fr: "utilisé pour les articles au congélateur"
+        de: "für Gefrierschrankartikel verwenden"
+    emoji: "<:freezer:1320873294190088232>"
     settings:
-      expiration: 2
+      expiration_alumni: 30
+      expiration_student: 30
+      expiration_piscine: 30
+      reload_button: true
     allowed_roles:
+      - student
       - piscine
+      - bocal
+      - alumni
     daily_role_limits:
-      piscine: 5
+      student: 5
 
   - key: "logo_42"
     name:
@@ -46,7 +58,7 @@ templates:
       en: "The label to use for 42 logo stickers"
       fr: "L'étiquette à utiliser pour les stickers du logo 42"
       de: "Das Etikett für 42-Logo-Sticker"
-    emoji: "4️⃣"
+    emoji: "<:42:1320879119944253591>"
     allowed_roles:
       - student
       - piscine
@@ -347,6 +359,7 @@ display_messages:
         en: "The creation of the label has been canceled. This message will disappear shortly."
         fr: "La création de l'étiquette a été annulée. Ce message disparaîtra sous peu."
         de: "Die Erstellung des Etiketts wurde abgebrochen. Diese Nachricht wird in Kürze verschwinden."
+
   printing:
     color: 0x53B7BA
     title:
@@ -358,7 +371,7 @@ display_messages:
         fr: "Veuillez patienter ..."
         de: "Bitte warten ..."
 
-  success:
+  printed:
     color: 0x00FF00
     title:
         en: "Label printed !"
@@ -369,7 +382,7 @@ display_messages:
         fr: "L'étiquette a été imprimée."
         de: "Das Etikett wurde gedruckt."
 
-  failed:
+  error_print:
     color: 0xFF0000
     title:
         en: "Failed to print the label !"
@@ -392,11 +405,11 @@ display_messages:
         de: "Beim Generieren des Etiketts ist ein Fehler aufgetreten."
 
   no_templates:
-    color: 0xFF0000
+    color: 0x808080
     title:
-        en: "No templates are available to you !"
-        fr: "Aucun modèle n'est disponible pour vous !"
-        de: "Keine Vorlagen sind für Sie verfügbar !"
+        en: "No templates are available to you."
+        fr: "Aucun modèle n'est disponible pour vous."
+        de: "Keine Vorlagen sind für Sie verfügbar."
     description:
         en: "You don't have access to any templates probably because you are not part of any roles that can print stickers."
         fr: "Vous n'avez pas accès à de modèles probablement parce que vous ne faites pas partie de rôles qui peuvent imprimer des stickers."

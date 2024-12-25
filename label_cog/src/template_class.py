@@ -8,13 +8,15 @@ import importlib.util
 
 import os
 
+from label_cog.src.utils import get_discord_url
+
 
 class TemplateException(Exception):
     pass
 
 
 class Template:
-    def __init__(self, type, lang):
+    def __init__(self, type, lang, author):
         raw = self.load_template_config(type)
         self.key = raw.get("key")
 
@@ -35,9 +37,11 @@ class Template:
         self.style_path = os.path.join(self.folder_path, "style.css")
         self.backend_path = os.path.join(self.folder_path, "backend.py")
         self.data = {}
-        self.load_data()
+        self.load_data(author)
 
     def load_template_config(self, type):
+        if type == "no_templates":
+            raise TemplateException("no_templates")
         templates = Config().get("templates")
         template = None
         for t in templates:
@@ -48,23 +52,27 @@ class Template:
             raise TemplateException("missing_template_config")
         return template
 
-    def load_data(self):
+    def load_data(self, author):
+        self.add_author_data(author)
         self.add_settings_data()
         self.add_processed_backend_data()
 
     def get_daily_limit(self, user_roles):
         if self.daily_role_limits is None:
             return 25
+        limit_found_flag = False
         limit = 0
         u_roles = [role.name.lower() for role in user_roles]
         a_roles = [role.lower() for role in self.allowed_roles]
         for role in u_roles:
             if role in a_roles:
-                tmp = self.daily_role_limits.get(role)
-                if tmp is None:
-                    tmp = 25
-                if limit < tmp:
+                tmp = self.daily_role_limits.get(role, 0)
+                if tmp > limit:
                     limit = tmp
+                    limit_found_flag = True
+
+        if not limit_found_flag:
+            limit = 25
         return limit
 
     def prints_available_today(self, author, conn):
@@ -73,6 +81,19 @@ class Template:
         if available < 0:
             return 0
         return available
+
+    def add_author_data(self, author):
+        # default information that is always available. More info can be added based on the template configuration file
+        new_data = dict(
+            user_id=author.id,
+            user_at=f"@{author.name}",
+            user_name=author.name,
+            user_display_name=author.display_name,
+            user_picture=author.avatar,
+            user_url=get_discord_url(str(author.id)),
+            user_roles=[role.name.lower() for role in author.roles],
+        )
+        self.data.update(new_data)
 
     def add_settings_data(self):
         if self.settings:
@@ -89,7 +110,9 @@ class Template:
         spec.loader.exec_module(backend_module)
         # backend.py should define a function `process_data` that returns a dictionary and has a parameter `data` to use the settings data
         if hasattr(backend_module, 'process_data'):
-            self.data.update(backend_module.process_data(self.data))
+            processed_data = backend_module.process_data(self.data)
+            if processed_data is not None:
+                self.data.update(processed_data)
             print(f"Data processed by backend for {self.key}: {self.data}")
         else:
             print(f"Backend for {self.key} is missing the process_data function")

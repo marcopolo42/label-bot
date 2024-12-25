@@ -7,8 +7,7 @@
 
 .label {
     display: grid;
-    grid-template-areas:
-        "picture text qr_code";
+    grid-template-areas:"picture text qr_code";
     grid-template-columns: 13mm 1fr 13mm; /* Fixed width for picture and QR code, flexible for text */
     align-items: center; /* Align items vertically */
     gap: 0.5mm; /* Space between items */
@@ -37,21 +36,18 @@
     grid-area: text;
     width: 35mm;
     font-family: Helvetica, sans-serif;
-    font-weight: bold;
     font-size: 13px;
     display: flex;
     flex-direction: column;
 }
 
 .name {
-    word-wrap: break-word;     /* Allows breaking long words */
-    overflow-wrap: break-word; /* Ensures wrapping works across browsers */
-    white-space: normal;       /* Makes text wrap to the next line */
-    hyphens: auto;             /* Adds hyphens when the word breaks */
+    word-wrap: break-word;
+    white-space: normal;
 }
 
 .date
 {
     font-weight: bold;
-    color: #666;
+    color: #333;
 }

@@ -54,7 +54,7 @@ async def modify_message(key, lang, image=None, original_message=None, interacti
         await original_message.edit(embed=embed, files=[], attachments=[])
 
 
-async def change_displayed_status(key, lang, image=None, interaction=None, original_message=None, view=None):
+async def update_displayed_status(key, lang, image=None, interaction=None, original_message=None, view=None):
     display_messages = Config().get("display_messages")
     if display_messages is None:
         raise ValueError("Display messages are missing from the config file")

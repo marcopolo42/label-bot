@@ -6,7 +6,7 @@ import dotenv
 
 from label_cog.src.db_utils import create_tables, add_log, get_logs, get_user_language
 
-from label_cog.src.discord_utils import change_displayed_status, get_embed
+from label_cog.src.discord_utils import update_displayed_status, get_embed
 
 from label_cog.src.label_class import Label
 
@@ -45,7 +45,22 @@ class Session:
     def __init__(self, author):
         self.conn = sqlite3.connect('label_cog/database.sqlite')
         self.author = author
+        self.roles = Roles(author.roles)
         self.lang = get_user_language(author, self.conn)
+
+
+class Roles:
+    def __init__(self, author_roles):
+        self.names = [role.name for role in author_roles]
+        self.names_lower = [role_name.lower() for role_name in self.names]
+
+
+async def choose_and_print_label(ctx):
+    session = Session(ctx.author)
+    label = Label()
+    view = ChooseLabelView(session, label)
+    message = await ctx.respond(embed=get_embed("help", session.lang), view=view, ephemeral=True)
+    await view.wait()
 
 
 class LabelCog(commands.Cog):
@@ -61,21 +76,21 @@ class LabelCog(commands.Cog):
     async def slash_label(self, ctx):
         #update the config in case it has changed
         Config().update_from_file()
+        await choose_and_print_label(ctx)
 
-        session = Session(ctx.author)
-        label = Label(ctx.author)
-        view = ChooseLabelView(session, label)
-        message = await ctx.respond(embed=get_embed("help", session.lang), view=view, ephemeral=True)
-        await view.wait()
-        print (f"lable.image: {label.image}")
-        if label.image is None:
-            await change_displayed_status("canceled", session.lang, original_message=message)
-            print("Interaction timed out or was cancelled")
-        else:
-            await change_displayed_status("printing", session.lang, original_message=message)
-            add_log(f"Label {label.template.key} {label.count} was printed", ctx.author, label, session.conn)
-            print(f"You have chosen to print the label {label.template.key} {label.count} times.")
-            ql_brother_print_usb(label.image, label.count)
+
+    @discord.slash_command(name="admin_test_as_role",description="enable you to test the bot as a specific role",)
+    async def slash_admin_test_as_role(self, ctx, role: discord.Role):
+        #check if the user has the bocal role
+        if ("bocal" not in [role.name.lower() for role in ctx.author.roles]
+                and ctx.author.id != 508712588381782046     # marco #todo get from config
+                and ctx.author.id != 378496894441095168):   # jerome
+            await ctx.respond("You need to be from the bocal to use this command", ephemeral=True)
+            return
+        #ctx.author.roles = [role]
+        roles = Roles(ctx.author.roles)
+
+        await choose_and_print_label(ctx)
 
     @discord.slash_command(name="change_language", description="Change the language used for the label bot")
     async def slash_change_language(self, ctx):

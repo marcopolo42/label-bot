@@ -13,7 +13,8 @@ def create_tables():
                         user_display_name TEXT,
                         user_avatar_url TEXT,
                         template_key TEXT, 
-                        label_count INTEGER, 
+                        label_count INTEGER,
+                        coins INTEGER DEFAULT 0,
                         creation_date TEXT DEFAULT CURRENT_TIMESTAMP
                       )''')
     #for future language and TIG feature support
@@ -25,8 +26,8 @@ def create_tables():
                             avatar_url TEXT,
                             discord_url TEXT,
                             language TEXT,
+                            coins INTEGER DEFAULT 0,
                             creation_date TEXT DEFAULT CURRENT_TIMESTAMP
-
                         )''')
     conn.commit()
     conn.close()
@@ -98,6 +99,52 @@ def get_user_language(author, conn):
     cursor.execute("SELECT language FROM users WHERE discord_id = ?", (author.id,))
     language = cursor.fetchone()
     if language is None:
-        print("Default language, because user not found in database")
+        print("Default language, because user not found in database, now adding user")
+        add_user(author, "en", conn)
         return "en"
     return language[0]
+
+
+def get_user_coins(author, conn):
+    cursor = conn.cursor()
+    cursor.execute("SELECT coins FROM users WHERE discord_id = ?", (author.id,))
+    coins = cursor.fetchone() # returns a tuple even if there is only one column
+    if coins is None:
+        print("No coins, because user not found in database")
+        return 0
+    return coins[0]
+
+
+def update_user_coins(author, coins, conn):
+    cursor = conn.cursor()
+    cursor.execute("UPDATE users SET coins = ? WHERE discord_id = ?", (coins, author.id))
+    conn.commit()
+
+
+def add_user_coins(author, coins, conn):
+    cursor = conn.cursor()
+    cursor.execute("SELECT coins FROM users WHERE discord_id = ?", (author.id,))
+    user_coins = cursor.fetchone()
+    if user_coins is None:
+        add_user(author, "en", conn)
+        user_coins = 0
+    else:
+        user_coins = user_coins[0]
+    cursor.execute("UPDATE users SET coins = ? WHERE discord_id = ?", (user_coins + coins, author.id))
+    conn.commit()
+
+
+def spend_user_coins(author, coins, conn):
+    cursor = conn.cursor()
+    cursor.execute("SELECT coins FROM users WHERE discord_id = ?", (author.id,))
+    user_coins = cursor.fetchone()
+    if user_coins is None:
+        add_user(author, "en", conn)
+        user_coins = 0
+    else:
+        user_coins = user_coins[0]
+    if user_coins < coins:
+        return False
+    cursor.execute("UPDATE users SET coins = ? WHERE discord_id = ?", (user_coins - coins, author.id))
+    conn.commit()
+    return True
