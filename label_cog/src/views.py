@@ -17,13 +17,13 @@ from label_cog.src.utils import get_translation, get_lang
 
 class ChooseLabelView(discord.ui.View):
     def __init__(self, session, label):
-        super().__init__(timeout=300) # 5 minutes
+        super().__init__(timeout=900)  # 15 minutes
         self.conn = session.conn
         self.author = session.author
         self.roles = session.roles
         self.lang = session.lang
         self.label = label
-        # we cannot display more than 25 options in a select so we need to split the options in multiple pages
+        # we cannot display more than 25 options in a select, so we need to split the options in multiple pages
         self.options = self.load_templates_options()
         self.option_pages_count = self.count_of_option_pages()
 
@@ -119,7 +119,7 @@ class ChooseLabelView(discord.ui.View):
             await self.update_select_count_options(interaction)
             await self.update_view(interaction)
 
-    async def previous_button_callback(self, interaction): #todo
+    async def previous_button_callback(self, interaction): # todo
         await interaction.response.defer()
 
     async def next_button_callback(self, interaction):
