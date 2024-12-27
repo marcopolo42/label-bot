@@ -51,8 +51,17 @@ class Session:
 
 class Roles:
     def __init__(self, author_roles):
-        self.names = [role.name for role in author_roles]
-        self.names_lower = [role_name.lower() for role_name in self.names]
+        self.names_lower = [role.name.lower() for role in author_roles]
+        self.add_bocal_if_needed()
+
+    def is_bocal_role(self, user_roles):
+        bocal_roles = [role.lower() for role in Config().get("bocal_roles")]
+        return any(role in user_roles for role in bocal_roles)
+
+    def add_bocal_if_needed(self):
+        if self.is_bocal_role(self.names_lower):
+            print("User has a bocal role")
+            self.names_lower.append("bocal")
 
 
 async def choose_and_print_label(ctx):

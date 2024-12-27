@@ -7,4 +7,5 @@ img{
     width: 61mm;
     height: 9mm;
     object-fit: contain;
+    image-rendering: high-quality;
 }

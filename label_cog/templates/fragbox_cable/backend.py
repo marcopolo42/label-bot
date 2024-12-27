@@ -8,7 +8,9 @@ print(f"Current working directory: {os.getcwd()}")
 
 
 # Convert an image to a Base64-encoded string with MIME prefix
-def image_to_base64(image_path):
+# searches the local template folder for the image
+def image_to_base64(image_name):
+    image_path = str(os.path.join(os.path.dirname(os.path.abspath(__file__)), image_name))
     try:
         # Guess the MIME type based on the file extension
         mime_type, _ = mimetypes.guess_type(image_path)
@@ -28,8 +30,7 @@ def image_to_base64(image_path):
 
 def process_data(data):
     image_name = "text_fragbox.png"
-    image_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), image_name)
     new_data = {
-        "image_base64": image_to_base64(image_path)
+        "image_base64": image_to_base64(image_name),
     }
     return new_data

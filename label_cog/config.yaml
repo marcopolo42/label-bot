@@ -49,6 +49,20 @@ templates:
     daily_role_limits:
       student: 5
 
+  - key: "bocal_small"
+    name:
+        en: "Small Bocal sticker"
+        fr: "Petit sticker Bocal"
+        de: "Kleiner Bocal-Aufkleber"
+    description:
+        en: "can be used to label food or small objects"
+        fr: "peut être utilisé pour étiqueter de la nourriture ou de petits objets"
+        de: "kann verwendet werden, um Lebensmittel oder kleine Objekte zu kennzeichnen"
+    settings:
+      reload_button: true
+    allowed_roles:
+      - bocal
+
   - key: "logo_42"
     name:
       en: "42 Logo Label"
@@ -115,6 +129,20 @@ templates:
       - bocal
     settings:
       reload_button: true
+
+  - key: "profile_picture"
+    name:
+      en: "Profile Picture"
+      fr: "Photo de profil"
+      de: "Profilbild"
+    description:
+      en: "print your profile picture"
+      fr: "imprimez votre photo de profil"
+      de: "drucken Sie Ihr Profilbild"
+    emoji: "📷"
+    allowed_roles:
+      - student
+      - bocal
 
   - key: "random_dev_meme"
     name:
@@ -339,9 +367,9 @@ display_messages:
         de: "Sie müssen alle Felder ausfüllen, um das Etikett zu erstellen."
 
   timeout:
-    color: 0xFF0000
+    color: 0x808080
     title:
-        en: "Time out"
+        en: "Timed out"
         fr: "Temps écoulé"
         de: "Zeit abgelaufen"
     description:

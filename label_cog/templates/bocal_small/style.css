@@ -7,7 +7,7 @@
 
 .label {
     display: grid;
-    grid-template-areas:"picture text qr_code";
+    grid-template-areas:"picture text picture2";
     grid-template-columns: 13mm 1fr 13mm; /* Fixed width for picture and QR code, flexible for text */
     align-items: center; /* Align items vertically */
     gap: 0.5mm; /* Space between items */
@@ -15,39 +15,54 @@
     width: 62mm;
 }
 
-.picture {
+.picture{
     grid-area: picture;
     height: 13mm;
     width: 13mm;
     object-fit: contain;
     image-rendering: high-quality;
-    border-radius: 50%;
 }
 
-.qr_code {
-    grid-area: qr_code;
+.picture2{
+    grid-area: picture2;
     height: 13mm;
     width: 13mm;
     object-fit: contain;
-    image-rendering: pixelated;
+    image-rendering: high-quality;
 }
 
 .text {
     grid-area: text;
     width: 35mm;
     font-family: Helvetica, sans-serif;
+    justify-content: center; /* Center horizontally */
     font-size: 13px;
     display: flex;
     flex-direction: column;
+    text-align: center; /* Center text within the element */
+
 }
 
 .name {
+    width: 35mm;
+    max-width: 35mm;
     word-wrap: break-word;
     white-space: normal;
 }
 
-.date
+.bocal
 {
+    width: 35mm;
+    max-width: 35mm;
+    font-size: 16px;
     font-weight: bold;
-    color: #333;
+    color: #000;
+}
+
+.footer
+{
+    width: 35mm;
+    max-width: 35mm;
+    font-size: 10px;
+    color: #666;
 }

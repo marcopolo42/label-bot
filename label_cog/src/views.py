@@ -17,7 +17,7 @@ from label_cog.src.utils import get_translation, get_lang
 
 class ChooseLabelView(discord.ui.View):
     def __init__(self, session, label):
-        super().__init__(timeout=900)  # 15 minutes
+        super().__init__(timeout=800)  # 13 minutes timeout
         self.conn = session.conn
         self.author = session.author
         self.roles = session.roles
@@ -168,8 +168,13 @@ class ChooseLabelView(discord.ui.View):
         await update_displayed_status("help", self.lang, interaction=interaction, view=self)
 
     async def on_timeout(self):
+        print("Timeout")
         self.label.clear_files()
-        self.label = None
+        self.disable_all_items()
+        await update_displayed_status("timeout", self.lang, original_message=self.parent, view=self)
+        self.stop()
+
+
 
     async def display_and_stop(self, interaction, status):
         self.disable_all_items()
@@ -201,16 +206,13 @@ class ChooseLabelView(discord.ui.View):
         await modal.wait()
         return None
 
-    def is_bocal_role(self, user_roles, bocal_roles):
-        return any(role in user_roles for role in bocal_roles)
-
-    def get_clean_roles_list(self):
-        user_roles = self.roles.names_lower
-        bocal_roles = [role.lower() for role in Config().get("bocal_roles")]
-        if self.is_bocal_role(user_roles, bocal_roles):
-            print("User has a bocal role")
-            user_roles.append("bocal")
-        return user_roles
+    def create_option(self, template):
+        return discord.SelectOption(
+            label=get_lang(template.get("name"), self.lang),
+            value=template.get("key"),
+            description=get_lang(template.get("description"), self.lang),
+            emoji=template.get("emoji")
+        )
 
     def load_templates_options(self):
         templates = Config().get("templates")
@@ -220,12 +222,8 @@ class ChooseLabelView(discord.ui.View):
             print(f"allowed_roles: {allowed_roles}")
             for a_role in allowed_roles:
                 if a_role.lower() in self.roles.names_lower:
-                    options.append(discord.SelectOption(
-                        label=get_lang(template.get("name"), self.lang),
-                        value=template.get("key"),
-                        description=get_lang(template.get("description"), self.lang),
-                        emoji=template.get("emoji")
-                    ))
+                    print(f"option added: {template.get('key')}")
+                    options.append(self.create_option(template))
                     break
         if len(options) == 0:
             options.append(discord.SelectOption(

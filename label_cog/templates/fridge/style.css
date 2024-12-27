@@ -20,7 +20,7 @@
     height: 13mm;
     width: 13mm;
     object-fit: contain;
-    image-rendering: pixelated;
+    image-rendering: high-quality;
     border-radius: 50%;
 }
 
