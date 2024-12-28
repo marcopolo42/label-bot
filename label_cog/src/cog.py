@@ -38,7 +38,7 @@ def cog_setup():
     start_cleanup(
         [os.path.join(current_dir, "cache")],
         1,
-        24)
+        6)
 
 
 class Session:
@@ -61,11 +61,26 @@ class Roles:
     def add_bocal_if_needed(self):
         if self.is_bocal_role(self.names_lower):
             print("User has a bocal role")
-            self.names_lower.append("bocal")
+            self.names_lower.append(Config().get("bocal_role_name").lower())
+
+    def set_as_only_role(self, role):
+        self.names_lower = [role.lower()]
 
 
-async def choose_and_print_label(ctx):
-    session = Session(ctx.author)
+def is_admin(ctx):
+    if Config().get("bocal_role_name") in [role.name.lower() for role in ctx.author.roles]:
+        return True
+    unlimited_users = Config().get("unlimited_users")
+    if unlimited_users is not None:
+        print(f"unlimited_users: {unlimited_users}")
+        for user in unlimited_users:
+            print(f"user: {user}")
+            if user.get("id") == ctx.author.id:
+                return True
+    return False
+
+
+async def choose_and_print_label(ctx, session):
     label = Label()
     view = ChooseLabelView(session, label)
     message = await ctx.respond(embed=get_embed("help", session.lang), view=view, ephemeral=True)
@@ -85,21 +100,18 @@ class LabelCog(commands.Cog):
     async def slash_label(self, ctx):
         #update the config in case it has changed
         Config().update_from_file()
-        await choose_and_print_label(ctx)
+        session = Session(ctx.author)
+        await choose_and_print_label(ctx, session)
 
-
-    @discord.slash_command(name="admin_test_as_role",description="enable you to test the bot as a specific role",)
-    async def slash_admin_test_as_role(self, ctx, role: discord.Role):
-        #check if the user has the bocal role
-        if ("bocal" not in [role.name.lower() for role in ctx.author.roles]
-                and ctx.author.id != 508712588381782046     # marco #todo get from config
-                and ctx.author.id != 378496894441095168):   # jerome
+    @discord.slash_command(name="admin_test_role", description="enable you to test the bot as a specific role",)
+    async def slash_admin_test_role(self, ctx, role: discord.Role):
+        Config().update_from_file()
+        if is_admin(ctx):
+            session = Session(ctx.author)
+            session.roles.set_as_only_role(role.name)
+            await choose_and_print_label(ctx, session)
+        else:
             await ctx.respond("You need to be from the bocal to use this command", ephemeral=True)
-            return
-        #ctx.author.roles = [role]
-        roles = Roles(ctx.author.roles)
-
-        await choose_and_print_label(ctx)
 
     @discord.slash_command(name="change_language", description="Change the language used for the label bot")
     async def slash_change_language(self, ctx):

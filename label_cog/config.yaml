@@ -489,6 +489,10 @@ display_messages:
 
 
 
+bocal_role_name: "bocal" # The name of your bocal role (meant to be changed in other campuses)
+
+
+
 #roles that can print the same stickers as the bocal role
 bocal_roles:
   - bocal
@@ -500,25 +504,15 @@ bocal_roles:
 
 
 
-unlimited_users: # List of users that can print unlimited stickers
-  - id: 0000
-    name: "Marco Belarbi"
+admin_users: # List of users that can print unlimited stickers and have access to all the templates
+  - id: 508712588381782046
+    name: "Marco"
     reason: "creator of the project"
-    agreement: "I agree to use the printer responsibly and to purchase a refill when using it frequently."
-  - id: 0000
-    name: "Jerome Jaquemet"
+    agreement: "I agree to use the printer responsibly and to purchase refills when using it for my personal use."
+  - id: 378496894441095168
+    name: "Jerome"
     reason: "contributor in the development of the project"
-    agreement: "I agree to use the printer responsibly and to purchase a refill when using it frequently."
-
-
-
-unlimited_roles: # List of roles that can print unlimited stickers
-  - name: "Bocal"
-    reason: "Bocal members"
-  - name: "Fragbox"
-    reason: "Fragbox members"
-  - name: "BDE"
-    reason: "BDE members"
+    agreement: "I agree to use the printer responsibly and to purchase a refills when using it for my personal use."
 
 
 
@@ -532,6 +526,8 @@ languages: # List of languages supported by the bot
   - key: "de"
     name: "Deutsch"
     emoji: "🇩🇪"
+
+
 
 translations:
   select_type_placeholder:

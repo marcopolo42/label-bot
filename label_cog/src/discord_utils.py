@@ -51,7 +51,10 @@ async def modify_message(key, lang, image=None, original_message=None, interacti
                 print(f"respond without image. text: {embed.title}")
                 await interaction.response.edit_message(embed=embed, files=[], attachments=[], view=view)
     if original_message is not None:
-        await original_message.edit(embed=embed, files=[], attachments=[])
+        if view is None:
+            await original_message.edit(embed=embed, files=[], attachments=[])
+        else:
+            await original_message.edit(embed=embed, files=[], attachments=[], view=view)
 
 
 async def update_displayed_status(key, lang, image=None, interaction=None, original_message=None, view=None):
