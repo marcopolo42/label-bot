@@ -3,6 +3,7 @@ from discord.ext import commands
 import sqlite3
 import os
 import dotenv
+import subprocess
 
 from label_cog.src.db_utils import create_tables, add_log, get_logs, get_user_language
 
@@ -17,6 +18,8 @@ from label_cog.src.config import Config
 from label_cog.src.printer_utils import ql_brother_print_usb
 
 from label_cog.src.cleanup_thread import start_cleanup
+
+from label_cog.src.save_user_upload import save_file_uploaded
 
 dotenv.load_dotenv()
 
@@ -96,15 +99,29 @@ class LabelCog(commands.Cog):
     async def on_ready(self):
         print(f"{self.bot.user} is ready and online!")
 
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.author == self.bot.user:
+            return
+        await save_file_uploaded(message, "label_cog/cache")
+
     @discord.slash_command(name="label", description="Print a label")
-    async def slash_label(self, ctx):
+    async def label(self, ctx):
         #update the config in case it has changed
         Config().update_from_file()
         session = Session(ctx.author)
         await choose_and_print_label(ctx, session)
 
-    @discord.slash_command(name="admin_test_role", description="enable you to test the bot as a specific role",)
-    async def slash_admin_test_role(self, ctx, role: discord.Role):
+    @discord.slash_command(name="change_language", description="Change the language used for the label bot")
+    async def change_language(self, ctx):
+        session = Session(ctx.author)
+        await ctx.respond(view=ChangeLanguageView(session), ephemeral=True)
+
+    #ADMIN COMMANDS
+    admin = discord.SlashCommandGroup("admin", "admin only commands")
+
+    @admin.command(name="test_role", description="enable you to test the bot as a specific role", )
+    async def test_role(self, ctx, role: discord.Role):
         Config().update_from_file()
         if is_admin(ctx):
             session = Session(ctx.author)
@@ -113,13 +130,8 @@ class LabelCog(commands.Cog):
         else:
             await ctx.respond("You need to be from the bocal to use this command", ephemeral=True)
 
-    @discord.slash_command(name="change_language", description="Change the language used for the label bot")
-    async def slash_change_language(self, ctx):
-        session = Session(ctx.author)
-        await ctx.respond(view=ChangeLanguageView(session), ephemeral=True)
-
-    @discord.slash_command(name="logs", description="Display logs")
-    async def slash_logs(self, ctx):
+    @admin.command(name="logs", description="Display logs")
+    async def logs(self, ctx):
         conn = sqlite3.connect('label_cog/database.sqlite')
         print("Displaying logs...")
         logs = get_logs(conn)
@@ -128,6 +140,19 @@ class LabelCog(commands.Cog):
             await ctx.respond(logs)
         else:
             await ctx.respond("No logs found")
+
+    @admin.command(name="update", description="Update the bot")
+    async def update(self, ctx):
+        # send content of scripts/update.sh
+        with open("scripts/update.sh") as file:
+            update_script = file.read()
+        await ctx.respond("Updating the bot using github... This may take a few seconds.\nHere is the script for the update:\n" + update_script)
+        try:
+            # Run the update script in a subprocess
+            subprocess.Popen(["scripts/update.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            await ctx.send("Update initiated. The bot will restart shortly.")
+        except Exception as e:
+            await ctx.send(f"Failed to initiate update: {e}")
 
 
 def setup(bot):

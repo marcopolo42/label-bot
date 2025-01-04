@@ -115,6 +115,7 @@ class ChooseLabelView(discord.ui.View):
         else:
             set_current_value_as_default(self.select_type, self.select_type.values[0])
             await self.ask_for_custom_label_fields(interaction, self.label)
+            self.label.template.process_backend_data() # process the data from the backend after getting the custom fields
             self.update_reload_button(self.label.template)
             await self.update_select_count_options(interaction)
             await self.update_view(interaction)
@@ -173,8 +174,6 @@ class ChooseLabelView(discord.ui.View):
         self.disable_all_items()
         await update_displayed_status("timeout", self.lang, original_message=self.parent, view=self)
         self.stop()
-
-
 
     async def display_and_stop(self, interaction, status):
         self.disable_all_items()
@@ -252,7 +251,7 @@ class ChooseLabelView(discord.ui.View):
         if self.label.template is None or self.label.template.fields is None:
             return True
         for field in self.label.template.fields:
-            if self.label.data.get(field.get("key")) is None:
+            if self.label.template.data.get(field.get("key")) is None:
                 return False
         return True
 

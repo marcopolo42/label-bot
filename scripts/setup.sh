@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # setup of the label-bot working environment
 cd /home/admin/label-bot || exit
 

@@ -142,7 +142,19 @@ templates:
     emoji: "📷"
     allowed_roles:
       - student
-      - bocal
+
+  - key: "coalition_flag"
+    name:
+        en: "Coalition Flag"
+        fr: "Drapeau de la Coalition"
+        de: "Coalition-Flagge"
+    description:
+        en: "The flag of the Coalition"
+        fr: "Le drapeau de la Coalition"
+        de: "Die Flagge der Koalition"
+    emoji: "⚔️"
+    allowed_roles:
+      - student
 
   - key: "random_dev_meme"
     name:
@@ -196,16 +208,40 @@ templates:
     allowed_roles:
       - bocal
     fields:
-      - key: "image"
+      - key: "image_url"
         max_length: 200
         name:
             en: "Image URL"
             fr: "URL de l'image"
             de: "Bild-URL"
         placeholder:
-            en: "Use this site to host your image: img.doerig.dev"
-            fr: "Utilisez ce site pour héberger votre image : img.doerig.dev"
-            de: "Verwenden Sie diese Website, um Ihr Bild zu hosten: img.doerig.dev"
+          en: "Use img.doerig.dev to host your image: "
+          fr: "Utilisez img.doerig.dev pour héberger votre image."
+          de: "Verwenden Sie img.doerig.dev, um Ihr Bild zu hosten."
+
+  - key: "custom_big_image"
+    name:
+        en: "Custom Big Image"
+        fr: "Grande image personnalisée"
+        de: "Benutzerdefiniertes großes Bild"
+    description:
+        en: "Use an URL to provide your own image"
+        fr: "Utilisez une URL pour fournir votre propre image"
+        de: "Verwenden Sie eine URL, um Ihr eigenes Bild bereitzustellen"
+    emoji: "🖼️"
+    allowed_roles:
+      - bocal
+    fields:
+      - key: "image_url"
+        max_length: 200
+        name:
+          en: "Image URL"
+          fr: "URL de l'image"
+          de: "Bild-URL"
+        placeholder:
+          en: "Use img.doerig.dev to host your image: "
+          fr: "Utilisez img.doerig.dev pour héberger votre image."
+          de: "Verwenden Sie img.doerig.dev, um Ihr Bild zu hosten."
 
   - key: "custom_qr_code"
     name:

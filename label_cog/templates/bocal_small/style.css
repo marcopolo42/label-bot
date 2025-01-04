@@ -34,35 +34,27 @@
 .text {
     grid-area: text;
     width: 35mm;
-    font-family: Helvetica, sans-serif;
+    font-family: verdana, sans-serif;
+    font-size: 11px;
     justify-content: center; /* Center horizontally */
-    font-size: 13px;
     display: flex;
     flex-direction: column;
     text-align: center; /* Center text within the element */
 
 }
 
-.name {
-    width: 35mm;
-    max-width: 35mm;
-    word-wrap: break-word;
-    white-space: normal;
-}
-
 .bocal
 {
     width: 35mm;
     max-width: 35mm;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
     color: #000;
 }
 
-.footer
-{
+.footer {
     width: 35mm;
     max-width: 35mm;
-    font-size: 10px;
-    color: #666;
+    word-wrap: break-word;
+    white-space: normal;
 }

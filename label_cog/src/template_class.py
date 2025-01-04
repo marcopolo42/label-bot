@@ -55,7 +55,7 @@ class Template:
     def load_data(self, author):
         self.add_author_data(author)
         self.add_settings_data()
-        self.add_processed_backend_data()
+        # backend data is processed when making the label
 
     def get_daily_limit(self, user_roles):
         if self.daily_role_limits is None:
@@ -90,7 +90,7 @@ class Template:
             user_name=author.name,
             user_display_name=author.display_name,
             user_picture=author.avatar,
-            user_url=get_discord_url(str(author.id)),
+            user_url=get_discord_url(str(author.id)), # todo move to backend of label
             user_roles=[role.name.lower() for role in author.roles],
         )
         self.data.update(new_data)
@@ -100,7 +100,7 @@ class Template:
             for key, value in self.settings.items():
                 self.data.update({key: value})
 
-    def add_processed_backend_data(self):
+    def process_backend_data(self):
         if not os.path.exists(self.backend_path):
             return
         # Load the module dynamically
@@ -113,6 +113,6 @@ class Template:
             processed_data = backend_module.process_data(self.data)
             if processed_data is not None:
                 self.data.update(processed_data)
-            print(f"Data processed by backend for {self.key}: {self.data}")
+            #print(f"Data processed by backend for {self.key}: {self.data}")
         else:
             print(f"Backend for {self.key} is missing the process_data function")

@@ -17,7 +17,7 @@ class CustomLabelModal(discord.ui.Modal):
             else:
                 style = discord.InputTextStyle.short
             # check if the field has already been filled before and add the old value back
-            previous_value = label.data.get(f.get("key"))
+            previous_value = label.template.data.get(f.get("key"))
             if previous_value is not None:
                 self.add_item(discord.ui.InputText(
                     label=get_lang(f.get("name"), lang),
@@ -34,7 +34,7 @@ class CustomLabelModal(discord.ui.Modal):
 
     async def callback(self, interaction: discord.Interaction):
         for idx, item in enumerate(self.label.template.fields):
-            self.label.data.update({item["key"]: self.children[idx].value})
+            self.label.template.data.update({item["key"]: self.children[idx].value})
             #easter egg
             # if the value contains a 69
             if "69" in self.children[idx].value:

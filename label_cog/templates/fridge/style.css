@@ -35,19 +35,21 @@
 .text {
     grid-area: text;
     width: 35mm;
-    font-family: Helvetica, sans-serif;
-    font-size: 13px;
+    font-family: arial, sans-serif;
+    font-size: 12px;
     display: flex;
     flex-direction: column;
 }
 
 .name {
+    font-size: 12px;
     word-wrap: break-word;
     white-space: normal;
 }
 
 .date
 {
+    font-size: 13px;
     font-weight: bold;
     color: #333;
 }
