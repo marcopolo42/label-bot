@@ -9,6 +9,9 @@
 label_cog/pdfs/
 label_cog/images/
 label_cog/og_templates/
-
+cache/
+*__pycache__*
+*.swp
+database.sqlite
 #copyrigthed files
 smash_images/
