@@ -107,6 +107,10 @@ class LabelCog(commands.Cog):
 
     @discord.slash_command(name="label", description="Print a label")
     async def label(self, ctx):
+        #check if the user is in server
+        if ctx.guild is None:
+            await ctx.respond("This command can only be used in a server", ephemeral=True)
+            return
         #update the config in case it has changed
         Config().update_from_file()
         session = Session(ctx.author)
@@ -143,14 +147,28 @@ class LabelCog(commands.Cog):
 
     @admin.command(name="update", description="Update the bot")
     async def update(self, ctx):
-        # send content of scripts/update.sh
-        with open("scripts/update.sh") as file:
-            update_script = file.read()
-        await ctx.respond("Updating the bot using github... This may take a few seconds.\nHere is the script for the update:\n" + update_script)
+        await ctx.respond("Updating the bot using github... This may take a few seconds.")
         try:
-            # Run the update script in a subprocess
             subprocess.Popen(["scripts/update.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             await ctx.send("Update initiated. The bot will restart shortly.")
+        except Exception as e:
+            await ctx.send(f"Failed to initiate update: {e}")
+
+    @admin.command(name="stop", description="Stop the bot")
+    async def stop(self, ctx):
+        await ctx.respond("Stopping the bot...")
+        try:
+            subprocess.Popen(["scripts/stop.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            await ctx.send("Bot stopped.")
+        except Exception as e:
+            await ctx.send(f"Failed to initiate update: {e}")
+
+    @admin.command(name="start", description="Start the bot")
+    async def start(self, ctx):
+        await ctx.respond("Starting the bot...")
+        try:
+            subprocess.Popen(["scripts/start.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            await ctx.send("Bot started.")
         except Exception as e:
             await ctx.send(f"Failed to initiate update: {e}")
 
