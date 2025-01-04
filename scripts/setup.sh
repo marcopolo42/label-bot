@@ -1,6 +1,7 @@
 #!/bin/bash
 # setup of the label-bot working environment
-cd ..
+cd /home/admin/label-bot || exit
+
 sudo apt update
 sudo apt install -y vim git python3-full python3-pip screen libpangocairo-1.0-0
 python3 -m venv .venv
