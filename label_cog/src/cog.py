@@ -146,7 +146,7 @@ class LabelCog(commands.Cog):
             await ctx.respond("No logs found")
 
     def launch_script(self, script):
-        process = subprocess.Popen([script], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process = subprocess.Popen(['sudo', script], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
         output = stdout.decode() + stderr.decode()
         return output
@@ -164,10 +164,11 @@ class LabelCog(commands.Cog):
     async def stop(self, ctx):
         await ctx.respond("Stopping the bot...")
         try:
+            # execute the script in super user mode
             output = self.launch_script("scripts/stop.sh")
             await ctx.followup.send(f"Bot stopped. Output:\n{output}")
         except Exception as e:
-            await ctx.followup.send(f"Failed to initiate update: {e}")
+            await ctx.followup.send(f"Failed to initiate stop: {e}")
 
     @admin.command(name="start", description="Start the bot")
     async def start(self, ctx):
@@ -176,7 +177,7 @@ class LabelCog(commands.Cog):
             output = self.launch_script("scripts/start.sh")
             await ctx.followup.send(f"Bot started. Output:\n{output}")
         except Exception as e:
-            await ctx.followup.send(f"Failed to initiate update: {e}")
+            await ctx.followup.send(f"Failed to initiate start: {e}")
 
     @admin.command(name="stall", description="Disable the bot for 30 minutes")
     async def start(self, ctx):
@@ -185,7 +186,7 @@ class LabelCog(commands.Cog):
             output = self.launch_script("scripts/stall.sh")
             await ctx.followup.send(f"Bot disabled. Output:\n{output}")
         except Exception as e:
-            await ctx.followup.send(f"Failed to initiate update: {e}")
+            await ctx.followup.send(f"Failed to initiate stall: {e}")
 
     @admin.command(name="stop", description="Stop the bot")
     async def start(self, ctx):
@@ -194,7 +195,7 @@ class LabelCog(commands.Cog):
             output = self.launch_script("scripts/stop.sh")
             await ctx.followup.send(f"Bot stopped. Output:\n{output}")
         except Exception as e:
-            await ctx.followup.send(f"Failed to initiate update: {e}")
+            await ctx.followup.send(f"Failed to initiate stop: {e}")
 
 
 def setup(bot):
