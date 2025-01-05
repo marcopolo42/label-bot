@@ -145,12 +145,18 @@ class LabelCog(commands.Cog):
         else:
             await ctx.respond("No logs found")
 
+    def launch_script(self, script):
+        process = subprocess.Popen([script], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+        output = stdout.decode() + stderr.decode()
+        return output
+
     @admin.command(name="update", description="Update the bot")
     async def update(self, ctx):
-        await ctx.respond("Updating the bot using github... This may take a few seconds.")
+        await ctx.respond("Updating the bot...")
         try:
-            subprocess.Popen(["scripts/update.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            await ctx.send("Update initiated. The bot will restart shortly.")
+            output = self.launch_script("scripts/update.sh")
+            await ctx.send(f"Bot updated. Output:\n{output}")
         except Exception as e:
             await ctx.send(f"Failed to initiate update: {e}")
 
@@ -158,8 +164,8 @@ class LabelCog(commands.Cog):
     async def stop(self, ctx):
         await ctx.respond("Stopping the bot...")
         try:
-            subprocess.Popen(["scripts/stop.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            await ctx.send("Bot stopped.")
+            output = self.launch_script("scripts/stop.sh")
+            await ctx.send(f"Bot stopped. Output:\n{output}")
         except Exception as e:
             await ctx.send(f"Failed to initiate update: {e}")
 
@@ -167,8 +173,26 @@ class LabelCog(commands.Cog):
     async def start(self, ctx):
         await ctx.respond("Starting the bot...")
         try:
-            subprocess.Popen(["scripts/start.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            await ctx.send("Bot started.")
+            output = self.launch_script("scripts/start.sh")
+            await ctx.send(f"Bot started. Output:\n{output}")
+        except Exception as e:
+            await ctx.send(f"Failed to initiate update: {e}")
+
+    @admin.command(name="stall", description="Disable the bot for 30 minutes")
+    async def start(self, ctx):
+        await ctx.respond("Disabling the bot...")
+        try:
+            output = self.launch_script("scripts/stall.sh")
+            await ctx.send(f"Bot disabled. Output:\n{output}")
+        except Exception as e:
+            await ctx.send(f"Failed to initiate update: {e}")
+
+    @admin.command(name="stop", description="Stop the bot")
+    async def start(self, ctx):
+        await ctx.respond("Stopping the bot...")
+        try:
+            output = self.launch_script("scripts/stop.sh")
+            await ctx.send(f"Bot stopped. Output:\n{output}")
         except Exception as e:
             await ctx.send(f"Failed to initiate update: {e}")
 
