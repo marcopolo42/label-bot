@@ -9,7 +9,7 @@
     display: grid;
     grid-template-areas:"picture text qr_code";
     grid-template-columns: 13mm 1fr 13mm; /* Fixed width for picture and QR code, flexible for text */
-    align-items: center; /* Align items vertically */
+    align-items: start; /* Align items vertically */
     gap: 0.5mm; /* Space between items */
     height: 13mm;
     width: 62mm;
@@ -33,6 +33,7 @@
 }
 
 .text {
+    padding-top: 0.3mm;
     grid-area: text;
     width: 35mm;
     font-family: arial, sans-serif;

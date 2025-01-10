@@ -161,16 +161,6 @@ class LabelCog(commands.Cog):
         except Exception as e:
             await ctx.followup.send(f"Failed to initiate update: {e}")
 
-    @admin.command(name="stop", description="Stop the bot")
-    async def stop(self, ctx):
-        await ctx.respond("Stopping the bot...")
-        try:
-            # execute the script in super user mode
-            output = self.launch_script("stop.sh")
-            await ctx.followup.send(f"Bot stopped. Output:\n{output}")
-        except Exception as e:
-            await ctx.followup.send(f"Failed to initiate stop: {e}")
-
     @admin.command(name="start", description="Start the bot")
     async def start(self, ctx):
         await ctx.respond("Starting the bot...")
@@ -181,7 +171,7 @@ class LabelCog(commands.Cog):
             await ctx.followup.send(f"Failed to initiate start: {e}")
 
     @admin.command(name="stall", description="Disable the bot for 30 minutes")
-    async def start(self, ctx):
+    async def stall(self, ctx):
         await ctx.respond("Disabling the bot...")
         try:
             output = self.launch_script("stall.sh")
@@ -190,7 +180,7 @@ class LabelCog(commands.Cog):
             await ctx.followup.send(f"Failed to initiate stall: {e}")
 
     @admin.command(name="stop", description="Stop the bot")
-    async def start(self, ctx):
+    async def stop(self, ctx):
         await ctx.respond("Stopping the bot...")
         try:
             output = self.launch_script("stop.sh")
