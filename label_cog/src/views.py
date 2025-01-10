@@ -148,6 +148,8 @@ class ChooseLabelView(discord.ui.View):
         try:
             status = ql_brother_print_usb(label.image, label.count)
         except Exception as e:
+            print(f"error: {e}")
+            print(e)
             print(f"\033[91mError while printing: {e}\033[0m")
             await self.display_and_stop(interaction, "error_print")
         else:
