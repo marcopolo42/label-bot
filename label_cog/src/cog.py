@@ -152,41 +152,36 @@ class LabelCog(commands.Cog):
         output = stdout.decode() + stderr.decode()
         return output
 
+    async def run_admin_script(self, ctx, script):
+        if os.getenv("ENV") == "dev":
+            await ctx.respond("This command is disabled in dev mode", ephemeral=True)
+            return
+        if not is_admin(ctx):
+            await ctx.respond("You need to be from the bocal to use this command", ephemeral=True)
+            return
+        script_name = script.split(".")[0]
+        await ctx.respond(f"Running the {script} script...")
+        try:
+            output = self.launch_script(script)
+            await ctx.followup.send(f"{script_name} script ran successfully. Output:\n{output}")
+        except Exception as e:
+            await ctx.followup.send(f"Failed to run {script} script: {e}")
+
     @admin.command(name="update", description="Update the bot")
     async def update(self, ctx):
-        await ctx.respond("Updating the bot...")
-        try:
-            output = self.launch_script("update.sh")
-            await ctx.followup.send(f"Bot updated. Output:\n{output}")
-        except Exception as e:
-            await ctx.followup.send(f"Failed to initiate update: {e}")
+        await self.run_admin_script(ctx, "update.sh")
 
     @admin.command(name="start", description="Start the bot")
     async def start(self, ctx):
-        await ctx.respond("Starting the bot...")
-        try:
-            output = self.launch_script("start.sh")
-            await ctx.followup.send(f"Bot started. Output:\n{output}")
-        except Exception as e:
-            await ctx.followup.send(f"Failed to initiate start: {e}")
+        await self.run_admin_script(ctx, "start.sh")
 
     @admin.command(name="stall", description="Disable the bot for 30 minutes")
     async def stall(self, ctx):
-        await ctx.respond("Disabling the bot...")
-        try:
-            output = self.launch_script("stall.sh")
-            await ctx.followup.send(f"Bot disabled. Output:\n{output}")
-        except Exception as e:
-            await ctx.followup.send(f"Failed to initiate stall: {e}")
+        await self.run_admin_script(ctx, "stall.sh")
 
     @admin.command(name="stop", description="Stop the bot")
     async def stop(self, ctx):
-        await ctx.respond("Stopping the bot...")
-        try:
-            output = self.launch_script("stop.sh")
-            await ctx.followup.send(f"Bot stopped. Output:\n{output}")
-        except Exception as e:
-            await ctx.followup.send(f"Failed to initiate stop: {e}")
+        await self.run_admin_script(ctx, "stop.sh")
 
 
 def setup(bot):
