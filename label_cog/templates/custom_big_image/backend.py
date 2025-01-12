@@ -5,7 +5,7 @@ from PIL import Image
 import mimetypes
 import os
 
-Image.MAX_IMAGE_PIXELS = 33177600  # Increase pixel limit for the PIL dependency (8K)
+Image.MAX_IMAGE_PIXELS = None  # Increase pixel limit for the PIL dependency (8K)
 
 # Convert an image to a Base64-encoded string with MIME prefix
 # Guess the MIME type based on the file extension

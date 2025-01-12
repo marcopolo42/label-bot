@@ -4,7 +4,7 @@ from brother_ql.raster import BrotherQLRaster
 
 from PIL import Image
 
-Image.MAX_IMAGE_PIXELS = 33177600  # Increase pixel limit for the PIL dependency (8K)
+Image.MAX_IMAGE_PIXELS = None  # Increase pixel limit for the PIL dependency (8K)
 
 import os
 import dotenv
