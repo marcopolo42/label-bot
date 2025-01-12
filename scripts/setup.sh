@@ -4,6 +4,9 @@
 cd /home/admin/label-bot || exit
 
 sudo apt update
+#necessary fonts
+sudo apt install fonts-dejavu fonts-liberation fonts-freefont-ttf
+#necessary packages
 sudo apt install -y vim git python3-full python3-pip screen libpangocairo-1.0-0
 python3 -m venv .venv
 source .venv/bin/activate

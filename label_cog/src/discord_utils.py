@@ -38,17 +38,17 @@ async def modify_message(key, lang, image=None, original_message=None, interacti
     if interaction is not None:
         if interaction.response.is_done():
             if image is not None:
-                print(f"edit with image. \"{embed.title}\"")
+                print(f"embed modified with image. \"{embed.title}\"")
                 await interaction.edit_original_response(embed=embed, file=discord.File(image), view=view)
             else:
-                print(f"edit without image. title: \"{embed.title}\"")
+                print(f"embed modified without image. title: \"{embed.title}\"")
                 await interaction.edit_original_response(embed=embed, files=[], attachments=[], view=view)
         else:
             if image is not None:
-                print(f"respond with image. text: \"{embed.title}\"")
+                print(f"embed responded with image. text: \"{embed.title}\"")
                 await interaction.response.edit_message(embed=embed, file=discord.File(image), view=view)
             else:
-                print(f"respond without image. text: {embed.title}")
+                print(f"embed responded without image. text: {embed.title}")
                 await interaction.response.edit_message(embed=embed, files=[], attachments=[], view=view)
     if original_message is not None:
         if view is None:

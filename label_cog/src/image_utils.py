@@ -2,7 +2,7 @@ import os
 from PIL import Image, ImageOps
 import fitz # PyMuPDF
 
-Image.MAX_IMAGE_PIXELS = 8294400  # Increase pixel limit for the PIL dependency (4K)
+Image.MAX_IMAGE_PIXELS = 33177600  # Increase pixel limit for the PIL dependency (8K)
 
 
 def convert_to_grayscale(image_path):

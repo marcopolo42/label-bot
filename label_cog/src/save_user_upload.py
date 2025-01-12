@@ -10,7 +10,7 @@ async def save_file_uploaded(message, folder):
         name = message.attachments[0].filename
     except IndexError:
         print("Error: No attachments")
-        await message.channel.send("No attachments found in your message")
+        await message.channel.send("send a file to save it and then use its name to print it")
     else:
         if url.startswith("https://cdn.discordapp.com"):
             r = requests.get(url, stream=True) # enable streaming in chunks
@@ -20,6 +20,6 @@ async def save_file_uploaded(message, folder):
                 for chunk in r.iter_content(chunk_size=8192): # write in chunks for better memory usage
                     out_file.write(chunk)
             print('Image saved')
-            await message.channel.send("Image saved successfully")
+            await message.channel.send("Image saved successfully !\nThe file name is:\n" + name)
         else:
             print("Error: Invalid URL")

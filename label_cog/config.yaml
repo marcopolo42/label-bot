@@ -231,17 +231,19 @@ templates:
     emoji: "🖼️"
     allowed_roles:
       - bocal
+    settings:
+      image_upload: true
     fields:
-      - key: "image_url"
-        max_length: 200
+      - key: "image_name"
+        max_length: 100
         name:
-          en: "Image URL"
-          fr: "URL de l'image"
-          de: "Bild-URL"
+          en: "Image Name"
+          fr: "Nom de l'image"
+          de: "Bildname"
         placeholder:
-          en: "Use img.doerig.dev to host your image: "
-          fr: "Utilisez img.doerig.dev pour héberger votre image."
-          de: "Verwenden Sie img.doerig.dev, um Ihr Bild zu hosten."
+          en: "send your image directly to the bot in a private message to save it and add the name here"
+          fr: "envoyez votre image directement au bot en message privé et ajoutez le nom ici"
+          de: "senden Sie Ihr Bild direkt an den Bot in einer privaten Nachricht und fügen Sie den Namen hier hinzu"
 
   - key: "custom_qr_code"
     name:
@@ -402,6 +404,17 @@ display_messages:
         fr: "Vous devez remplir tous les champs pour créer l'étiquette."
         de: "Sie müssen alle Felder ausfüllen, um das Etikett zu erstellen."
 
+  how_to_upload:
+    color: 0x53B7BA
+    title:
+        en: "How to upload an image ?"
+        fr: "Comment envoyer une image ?"
+        de: "Wie lade ich ein Bild hoch ?"
+    description:
+        en: "You can send your image directly here to save it then you can use the name to use it."
+        fr: "Vous pouvez envoyer votre image directement ici pour la sauvegarder puis vous pouvez utiliser le nom pour l'utiliser."
+        de: "Sie können Ihr Bild hier direkt senden, um es zu speichern, dann können Sie den Namen verwenden, um es zu verwenden."
+
   timeout:
     color: 0x808080
     title:
@@ -456,7 +469,6 @@ display_messages:
         en: "An error occurred while printing the label."
         fr: "Une erreur est survenue lors de l'impression de l'étiquette."
         de: "Beim Drucken des Etiketts ist ein Fehler aufgetreten."
-
   error_generate:
     color: 0xFF0000
     title:
