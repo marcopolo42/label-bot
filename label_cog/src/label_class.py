@@ -21,6 +21,8 @@ class Label:
         if self.template is None or self.count < 1:
             return
 
+        self.template.process_backend_data() # process the backend data before creating the final label
+
         # the file name is created using the author's ID and the current timestamp
         file_name = f"{self.template.data.get('user_name')}_{datetime.now().strftime('%d-%m-%Y_%H-%M-%S')}"
         base_path = os.path.join(os.getcwd(), 'label_cog', 'cache', file_name)

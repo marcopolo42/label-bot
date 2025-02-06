@@ -1,11 +1,13 @@
 import discord
 from discord.ext import commands
 import sqlite3
+import aiosqlite
 import os
 import dotenv
 import subprocess
 
-from label_cog.src.db_utils import create_tables, add_log, get_logs, get_user_language
+from label_cog.src.db import add_log, get_logs, get_user_language
+from label_cog.src.db import Database, create_tables
 
 from label_cog.src.discord_utils import update_displayed_status, get_embed
 
@@ -21,6 +23,8 @@ from label_cog.src.cleanup_thread import start_cleanup
 
 from label_cog.src.save_user_upload import save_file_uploaded
 
+import socket
+
 dotenv.load_dotenv()
 
 
@@ -35,8 +39,8 @@ def cog_setup():
         raise FileNotFoundError("Config file 'config.yaml' is missing")
     if os.path.exists(os.path.join(current_dir, "database.sqlite")):
         os.remove(os.path.join(current_dir, "database.sqlite")) # todo dev only
-    if not os.path.exists(os.path.join(current_dir, "database.sqlite")):
-        create_tables()
+    #if not os.path.exists(os.path.join(current_dir, "database.sqlite")):
+        #create_tables()
     # start the cleanup thread that will delete old files every 24 hours
     start_cleanup(
         [os.path.join(current_dir, "cache")],
@@ -45,11 +49,10 @@ def cog_setup():
 
 
 class Session:
-    def __init__(self, author):
-        self.conn = sqlite3.connect('label_cog/database.sqlite')
+    def __init__(self, author, lang):
         self.author = author
         self.roles = Roles(author.roles)
-        self.lang = get_user_language(author, self.conn)
+        self.lang = lang
 
 
 class Roles:
@@ -90,6 +93,19 @@ async def choose_and_print_label(ctx, session):
     await view.wait()
 
 
+def get_current_ip():
+    # Step 1: Get the local hostname.
+    local_hostname = socket.gethostname()
+    # Step 2: Get a list of IP addresses associated with the hostname.
+    ip_addresses = socket.gethostbyname_ex(local_hostname)[2]
+    # Step 3: Filter out loopback addresses (IPs starting with "127.").
+    filtered_ips = [ip for ip in ip_addresses if not ip.startswith("127.")]
+    # Step 4: Extract the first IP address (if available) from the filtered list.
+    first_ip = filtered_ips[:1]
+    # Step 5: Print the obtained IP address to the console.
+    return first_ip
+
+
 class LabelCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -97,13 +113,19 @@ class LabelCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print(f"{self.bot.user} is ready and online!")
+        print(f"{self.bot.user} is ready and online and the current IP is {get_current_ip()}")
+        await Database().initialize("label_cog/database.sqlite")
+        await create_tables()
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.author == self.bot.user:
+        print(f"before session")
+        #session = Session(message.author) #todo fix enable to work while /label is used
+        print(f"after session")
+        if message.author == self.bot.user: # prevent the bot from responding to itself
             return
-        await save_file_uploaded(message, "label_cog/cache")
+        print(f"before save_file_uploaded")
+        await save_file_uploaded(message, "label_cog/cache", "en")
 
     @discord.slash_command(name="label", description="Print a label")
     async def label(self, ctx):
@@ -113,12 +135,15 @@ class LabelCog(commands.Cog):
             return
         #update the config in case it has changed
         Config().update_from_file()
-        session = Session(ctx.author)
+        session = Session(ctx.author, await get_user_language(ctx.author))
         await choose_and_print_label(ctx, session)
 
     @discord.slash_command(name="change_language", description="Change the language used for the label bot")
     async def change_language(self, ctx):
-        session = Session(ctx.author)
+        if ctx.guild is None:
+            await ctx.respond("This command can only be used in a server", ephemeral=True)
+            return
+        session = Session(ctx.author, await get_user_language(ctx.author))
         await ctx.respond(view=ChangeLanguageView(session), ephemeral=True)
 
     #ADMIN COMMANDS
@@ -128,7 +153,7 @@ class LabelCog(commands.Cog):
     async def test_role(self, ctx, role: discord.Role):
         Config().update_from_file()
         if is_admin(ctx):
-            session = Session(ctx.author)
+            session = Session(ctx.author, await get_user_language(ctx.author))
             session.roles.set_as_only_role(role.name)
             await choose_and_print_label(ctx, session)
         else:
@@ -187,3 +212,7 @@ class LabelCog(commands.Cog):
 def setup(bot):
     bot.add_cog(LabelCog(bot))
 
+
+def close(self): # may not work
+    Database().close()
+    print("Database closed for the cog")

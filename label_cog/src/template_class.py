@@ -1,4 +1,4 @@
-from label_cog.src.db_utils import get_today_prints_count
+from label_cog.src.db import get_today_prints_count
 
 from label_cog.src.config import Config
 
@@ -75,9 +75,9 @@ class Template:
             limit = 25
         return limit
 
-    def prints_available_today(self, author, conn):
+    async def prints_available_today(self, author):
         limit = self.get_daily_limit(author.roles)
-        available = limit - get_today_prints_count(author, self.key, conn)
+        available = limit - await get_today_prints_count(author, self.key)
         if available < 0:
             return 0
         return available
@@ -85,7 +85,7 @@ class Template:
     def add_author_data(self, author):
         # default information that is always available. More info can be added based on the template configuration file
         new_data = dict(
-            user_id=author.id,
+            user_id=str(author.id),
             user_at=f"@{author.name}",
             user_name=author.name,
             user_display_name=author.display_name,

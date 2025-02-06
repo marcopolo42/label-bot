@@ -233,17 +233,6 @@ templates:
       - bocal
     settings:
       image_upload: true
-    fields:
-      - key: "image_name"
-        max_length: 100
-        name:
-          en: "Image Name"
-          fr: "Nom de l'image"
-          de: "Bildname"
-        placeholder:
-          en: "send your image directly to the bot in a private message to save it and add the name here"
-          fr: "envoyez votre image directement au bot en message privé et ajoutez le nom ici"
-          de: "senden Sie Ihr Bild direkt an den Bot in einer privaten Nachricht und fügen Sie den Namen hier hinzu"
 
   - key: "custom_qr_code"
     name:
@@ -411,9 +400,31 @@ display_messages:
         fr: "Comment envoyer une image ?"
         de: "Wie lade ich ein Bild hoch ?"
     description:
-        en: "You can send your image directly here to save it then you can use the name to use it."
-        fr: "Vous pouvez envoyer votre image directement ici pour la sauvegarder puis vous pouvez utiliser le nom pour l'utiliser."
-        de: "Sie können Ihr Bild hier direkt senden, um es zu speichern, dann können Sie den Namen verwenden, um es zu verwenden."
+        en: "You can upload your image here to save it.\nOnce saved, you can reference it in the template using its name."
+        fr: "Vous pouvez envoyer votre image ici pour la sauvegarder.\nUne fois sauvegardée, vous pouvez la référencer dans le template en utilisant son nom."
+        de: "Sie können Ihr Bild hier hochladen, um es zu speichern.\nNach dem Speichern können Sie es im Template unter Verwendung seines Namens referenzieren."
+
+  file_saved:
+    color: 0x00FF00
+    title:
+        en: "Image saved successfully !"
+        fr: "Image sauvegardée avec succès !"
+        de: "Bild erfolgreich gespeichert !"
+    description:
+        en: "The image name is :"
+        fr: "Le nom de l'image est :"
+        de: "Der Name des Bildes ist :"
+
+  no_attachments:
+    color: 0x808080
+    title:
+        en: "No attachments found !"
+        fr: "Aucune pièce jointe trouvée !"
+        de: "Keine Anhänge gefunden !"
+    description:
+        en: "You must send an image as an attachment to save it."
+        fr: "Vous devez envoyer une image en pièce jointe pour la sauvegarder."
+        de: "Sie müssen ein Bild als Anhang senden, um es zu speichern."
 
   timeout:
     color: 0x808080

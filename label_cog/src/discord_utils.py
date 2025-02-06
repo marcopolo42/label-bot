@@ -2,7 +2,7 @@ import discord
 import os
 
 from label_cog.src.config import Config
-from label_cog.src.db_utils import get_user_language
+from label_cog.src.db import get_user_language
 from label_cog.src.utils import get_lang
 
 

@@ -4,7 +4,7 @@ from label_cog.src.discord_utils import set_current_value_as_default, update_dis
 
 from label_cog.src.template_class import Template, TemplateException
 
-from label_cog.src.db_utils import update_user_language, get_user_language, add_log
+from label_cog.src.db import update_user_language, get_user_language, add_log
 
 from label_cog.src.printer_utils import ql_brother_print_usb
 
@@ -14,11 +14,12 @@ from label_cog.src.config import Config
 
 from label_cog.src.utils import get_translation, get_lang
 
+from label_cog.src.discord_utils import get_embed
+
 
 class ChooseLabelView(discord.ui.View):
     def __init__(self, session, label):
         super().__init__(timeout=800)  # 13 minutes timeout
-        self.conn = session.conn
         self.author = session.author
         self.roles = session.roles
         self.lang = session.lang
@@ -114,10 +115,10 @@ class ChooseLabelView(discord.ui.View):
             raise e
         else:
             set_current_value_as_default(self.select_type, self.select_type.values[0])
+            await self.send_msg_how_to_upload(self.label.template, interaction)
             await self.ask_for_custom_label_fields(interaction, self.label)
-            self.label.template.process_backend_data() # process the data from the backend after getting the custom fields
             self.update_reload_button(self.label.template)
-            await self.update_select_count_options(interaction)
+            await self.update_select_count_options()
             await self.update_view(interaction)
 
     async def previous_button_callback(self, interaction): # todo
@@ -142,7 +143,7 @@ class ChooseLabelView(discord.ui.View):
     async def print_button_callback(self, interaction):
         await update_displayed_status("printing", self.lang, interaction=interaction, view=self)
         label = self.label
-        add_log(f"Label {label.template.key} {label.count} was printed", self.author, label, self.conn)
+        await add_log(f"Label {label.template.key} {label.count} was printed", self.author, label)
         print(f"You have chosen to print the label {label.template.key} {label.count} times.")
 
         try:
@@ -193,6 +194,13 @@ class ChooseLabelView(discord.ui.View):
         else:
             self.remove_item(self.reload_button)
 
+    async def send_msg_how_to_upload(self, template, interaction):
+        if template.settings is None:
+            value = None
+        else:
+            value = template.settings.get("image_upload")
+        if value is not None:
+            await interaction.user.send(embed=get_embed("how_to_upload", self.lang))
 
     async def ask_for_custom_label_fields(self, interaction, label):
         if label.template.fields is None:
@@ -240,8 +248,8 @@ class ChooseLabelView(discord.ui.View):
     def get_options_page(self, page):
         return self.options[25 * page: 25 * (page + 1)]
 
-    async def update_select_count_options(self, interaction):
-        available_prints = self.label.template.prints_available_today(self.author, self.conn)
+    async def update_select_count_options(self):
+        available_prints = await self.label.template.prints_available_today(self.author)
         if available_prints == 0:
             self.select_count.options = [discord.SelectOption(label="0", value="0")]
         else:
@@ -278,7 +286,6 @@ class ChooseLabelView(discord.ui.View):
 class ChangeLanguageView(discord.ui.View):
     def __init__(self, session):
         super().__init__(disable_on_timeout=True, timeout=300)  # 5 minutes timeout
-        self.conn = session.conn
         self.author = session.author
         self.lang = session.lang
 
@@ -293,7 +300,7 @@ class ChangeLanguageView(discord.ui.View):
                 value=language.get("key"),
                 emoji=language.get("emoji")
             ))
-            if language.get("key") == get_user_language(self.author, self.conn):
+            if language.get("key") == session.lang:
                 options[-1].default = True
         self.language_select = discord.ui.Select(
             options=options
@@ -304,7 +311,7 @@ class ChangeLanguageView(discord.ui.View):
     #todo set the current discord language as default
     async def language_select_callback(self, interaction):
         value = self.language_select.values[0]
-        update_user_language(interaction.user, value, self.conn)
+        await update_user_language(interaction.user, value)
         self.lang = value
         self.disable_all_items()
         await update_displayed_status("language_changed", self.lang, interaction=interaction, view=self)
