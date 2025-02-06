@@ -1,10 +1,9 @@
 import os
 from datetime import datetime
-from label_cog.src.utils import get_discord_url
+from label_cog.src.utils import get_cache_directory
 from blabel import LabelWriter
 from label_cog.src.image_utils import pdf_to_image, convert_to_grayscale, add_margin, invert_image, mirror_image
 import random
-
 
 class Label:
     def __init__(self):
@@ -25,7 +24,7 @@ class Label:
 
         # the file name is created using the author's ID and the current timestamp
         file_name = f"{self.template.data.get('user_name')}_{datetime.now().strftime('%d-%m-%Y_%H-%M-%S')}"
-        base_path = os.path.join(os.getcwd(), 'label_cog', 'cache', file_name)
+        base_path = get_cache_directory(file_name=file_name)
         self.pdf = base_path + ".pdf"
         self.image = base_path + ".png"
         self.preview = base_path + "_preview.png"
@@ -60,6 +59,9 @@ class Label:
         if self.image is not None and os.path.exists(self.image):
             os.remove(self.image)
             self.image = None
+        if self.preview is not None and os.path.exists(self.preview):
+            os.remove(self.preview)
+            self.preview = None
         print(f"pdf: {self.pdf}, image: {self.image}")
 
     def reset(self):

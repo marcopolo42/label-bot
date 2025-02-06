@@ -22,6 +22,7 @@ from label_cog.src.printer_utils import ql_brother_print_usb
 from label_cog.src.cleanup_thread import start_cleanup
 
 from label_cog.src.save_user_upload import save_file_uploaded
+from label_cog.src.utils import get_cache_directory, get_local_directory
 
 import socket
 
@@ -29,23 +30,22 @@ dotenv.load_dotenv()
 
 
 def cog_setup():
-    current_dir = os.path.join(os.getcwd(), "label_cog")
-    os.makedirs(os.path.join(current_dir, "cache"), exist_ok=True)
-    if not os.path.exists(os.path.join(current_dir, "templates")):
+    os.makedirs(get_cache_directory(), exist_ok=True)
+    if not os.path.exists(get_local_directory("templates")):
         raise FileNotFoundError("Templates folder 'templates' is missing")
-    if not os.listdir(os.path.join(current_dir, "templates")):
+    if not os.listdir(get_local_directory("templates")):
         raise FileNotFoundError("Templates folder 'templates' is empty")
-    if not os.path.exists(os.path.join(current_dir, "config.yaml")):
+    if not os.path.exists(get_local_directory("config.yaml")):
         raise FileNotFoundError("Config file 'config.yaml' is missing")
-    if os.path.exists(os.path.join(current_dir, "database.sqlite")):
-        os.remove(os.path.join(current_dir, "database.sqlite")) # todo dev only
+    if os.path.exists(get_local_directory("database.sqlite")):
+        os.remove(get_local_directory("database.sqlite")) # todo dev only
     #if not os.path.exists(os.path.join(current_dir, "database.sqlite")):
         #create_tables()
     # start the cleanup thread that will delete old files every 24 hours
     start_cleanup(
-        [os.path.join(current_dir, "cache")],
-        1,
-        6)
+        get_cache_directory(),
+        15,
+        1)
 
 
 class Session:
@@ -171,7 +171,7 @@ class LabelCog(commands.Cog):
             await ctx.respond("No logs found")
 
     def launch_script(self, script):
-        script_path = os.path.join(os.getcwd(), "scripts", script)
+        script_path = get_local_directory("scripts", script)
         process = subprocess.Popen(['sudo', script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
         output = stdout.decode() + stderr.decode()

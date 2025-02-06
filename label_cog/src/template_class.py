@@ -8,7 +8,7 @@ import importlib.util
 
 import os
 
-from label_cog.src.utils import get_discord_url
+from label_cog.src.utils import get_discord_url, get_local_directory
 
 
 class TemplateException(Exception):
@@ -21,7 +21,7 @@ class Template:
         self.key = raw.get("key")
 
         # the folder name of the template should be the same as the value
-        self.folder_path = os.path.join(os.getcwd(), 'label_cog', 'templates', self.key)
+        self.folder_path = get_local_directory("templates", self.key)
         if not os.path.exists(self.folder_path):
             raise TemplateException("missing_template_folder")
 

@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from label_cog.src.config import Config
+import os
 
 
 def get_lang(dict, lang):
@@ -38,3 +39,23 @@ def get_discord_url(id):
     return "https://discordapp.com/users/" + str(id)
 
 
+def get_local_directory(folder=None, folder_or_file=None):
+    if folder is None:
+        return os.path.join(os.getcwd(), 'label_cog')
+    if folder_or_file is None:
+        return os.path.join(os.getcwd(), 'label_cog', folder)
+    else:
+        return os.path.join(os.getcwd(), 'label_cog', folder, folder_or_file)
+
+
+def get_cache_directory(file_name=None):
+    if file_name is None:
+        file_name = ""
+    env = os.getenv('ENV')
+    if env == 'prod':
+        return os.path.join("/dev/shm", 'label_bot', 'cache', file_name)
+    if env == 'dev':
+        return os.path.join(os.getcwd(), 'label_cog', 'cache', file_name)
+    else:
+        print("ENV is not set")
+        return os.path.join(os.getcwd(), 'label_cog', 'cache', file_name)
