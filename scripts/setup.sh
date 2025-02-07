@@ -1,19 +1,32 @@
 #!/bin/bash
 
-# setup of the label-bot working environment
-cd /home/admin/label-bot || exit
+# Ensure the script is run as root
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run as root"
+  exit 1
+fi
 
-sudo apt update
-#necessary fonts
-sudo apt install fonts-dejavu fonts-liberation fonts-freefont-ttf
-#necessary packages
-sudo apt install -y vim git python3-full python3-pip screen libpangocairo-1.0-0
+# Setup of the label-bot working environment
+cd /home/admin/label-bot || { echo "Directory /home/admin/label-bot not found"; exit 1; }
+
+# Update package list
+apt-get update
+
+# Install necessary fonts
+apt-get install -y fonts-dejavu fonts-liberation fonts-freefont-ttf
+
+# Install necessary packages
+apt-get install -y vim git python3-full python3-pip screen libpangocairo-1.0-0
+
+# Setup Python virtual environment
 python3 -m venv .venv
 source .venv/bin/activate
-sudo .venv/bin/pip3 install -r requirements.txt
+
+# Install Python dependencies
+pip3 install -r requirements.txt
 
 # Create a systemd service
 cp labelbot.service /etc/systemd/system/
-sudo systemctl enable labelbot.service
+systemctl enable labelbot.service
 
 echo "Setup completed successfully."
