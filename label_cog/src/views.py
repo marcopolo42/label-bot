@@ -276,7 +276,7 @@ class ChooseLabelView(discord.ui.View):
             await update_displayed_status("missing_fields", self.lang, interaction=interaction, view=self)
             return
 
-        if self.label.template.settings.get("image_upload") is not None:
+        if self.label.template.settings is not None and self.label.template.settings.get("image_upload") is not None:
             await update_displayed_status("waiting_upload", self.lang, interaction=interaction, view=self)
         else:
             await update_displayed_status("creating", self.lang, interaction=interaction, view=self)

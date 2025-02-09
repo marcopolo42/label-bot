@@ -7,6 +7,8 @@ import threading
 def delete_old_files(folder_path, minutes_old):
     #Deletes files in the specified folder that are older than a given number of days.
     cutoff_time = datetime.now() - timedelta(minutes=minutes_old)
+    if not os.path.exists(folder_path):
+        return
     for filename in os.listdir(folder_path):
         file_path = os.path.join(folder_path, filename)
         if os.path.isfile(file_path):
@@ -20,14 +22,15 @@ def delete_old_files(folder_path, minutes_old):
 
 
 #Runs the delete_old_files function at specified intervals in a background thread.
-def background_cleanup(folder_path, minutes_old, minutes_interval):
+def background_cleanup(folder_paths, minutes_old, minutes_interval):
     while True:
-        delete_old_files(folder_path, minutes_old)
-        time.sleep(minutes_interval * 60)
+        for folder_path in folder_paths:
+            delete_old_files(folder_path, minutes_old)
+            time.sleep(minutes_interval * 60)
 
 
-def start_cleanup(folder_path, minutes_old, interval_minutes):
+def start_cleanup(folder_paths, minutes_old, interval_minutes):
     # Setup and start the cleanup thread
-    cleanup_thread = threading.Thread(target=background_cleanup, args=(folder_path, minutes_old, interval_minutes))
+    cleanup_thread = threading.Thread(target=background_cleanup, args=(folder_paths, minutes_old, interval_minutes))
     cleanup_thread.daemon = True
     cleanup_thread.start()

@@ -26,14 +26,18 @@ from label_cog.src.utils import get_cache_directory, get_local_directory
 
 import socket
 
+import label_cog.src.global_vars as global_vars
+
+
 dotenv.load_dotenv()
 
-import label_cog.src.global_vars as global_vars
+
 
 def cog_setup():
     # create the cache folders if they don't exist
     if os.getenv('ENV') == 'prod':
         os.makedirs(os.path.join("/dev/shm", 'label_cog', 'cache'), exist_ok=True)
+        print("Created cache folder in /dev/shm")
     os.makedirs(os.path.join(os.getcwd(), 'label_cog', 'cache'), exist_ok=True)
     if not os.path.exists(get_local_directory("templates")):
         raise FileNotFoundError("Templates folder 'templates' is missing")
@@ -43,11 +47,9 @@ def cog_setup():
         raise FileNotFoundError("Config file 'config.yaml' is missing")
     if os.path.exists(get_local_directory("database.sqlite")):
         os.remove(get_local_directory("database.sqlite")) # todo dev only
-    #if not os.path.exists(os.path.join(current_dir, "database.sqlite")):
-        #create_tables()
     # start the cleanup thread that will delete old files every 24 hours
     start_cleanup(
-        get_cache_directory(),
+        [get_cache_directory(), os.path.join(os.getcwd(), 'label_cog', 'cache')], #todo clean later
         15,
         1)
 
