@@ -53,7 +53,7 @@ def get_cache_directory(file_name=None):
         file_name = ""
     env = os.getenv('ENV')
     if env == 'prod':
-        return os.path.join("/dev/shm", 'label_bot', 'cache', file_name)
+        return os.path.join("/dev/shm", 'label_cog', 'cache', file_name)
     if env == 'dev':
         return os.path.join(os.getcwd(), 'label_cog', 'cache', file_name)
     else:

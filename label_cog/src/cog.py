@@ -28,9 +28,13 @@ import socket
 
 dotenv.load_dotenv()
 
+import label_cog.src.global_vars as global_vars
 
 def cog_setup():
-    os.makedirs(get_cache_directory(), exist_ok=True)
+    # create the cache folders if they don't exist
+    if os.getenv('ENV') == 'prod':
+        os.makedirs(os.path.join("/dev/shm", 'label_cog', 'cache'), exist_ok=True)
+    os.makedirs(os.path.join(os.getcwd(), 'label_cog', 'cache'), exist_ok=True)
     if not os.path.exists(get_local_directory("templates")):
         raise FileNotFoundError("Templates folder 'templates' is missing")
     if not os.listdir(get_local_directory("templates")):
@@ -89,7 +93,10 @@ def is_admin(ctx):
 async def choose_and_print_label(ctx, session):
     label = Label()
     view = ChooseLabelView(session, label)
-    message = await ctx.respond(embed=get_embed("help", session.lang), view=view, ephemeral=True)
+    interaction = await ctx.respond(embed=get_embed("help", session.lang), view=view, ephemeral=True)
+    print(f"interaction contents: {interaction}")
+    print(f"interaction contents: {interaction.message}")
+    global_vars.channel_link.update({ctx.author.id: interaction.channel.mention})
     await view.wait()
 
 
@@ -131,7 +138,7 @@ class LabelCog(commands.Cog):
     async def label(self, ctx):
         #check if the user is in server
         if ctx.guild is None:
-            await ctx.respond("This command can only be used in a server", ephemeral=True)
+            await ctx.respond("This command can only be used in the 42 server.", ephemeral=True)
             return
         #update the config in case it has changed
         Config().update_from_file()

@@ -8,7 +8,7 @@ def get_coalition(user_roles):
     return ""
 
 
-def process_data(data):
+async def process_data(data):
     print("Data received in backend")
     print(data)
     new_data = {

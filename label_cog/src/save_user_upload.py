@@ -1,29 +1,68 @@
 import os.path
 import aiohttp
+import aiofiles
 from label_cog.src.discord_utils import get_embed
 
+import label_cog.src.global_vars as global_vars
 
-async def save_file_uploaded(message, folder, lang):
-    print(f"Message: {message}")
+
+def get_folder_size(folder):
+    total_size = 0
+    for dir_path, dir_names, file_names in os.walk(folder):
+        for f in file_names:
+            fp = os.path.join(dir_path, f)
+            total_size += os.path.getsize(fp)
+    return total_size
+
+
+def folder_is_full(folder, size_gb):
+    folder_size = get_folder_size(folder)
+    if folder_size > size_gb * 1024 * 1024 * 1024: # Convert GB to bytes
+        return True
+    else:
+        return False
+
+
+def get_file_name_and_url(message):
     try:
         url = message.attachments[0].url
         name = message.attachments[0].filename
     except IndexError:
-        print("Error: No attachments")
-        await message.channel.send(embed=get_embed("no_attachments", lang))
+        return None, None
     else:
-        if url.startswith("https://cdn.discordapp.com"):
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url) as r:
-                    name = f"{message.author.id}_{name}"
-                    with open(os.path.join(folder, name), 'wb') as out_file:
-                        while True:
-                            chunk = await r.content.read(8192)
-                            if not chunk:
-                                break
-                            out_file.write(chunk)
-                    print('Image saved')
-                    await message.channel.send(embed=get_embed("file_saved", lang))
-                    await message.channel.send(name)
-        else:
-            print("Error: Invalid URL")
+        return name, url
+
+
+async def save_file_uploaded(message, folder, lang):
+    print(f"Message: {message}")
+    name, url = get_file_name_and_url(message)
+    if name is None or url is None:
+        await message.channel.send(embed=get_embed("no_file_attached", lang))
+        return
+    if folder_is_full(folder, 10):
+        print("Error: Drive is full")
+        await message.channel.send(embed=get_embed("drive_full", lang))
+        return
+    if not url.startswith("https://cdn.discordapp.com"):
+        print("Error: Invalid URL")
+        await message.channel.send(embed=get_embed("error", lang))
+        return
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as r:
+            name = f"{message.author.id}_{name}"
+            file_path = os.path.join(folder, name)
+            try:
+                async with aiofiles.open(file_path, 'wb') as out_file:
+                    async for chunk in r.content.iter_chunked(8192):
+                        await out_file.write(chunk)
+                print(f"Success: File saved as {name}")
+                await message.channel.send(embed=get_embed("file_saved", lang))
+                await message.channel.send(global_vars.channel_link.get(message.author.id, "Error: not label creation interaction found."))
+                print(f"Jump URLs: {global_vars.channel_link}")
+            except OSError as e:
+                if e.errno == 28:  # Error number for "No space left on device"
+                    print("Error: Drive is full")
+                    await message.channel.send(embed=get_embed("drive_full", lang))
+                else:
+                    print(f"Error: {e}")
+                    await message.channel.send(embed=get_embed("error", lang))

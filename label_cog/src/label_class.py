@@ -4,6 +4,9 @@ from label_cog.src.utils import get_cache_directory
 from blabel import LabelWriter
 from label_cog.src.image_utils import pdf_to_image, convert_to_grayscale, add_margin, invert_image, mirror_image
 import random
+import aiofiles
+import aiofiles.os
+
 
 class Label:
     def __init__(self):
@@ -14,13 +17,13 @@ class Label:
         self.image = None
         self.preview = None
 
-    def make(self):
+    async def make(self):
         # removes previous files
-        self.clear_files()
+        await self.clear_files()
         if self.template is None or self.count < 1:
             return
 
-        self.template.process_backend_data() # process the backend data before creating the final label
+        await self.template.process_backend_data() # process the backend data before creating the final label
 
         # the file name is created using the author's ID and the current timestamp
         file_name = f"{self.template.data.get('user_name')}_{datetime.now().strftime('%d-%m-%Y_%H-%M-%S')}"
@@ -51,20 +54,20 @@ class Label:
                 mirror_image(self.preview)
                 mirror_image(self.image)
 
-    def clear_files(self):
+    async def clear_files(self):
         print("clearing label files")
-        if self.pdf is not None and os.path.exists(self.pdf):
-            os.remove(self.pdf)
+        if self.pdf is not None and await aiofiles.os.path.exists(self.pdf):
+            await aiofiles.os.remove(self.pdf)
             self.pdf = None
-        if self.image is not None and os.path.exists(self.image):
-            os.remove(self.image)
+        if self.image is not None and await aiofiles.os.path.exists(self.image):
+            await aiofiles.os.remove(self.image)
             self.image = None
-        if self.preview is not None and os.path.exists(self.preview):
-            os.remove(self.preview)
+        if self.preview is not None and await aiofiles.os.path.exists(self.preview):
+            await aiofiles.os.remove(self.preview)
             self.preview = None
         print(f"pdf: {self.pdf}, image: {self.image}")
 
-    def reset(self):
-        self.clear_files()
+    async def reset(self):
+        await self.clear_files()
         self.template = None
         self.count = 0

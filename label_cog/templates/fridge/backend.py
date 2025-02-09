@@ -49,7 +49,7 @@ def get_role_expiration_date(user_roles, data):
     return get_time(days_to_add)
 
 
-def process_data(data):
+async def process_data(data):
     print("Data received in backend")
     print(data)
     new_data = {

@@ -345,9 +345,9 @@ display_messages:
         fr: "Ceci est le message par défaut."
         de: "Dies ist die Standardnachricht."
     description:
-        en: "it means that the message that was supposed to be displayed is not in the configuration file."
-        fr: "cela signifie que le message qui devait être affiché n'est pas dans le fichier de configuration."
-        de: "Das bedeutet, dass die anzuzeigende Nachricht nicht in der Konfigurationsdatei steht."
+        en: "it means that the message that was supposed to be displayed is missing in the configuration file."
+        fr: "cela signifie que le message qui devait être affiché est manquant dans le fichier de configuration."
+        de: "Das bedeutet, dass die anzuzeigende Nachricht in der Konfigurationsdatei fehlt."
 
   preview:
     color: 0x53B7BA
@@ -393,16 +393,27 @@ display_messages:
         fr: "Vous devez remplir tous les champs pour créer l'étiquette."
         de: "Sie müssen alle Felder ausfüllen, um das Etikett zu erstellen."
 
+  waiting_upload:
+    color: 0x53B7BA
+    title:
+        en: "Please upload the image for this label in the bot DM."
+        fr: "Veuillez envoyer l'image pour cette étiquette en MP au bot."
+        de: "Bitte senden Sie das Bild für dieses Etikett im Bot-DM."
+    description:
+        en: "You must send the image as an attachment to the bot."
+        fr: "Vous devez envoyer l'image en pièce jointe au bot."
+        de: "Sie müssen das Bild als Anhang an den Bot senden."
+
   how_to_upload:
     color: 0x53B7BA
     title:
-        en: "How to upload an image ?"
-        fr: "Comment envoyer une image ?"
-        de: "Wie lade ich ein Bild hoch ?"
+        en: "Please send the image that should be used for the label here."
+        fr: "Veuillez envoyer l'image qui doit être utilisée pour l'étiquette ici."
+        de: "Bitte senden Sie das Bild, das für das Etikett verwendet werden soll, hier."
     description:
-        en: "You can upload your image here to save it.\nOnce saved, you can reference it in the template using its name."
-        fr: "Vous pouvez envoyer votre image ici pour la sauvegarder.\nUne fois sauvegardée, vous pouvez la référencer dans le template en utilisant son nom."
-        de: "Sie können Ihr Bild hier hochladen, um es zu speichern.\nNach dem Speichern können Sie es im Template unter Verwendung seines Namens referenzieren."
+        en: "You can send the image as an attachment and a confirmation message will be sent to you."
+        fr: "Vous pouvez envoyer l'image en pièce jointe et un message de confirmation vous sera envoyé."
+        de: "Sie können das Bild als Anhang senden und es wird Ihnen eine Bestätigungsnachricht gesendet."
 
   file_saved:
     color: 0x00FF00
@@ -411,9 +422,9 @@ display_messages:
         fr: "Image sauvegardée avec succès !"
         de: "Bild erfolgreich gespeichert !"
     description:
-        en: "The image name is :"
-        fr: "Le nom de l'image est :"
-        de: "Der Name des Bildes ist :"
+        en: "Now can go back to the label creation process using this link."
+        fr: "Vous pouvez maintenant revenir au processus de création de l'étiquette en utilisant ce lien."
+        de: "Jetzt können Sie mit diesem Link zum Etiketterstellungsprozess zurückkehren."
 
   no_attachments:
     color: 0x808080
@@ -425,6 +436,17 @@ display_messages:
         en: "You must send an image as an attachment to save it."
         fr: "Vous devez envoyer une image en pièce jointe pour la sauvegarder."
         de: "Sie müssen ein Bild als Anhang senden, um es zu speichern."
+
+  drive_full:
+    color: 0xFF0000
+    title:
+        en: "the drive for file uploads is full !"
+        fr: "le disque pour les téléchargements de fichiers est plein !"
+        de: "das Laufwerk für Datei-Uploads ist voll !"
+    description:
+        en: "to many people tried to upload files, wait a bit for the older files to be deleted."
+        fr: "Le disque pour les téléchargements de fichiers est plein, veuillez contacter un administrateur."
+        de: "Das Laufwerk für Datei-Uploads ist voll, bitte kontaktieren Sie einen Administrator."
 
   timeout:
     color: 0x808080
@@ -469,6 +491,17 @@ display_messages:
         en: "The label has been printed."
         fr: "L'étiquette a été imprimée."
         de: "Das Etikett wurde gedruckt."
+
+  error:
+    color: 0xFF0000
+    title:
+        en: "An error occurred !"
+        fr: "Une erreur est survenue !"
+        de: "Ein Fehler ist aufgetreten !"
+    description:
+        en: "An unecpected error occurred. check the logs for more information."
+        fr: "Une erreur inattendue est survenue. Vérifiez les logs pour plus d'informations."
+        de: "Ein unerwarteter Fehler ist aufgetreten. Überprüfen Sie die Protokolle für weitere Informationen."
 
   error_print:
     color: 0xFF0000

@@ -15,3 +15,4 @@ cache/
 database.sqlite
 #copyrigthed files
 smash_images/
+/venv/

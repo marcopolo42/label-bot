@@ -90,7 +90,7 @@ def fetch_meme():
 
 
 # Example usage:
-def process_data(data):
+async def process_data(data):
     meme_url = fetch_meme()
     if meme_url:
         print(f"Meme URL: {meme_url}")

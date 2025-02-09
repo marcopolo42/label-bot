@@ -106,7 +106,7 @@ class ChooseLabelView(discord.ui.View):
         self.add_item(self.help_button)
 
     async def select_type_callback(self, interaction):
-        self.label.reset()
+        await self.label.reset()
         try:
             self.label.template = Template(self.select_type.values[0], self.lang, self.author)
         except TemplateException as e:
@@ -116,6 +116,7 @@ class ChooseLabelView(discord.ui.View):
         else:
             set_current_value_as_default(self.select_type, self.select_type.values[0])
             await self.send_msg_how_to_upload(self.label.template, interaction)
+
             await self.ask_for_custom_label_fields(interaction, self.label)
             self.update_reload_button(self.label.template)
             await self.update_select_count_options()
@@ -165,7 +166,7 @@ class ChooseLabelView(discord.ui.View):
                 raise ValueError(f"Unexpected outcome: {outcome}")
 
     async def cancel_button_callback(self, interaction):
-        self.label.clear_files()
+        await self.label.clear_files()
         await self.display_and_stop(interaction, "canceled")
 
     async def help_button_callback(self, interaction):
@@ -173,7 +174,7 @@ class ChooseLabelView(discord.ui.View):
 
     async def on_timeout(self):
         print("Timeout")
-        self.label.clear_files()
+        await self.label.clear_files()
         self.disable_all_items()
         await update_displayed_status("timeout", self.lang, original_message=self.parent, view=self)
         self.stop()
@@ -274,10 +275,13 @@ class ChooseLabelView(discord.ui.View):
         if not self.are_custom_fields_filled():
             await update_displayed_status("missing_fields", self.lang, interaction=interaction, view=self)
             return
-        print("Creating the label embed ...")
-        await update_displayed_status("creating", self.lang, interaction=interaction, view=self)
+
+        if self.label.template.settings.get("image_upload") is not None:
+            await update_displayed_status("waiting_upload", self.lang, interaction=interaction, view=self)
+        else:
+            await update_displayed_status("creating", self.lang, interaction=interaction, view=self)
         print("label.make() ...")
-        self.label.make()
+        await self.label.make()
         self.select_count.disabled = False
         self.print_button.disabled = False
         await update_displayed_status("preview", self.lang, image=self.label.preview, interaction=interaction, view=self)

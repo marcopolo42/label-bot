@@ -100,7 +100,7 @@ class Template:
             for key, value in self.settings.items():
                 self.data.update({key: value})
 
-    def process_backend_data(self):
+    async def process_backend_data(self):
         if not os.path.exists(self.backend_path):
             return
         # Load the module dynamically
@@ -108,11 +108,10 @@ class Template:
         spec = importlib.util.spec_from_file_location("backend", self.backend_path)
         backend_module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(backend_module)
-        # backend.py should define a function `process_data` that returns a dictionary and has a parameter `data` to use the settings data
+        # backend.py should define an async function `process_data` that returns a dictionary and has a parameter `data` to use the settings data
         if hasattr(backend_module, 'process_data'):
-            processed_data = backend_module.process_data(self.data)
+            processed_data = await backend_module.process_data(self.data)
             if processed_data is not None:
                 self.data.update(processed_data)
-            #print(f"Data processed by backend for {self.key}: {self.data}")
         else:
             print(f"Backend for {self.key} is missing the process_data function")

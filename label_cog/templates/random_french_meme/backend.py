@@ -32,7 +32,7 @@ def fetch_meme():
 
 
 # Example usage:
-def process_data(data):
+async def process_data(data):
     result = fetch_meme()
     if result["success"]:
         data = {"meme_url": result["url"]}
