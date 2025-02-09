@@ -13,7 +13,7 @@ dotenv.load_dotenv()
 
 def ql_brother_print_usb(image, count):
     printer = os.getenv("PRINTER_ID")
-    backend = 'pyusb'  # 'pyusb', 'linux_kernel', 'network'
+    backend = os.getenv("PRINTER_BACKEND") # 'pyusb', 'linux_kernel', 'network'
     model = os.getenv("PRINTER_MODEL")
     if image is None:
         return
