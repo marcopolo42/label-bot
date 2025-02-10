@@ -16,6 +16,9 @@ from label_cog.src.utils import get_translation, get_lang
 
 from label_cog.src.discord_utils import get_embed
 
+import asyncio
+
+import label_cog.src.global_vars as global_vars
 
 class ChooseLabelView(discord.ui.View):
     def __init__(self, session, label):
@@ -199,8 +202,11 @@ class ChooseLabelView(discord.ui.View):
         if template.settings is None:
             value = None
         else:
-            value = template.settings.get("image_upload")
+            value = template.settings.get("image_upload", None)
         if value is not None:
+            global_vars.file_uploads_futures.update({interaction.user.id: asyncio.Future()})
+            print(f"File uploads futures 1: {global_vars.file_uploads_futures}")
+            global_vars.channel_link.update({interaction.user.id: interaction.channel.mention})
             await interaction.user.send(embed=get_embed("how_to_upload", self.lang))
 
     async def ask_for_custom_label_fields(self, interaction, label):

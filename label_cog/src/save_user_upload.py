@@ -47,7 +47,7 @@ async def save_file_uploaded(message, folder, lang):
         print("Error: Invalid URL")
         await message.channel.send(embed=get_embed("error", lang))
         return
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(headers={"Connection": "keep-alive"}) as session: # todo check if keep-alive is needed
         async with session.get(url) as r:
             name = f"{message.author.id}_{name}"
             file_path = os.path.join(folder, name)
@@ -57,7 +57,13 @@ async def save_file_uploaded(message, folder, lang):
                         await out_file.write(chunk)
                 print(f"Success: File saved as {name}")
                 await message.channel.send(embed=get_embed("file_saved", lang))
-                await message.channel.send(global_vars.channel_link.get(message.author.id, "Error: not label creation interaction found."))
+                print(f"File uploads futures 3: {global_vars.file_uploads_futures}")
+                await message.channel.send(global_vars.channel_link.pop(message.author.id, "Error: not label creation interaction found."))
+                #sets the result of the file future with the file path
+                print(f"Message author ID: {message.author.id}")
+                future = global_vars.file_uploads_futures.pop(message.author.id)
+                future.set_result(file_path) # this sends the file path to the coroutine that is waiting for it.
+
                 print(f"Jump URLs: {global_vars.channel_link}")
             except OSError as e:
                 if e.errno == 28:  # Error number for "No space left on device"
@@ -66,3 +72,7 @@ async def save_file_uploaded(message, folder, lang):
                 else:
                     print(f"Error: {e}")
                     await message.channel.send(embed=get_embed("error", lang))
+            except Exception as e:
+                print(f"Unexpected error: {e}")
+                raise e
+                await message.channel.send(embed=get_embed("error", lang))

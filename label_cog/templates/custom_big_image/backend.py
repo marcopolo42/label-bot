@@ -9,8 +9,6 @@ import os
 import asyncio
 import aiofiles
 from pathlib import Path
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
 
 #for tests
 import time
@@ -67,56 +65,15 @@ def get_maximum_size_for_paper(size):
     return height, width
 
 
-
-
-class FileWaitHandler(FileSystemEventHandler):
-    def __init__(self, substring, folder, event_loop):
-        self.substring = substring
-        self.folder = folder
-        self.event_loop = event_loop
-        self.event = asyncio.Event()
-        self.found_file = None
-
-    def on_created(self, event):
-        if event.is_directory:
-            return
-
-        file_path = Path(event.src_path)
-        if self.substring in file_path.name:
-            self.found_file = file_path.resolve()
-            self.event.set()
-
-
-async def wait_for_file(folder, substring):
-    """Waits for a file containing 'substring' in its name to appear in 'folder'. Returns absolute path."""
-    loop = asyncio.get_event_loop()
-    event_handler = FileWaitHandler(substring, folder, loop)
-    observer = Observer()
-    observer.schedule(event_handler, folder, recursive=False)
-    observer.start()
-    try:
-        print(f"Waiting for a file from the user '{substring}' in {folder}...")
-        await asyncio.wait_for(event_handler.event.wait(), timeout=300)  # Wait for up to 5 minutes (300 seconds)
-        if event_handler.found_file:
-            return str(event_handler.found_file)
-        else:
-            raise None
-    except asyncio.TimeoutError:
-        print(f"Timeout while waiting for a file from the user '{substring}' in {folder}")
-        return None
-    finally:
-        observer.stop()
-        observer.join()
-
-
 async def process_data(data):
     print("Data received in backend")
     print(data)
     user_id = data.get("user_id", "")
 
-    img_path = await wait_for_file(CACHE_FOLDER, user_id)
+    img_path = data.get("img_path", None)
     print(f"File found: {img_path}")
     if img_path is None: # Timeout of 5 minutes
+        print("img_path is None")
         return {}
     img = await get_image_from_cache(img_path)
     height, width = get_maximum_size_for_paper(img.size)

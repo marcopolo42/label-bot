@@ -6,6 +6,7 @@ from label_cog.src.image_utils import pdf_to_image, convert_to_grayscale, add_ma
 import random
 import aiofiles
 import aiofiles.os
+import label_cog.src.global_vars as global_vars
 
 
 class Label:
@@ -23,6 +24,16 @@ class Label:
         if self.template is None or self.count < 1:
             return
 
+        # wait for the user provided image and add it to the data
+        if self.template.settings is not None and self.template.settings.get("image_upload") is not None:
+            print(self.template.data.get("user_id"))
+            print(f"File uploads futures 2: {global_vars.file_uploads_futures}")
+            future = global_vars.file_uploads_futures.get(int(self.template.data.get("user_id")))
+            print(future)
+            file_path = await future
+            print(f"File path of image after future: {file_path}")
+            self.template.data.update({"img_path": file_path})
+
         await self.template.process_backend_data() # process the backend data before creating the final label
 
         # the file name is created using the author's ID and the current timestamp
@@ -36,6 +47,7 @@ class Label:
                                    default_stylesheets=(f"{self.template.folder_path}/style.css",))
         #pdf creation
         records = [self.template.data]
+        print(f"Records: {records}")
         label_writer.write_labels(records, target=self.pdf)
         #image creation
         pdf_to_image(self.pdf, self.image)
