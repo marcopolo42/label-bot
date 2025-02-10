@@ -96,9 +96,6 @@ async def choose_and_print_label(ctx, session):
     label = Label()
     view = ChooseLabelView(session, label)
     interaction = await ctx.respond(embed=get_embed("help", session.lang), view=view, ephemeral=True)
-    print(f"interaction contents: {interaction}")
-    print(f"interaction contents: {interaction.message}")
-    global_vars.channel_link.update({ctx.author.id: interaction.channel.mention})
     await view.wait()
 
 
