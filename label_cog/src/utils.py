@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from label_cog.src.config import Config
 import os
+import socket
 
 
 def get_lang(dict, lang):
@@ -59,3 +60,16 @@ def get_cache_directory(file_name=None):
     else:
         print("ENV is not set")
         return os.path.join(os.getcwd(), 'label_cog', 'cache', file_name)
+
+
+def get_current_ip():
+    # Step 1: Get the local hostname.
+    local_hostname = socket.gethostname()
+    # Step 2: Get a list of IP addresses associated with the hostname.
+    ip_addresses = socket.gethostbyname_ex(local_hostname)[2]
+    # Step 3: Filter out loopback addresses (IPs starting with "127.").
+    filtered_ips = [ip for ip in ip_addresses if not ip.startswith("127.")]
+    # Step 4: Extract the first IP address (if available) from the filtered list.
+    first_ip = filtered_ips[:1]
+    # Step 5: Print the obtained IP address to the console.
+    return first_ip

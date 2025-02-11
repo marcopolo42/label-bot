@@ -4,6 +4,9 @@ import os
 from label_cog.src.config import Config
 from label_cog.src.db import get_user_language
 from label_cog.src.utils import get_lang
+from label_cog.src.utils import get_local_directory
+import subprocess
+
 
 
 def set_current_value_as_default(select, key):
@@ -72,3 +75,36 @@ async def update_displayed_status(key, lang, image=None, interaction=None, origi
         interaction=interaction,
         view=view
     )
+
+
+async def display_and_stop(view, interaction, status):
+    view.disable_all_items()
+    await update_displayed_status(str(status), view.lang, interaction=interaction, view=view)
+    view.stop()
+
+
+def create_option(template, lang):
+    return discord.SelectOption(
+        label=get_lang(template.get("name"), lang),
+        value=template.get("key"),
+        description=get_lang(template.get("description"), lang),
+        emoji=template.get("emoji")
+    )
+
+
+def get_templates_options(roles_names_lower, lang):
+    templates = Config().get("templates")
+    options = []
+    for template in templates:
+        allowed_roles = template.get("allowed_roles")
+        for a_role in allowed_roles:
+            if a_role.lower() in roles_names_lower:
+                options.append(create_option(template, lang))
+                break
+    if len(options) == 0:
+        options.append(discord.SelectOption(
+            label="No templates available",
+            value="no_templates",
+            description="You don't have access to any templates",
+        ))
+    return options

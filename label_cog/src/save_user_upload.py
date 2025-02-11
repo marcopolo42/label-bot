@@ -1,7 +1,7 @@
 import os.path
 import aiohttp
 import aiofiles
-from label_cog.src.discord_utils import get_embed
+from label_cog.src.view_utils import get_embed
 
 import label_cog.src.global_vars as global_vars
 
@@ -75,4 +75,3 @@ async def save_file_uploaded(message, folder, lang):
             except Exception as e:
                 print(f"Unexpected error: {e}")
                 raise e
-                await message.channel.send(embed=get_embed("error", lang))

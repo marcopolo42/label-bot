@@ -18,6 +18,6 @@ try:
 except ClientConnectorError:
     print("\033[91mNo internet connection.\033[0m") #the weird syntax is for making the text red
 except Exception as e:
-    print("\033[91mNo internet connection.\033[0m")
+    raise e
 
 

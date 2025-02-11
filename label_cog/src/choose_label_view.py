@@ -1,6 +1,6 @@
 import discord
 
-from label_cog.src.discord_utils import set_current_value_as_default, update_displayed_status
+from label_cog.src.view_utils import set_current_value_as_default, update_displayed_status
 
 from label_cog.src.template_class import Template, TemplateException
 
@@ -14,11 +14,12 @@ from label_cog.src.config import Config
 
 from label_cog.src.utils import get_translation, get_lang
 
-from label_cog.src.discord_utils import get_embed
+from label_cog.src.view_utils import get_embed, display_and_stop, get_templates_options
 
 import asyncio
 
 import label_cog.src.global_vars as global_vars
+
 
 class ChooseLabelView(discord.ui.View):
     def __init__(self, session, label):
@@ -28,7 +29,7 @@ class ChooseLabelView(discord.ui.View):
         self.lang = session.lang
         self.label = label
         # we cannot display more than 25 options in a select, so we need to split the options in multiple pages
-        self.options = self.load_templates_options()
+        self.options = get_templates_options(self.roles.names_lower, self.lang)
         self.option_pages_count = self.count_of_option_pages()
 
         # Create the select and buttons
@@ -113,13 +114,12 @@ class ChooseLabelView(discord.ui.View):
         try:
             self.label.template = Template(self.select_type.values[0], self.lang, self.author)
         except TemplateException as e:
-            await self.display_and_stop(interaction, e)
+            await display_and_stop(self, interaction, e)
         except Exception as e:
             raise e
         else:
             set_current_value_as_default(self.select_type, self.select_type.values[0])
             await self.send_msg_how_to_upload(self.label.template, interaction)
-
             await self.ask_for_custom_label_fields(interaction, self.label)
             self.update_reload_button(self.label.template)
             await self.update_select_count_options()
@@ -156,21 +156,19 @@ class ChooseLabelView(discord.ui.View):
             print(f"error: {e}")
             print(e, type(e), e.__traceback__, e.__dict__)
             print(f"\033[91mError while printing: {e}\033[0m")
-            await self.display_and_stop(interaction, "error_print")
+            await display_and_stop(self,interaction, "error_print")
         else:
             outcome = status.get("outcome")
             if outcome == "error":
-                await self.display_and_stop(interaction, "error_print")
-                return
+                await display_and_stop(self,interaction, "error_print")
             elif outcome == "printed":
-                await self.display_and_stop(interaction, "printed")
-                return
+                await display_and_stop(self,interaction, "printed")
             else:
                 raise ValueError(f"Unexpected outcome: {outcome}")
 
     async def cancel_button_callback(self, interaction):
         await self.label.clear_files()
-        await self.display_and_stop(interaction, "canceled")
+        await display_and_stop(self, interaction, "canceled")
 
     async def help_button_callback(self, interaction):
         await update_displayed_status("help", self.lang, interaction=interaction, view=self)
@@ -180,11 +178,6 @@ class ChooseLabelView(discord.ui.View):
         await self.label.clear_files()
         self.disable_all_items()
         await update_displayed_status("timeout", self.lang, original_message=self.parent, view=self)
-        self.stop()
-
-    async def display_and_stop(self, interaction, status):
-        self.disable_all_items()
-        await update_displayed_status(str(status), self.lang, interaction=interaction, view=self)
         self.stop()
 
     def update_reload_button(self, template):
@@ -222,33 +215,6 @@ class ChooseLabelView(discord.ui.View):
         await modal.wait()
         return None
 
-    def create_option(self, template):
-        return discord.SelectOption(
-            label=get_lang(template.get("name"), self.lang),
-            value=template.get("key"),
-            description=get_lang(template.get("description"), self.lang),
-            emoji=template.get("emoji")
-        )
-
-    def load_templates_options(self):
-        templates = Config().get("templates")
-        options = []
-        for template in templates:
-            allowed_roles = template.get("allowed_roles")
-            print(f"allowed_roles: {allowed_roles}")
-            for a_role in allowed_roles:
-                if a_role.lower() in self.roles.names_lower:
-                    print(f"option added: {template.get('key')}")
-                    options.append(self.create_option(template))
-                    break
-        if len(options) == 0:
-            options.append(discord.SelectOption(
-                label="No templates available",
-                value="no_templates",
-                description="You don't have access to any templates",
-            ))
-        return options
-
     def count_of_option_pages(self):
         return len(self.options) // 25
 
@@ -256,7 +222,7 @@ class ChooseLabelView(discord.ui.View):
         return self.options[25 * page: 25 * (page + 1)]
 
     async def update_select_count_options(self):
-        available_prints = await self.label.template.prints_available_today(self.author)
+        available_prints = await self.label.template.get_prints_available_today(self.author)
         if available_prints == 0:
             self.select_count.options = [discord.SelectOption(label="0", value="0")]
         else:
@@ -293,35 +259,4 @@ class ChooseLabelView(discord.ui.View):
         await update_displayed_status("preview", self.lang, image=self.label.preview, interaction=interaction, view=self)
 
 
-class ChangeLanguageView(discord.ui.View):
-    def __init__(self, session):
-        super().__init__(disable_on_timeout=True, timeout=300)  # 5 minutes timeout
-        self.author = session.author
-        self.lang = session.lang
 
-        # get the language options from the configuration file
-        languages = Config().get("languages")
-        if languages is None:
-            raise ValueError("Languages are missing from the config file")
-        options = []
-        for language in languages:
-            options.append(discord.SelectOption(
-                label=language.get("name"),
-                value=language.get("key"),
-                emoji=language.get("emoji")
-            ))
-            if language.get("key") == session.lang:
-                options[-1].default = True
-        self.language_select = discord.ui.Select(
-            options=options
-        )
-        self.language_select.callback = self.language_select_callback
-        self.add_item(self.language_select)
-
-    #todo set the current discord language as default
-    async def language_select_callback(self, interaction):
-        value = self.language_select.values[0]
-        await update_user_language(interaction.user, value)
-        self.lang = value
-        self.disable_all_items()
-        await update_displayed_status("language_changed", self.lang, interaction=interaction, view=self)

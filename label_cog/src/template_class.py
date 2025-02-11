@@ -57,7 +57,7 @@ class Template:
         self.add_settings_data()
         # backend data is processed when making the label
 
-    def get_daily_limit(self, user_roles):
+    def get_daily_role_limit(self, user_roles):
         if self.daily_role_limits is None:
             return 25
         limit_found_flag = False
@@ -75,8 +75,8 @@ class Template:
             limit = 25
         return limit
 
-    async def prints_available_today(self, author):
-        limit = self.get_daily_limit(author.roles)
+    async def get_prints_available_today(self, author):
+        limit = self.get_daily_role_limit(author.roles)
         available = limit - await get_today_prints_count(author, self.key)
         if available < 0:
             return 0
