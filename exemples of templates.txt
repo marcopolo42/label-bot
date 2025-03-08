@@ -117,3 +117,11 @@ discord.SelectOption(label="Student Food Label", description="Your favourite col
       roles:
         Student: 1
         Bocal: 1
+
+
+        perssonal nametag for items maybe with phone number
+
+
+        imprimer des cartes de visite d'étudiants sur un support rigide
+
+        warning if you do not put a label again on your food i will get removed.
