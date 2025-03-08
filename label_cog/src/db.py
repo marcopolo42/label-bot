@@ -32,10 +32,9 @@ class Database:
             await cursor.execute(query, params)
             return await cursor.fetchall()
 
-    def close(self):
-        if self.conn:
-            self.conn.close()
-            self.conn = None
+    async def close(self):
+        await self.conn.close()
+        self.conn = None
 
 
 async def create_tables():

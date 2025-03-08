@@ -34,7 +34,10 @@ from label_cog.src.utils import get_current_ip
 
 from label_cog.src.admin_utils import is_admin, run_admin_script
 
-dotenv.load_dotenv()
+from label_cog.src.logging_dotenv import logging
+
+logger = logging.getLogger(__name__)
+
 
 
 
@@ -71,20 +74,17 @@ class Roles:
         self.names_lower = [role.name.lower() for role in author_roles]
         self.add_bocal_if_needed()
 
-    def is_bocal_role(self, user_roles):
+    def is_bocal_role(self):
         bocal_roles = [role.lower() for role in Config().get("bocal_roles")]
-        return any(role in user_roles for role in bocal_roles)
+        return any(role in self.names_lower for role in bocal_roles)
 
     def add_bocal_if_needed(self):
-        if self.is_bocal_role(self.names_lower):
+        if self.is_bocal_role():
             print("User has a bocal role")
             self.names_lower.append(Config().get("bocal_role_name").lower())
 
     def set_as_only_role(self, role):
         self.names_lower = [role.lower()]
-
-
-
 
 
 async def choose_and_print_label(ctx, session):
@@ -99,11 +99,23 @@ class LabelCog(commands.Cog):
         self.bot = bot
         cog_setup()
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print(f"{self.bot.user} is ready and online and the current IP is {get_current_ip()}")
+    async def cog_before_invoke(self, ctx):
+        print("cog_before_invoke: database initialization")
+        Config().update_from_file()
         await Database().initialize("label_cog/database.sqlite")
         await create_tables()
+
+    async def cog_after_invoke(self, ctx):
+        await Database().close()
+        print("cog_before_invoke: database closed successfully")
+
+    def cog_unload(self):
+        print("Unloading LabelCog...")
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        logger.info(f"{self.bot.user} is ready and online and the current IP is {get_current_ip()}")
+        print(f"{self.bot.user} is ready and online and the current IP is {get_current_ip()}")
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -111,10 +123,6 @@ class LabelCog(commands.Cog):
             return
         print(f"before save_file_uploaded")
         await save_file_uploaded(message, "label_cog/cache", "en")
-
-    def cog_unload(self):
-        Database().close()
-        print("Database closed for the cog")
 
     @discord.slash_command(name="label", description="Print a label")
     async def label(self, ctx):
@@ -180,6 +188,6 @@ def setup(bot):
     bot.add_cog(LabelCog(bot))
 
 
-#def close(self): # todo may not work
-#    Database().close()
-#    print("Database closed for the cog")
+def teardown(bot):
+    print("teardown of LabelCog")
+
