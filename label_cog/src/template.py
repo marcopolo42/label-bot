@@ -1,4 +1,4 @@
-from label_cog.src.db import get_today_prints_count
+from label_cog.src.database import get_today_prints_count
 
 from label_cog.src.config import Config
 

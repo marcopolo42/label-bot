@@ -2,7 +2,7 @@ import discord
 import os
 
 from label_cog.src.config import Config
-from label_cog.src.db import get_user_language
+from label_cog.src.database import get_user_language
 from label_cog.src.utils import get_lang
 from label_cog.src.utils import get_local_directory
 from label_cog.src.logging_dotenv import setup_logger

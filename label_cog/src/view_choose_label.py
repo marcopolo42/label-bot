@@ -2,11 +2,11 @@ import discord
 
 from label_cog.src.view_utils import set_current_value_as_default, update_displayed_status
 
-from label_cog.src.template_class import Template, TemplateException
+from label_cog.src.template import Template, TemplateException
 
-from label_cog.src.db import update_user_language, get_user_language, add_log
+from label_cog.src.database import update_user_language, get_user_language, add_log
 
-from label_cog.src.printer_utils import ql_brother_print_usb
+from label_cog.src.printer import ql_brother_print_usb
 
 from label_cog.src.modals import CustomLabelModal
 

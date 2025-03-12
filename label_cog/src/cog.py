@@ -6,24 +6,24 @@ import os
 import dotenv
 import subprocess
 
-from label_cog.src.db import add_log, get_logs, get_user_language
-from label_cog.src.db import Database, create_tables
+from label_cog.src.database import add_log, get_logs, get_user_language
+from label_cog.src.database import Database, create_tables
 
 from label_cog.src.view_utils import update_displayed_status, get_embed
 
-from label_cog.src.label_class import Label
+from label_cog.src.label import Label
 
-from label_cog.src.choose_label_view import ChooseLabelView
+from label_cog.src.view_choose_label import ChooseLabelView
 
-from label_cog.src.change_language_view import ChangeLanguageView
+from label_cog.src.view_change_language import ChangeLanguageView
 
 from label_cog.src.config import Config
 
-from label_cog.src.printer_utils import ql_brother_print_usb
+from label_cog.src.printer import ql_brother_print_usb
 
 from label_cog.src.cleanup_thread import start_cleanup
 
-from label_cog.src.save_user_upload import save_file_uploaded
+from label_cog.src.user_upload import save_file_uploaded
 from label_cog.src.utils import get_cache_directory, get_local_directory
 
 import socket
@@ -32,12 +32,14 @@ import label_cog.src.global_vars as global_vars
 
 from label_cog.src.utils import get_current_ip
 
-from label_cog.src.admin_utils import is_admin, run_admin_script
+from label_cog.src.admin import is_admin, run_admin_script
 
 from label_cog.src.logging_dotenv import setup_logger
 logger = setup_logger(__name__)
 
 import time
+
+from label_cog.src.session import Session
 
 
 def cog_setup():
@@ -62,29 +64,7 @@ def cog_setup():
         1)
     Config().load_config_files()
 
-class Session:
-    def __init__(self, author, lang):
-        self.author = author
-        self.roles = Roles(author.roles)
-        self.lang = lang
 
-
-class Roles:
-    def __init__(self, author_roles):
-        self.names_lower = [role.name.lower() for role in author_roles]
-        self.add_bocal_if_needed()
-
-    def is_bocal_role(self):
-        bocal_roles = [role.lower() for role in Config().get("bocal_roles")]
-        return any(role in self.names_lower for role in bocal_roles)
-
-    def add_bocal_if_needed(self):
-        if self.is_bocal_role():
-            logger.info("User has a bocal role")
-            self.names_lower.append(Config().get("bocal_role_name").lower())
-
-    def set_as_only_role(self, role):
-        self.names_lower = [role.lower()]
 
 
 async def choose_and_print_label(ctx, session):
@@ -106,7 +86,7 @@ class LabelCog(commands.Cog):
 
     async def cog_after_invoke(self, ctx):
         await Database().close()
-        logger.debug("cog_before_invoke: database closed successfully")
+        logger.debug("cog_after_invoke: database closed successfully")
 
     def cog_unload(self):
         logger.debug("Unloading LabelCog...")
