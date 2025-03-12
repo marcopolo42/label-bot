@@ -7,8 +7,8 @@ from PIL import Image
 Image.MAX_IMAGE_PIXELS = None  # Increase pixel limit for the PIL dependency (8K)
 
 import os
-import dotenv
-dotenv.load_dotenv()
+from label_cog.src.logging_dotenv import setup_logger
+logger = setup_logger(__name__)
 
 
 def ql_brother_print_usb(image, count):
@@ -22,7 +22,7 @@ def ql_brother_print_usb(image, count):
     # enable if in dev mode
     qlr.exception_on_warning = True if os.getenv("ENV") == "dev" else False
     if im.size[0] > 1465 and im.size[1] > 1465: # todo enable proper error handling and test this
-        print("Image is too big to be printed in a 62mm label")
+        logger.info("Image is too big to be printed in a 62mm label")
         raise ValueError("Image is too big to be printed in a 62mm label")
     instructions = convert(
         qlr=qlr,

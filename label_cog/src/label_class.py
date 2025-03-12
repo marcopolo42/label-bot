@@ -7,6 +7,8 @@ import random
 import aiofiles
 import aiofiles.os
 import label_cog.src.global_vars as global_vars
+from label_cog.src.logging_dotenv import setup_logger
+logger = setup_logger(__name__)
 
 
 class Label:
@@ -26,12 +28,9 @@ class Label:
 
         # wait for the user provided image and add it to the data
         if self.template.settings is not None and self.template.settings.get("image_upload") is not None:
-            print(self.template.data.get("user_id"))
-            print(f"File uploads futures 2: {global_vars.file_uploads_futures}")
             future = global_vars.file_uploads_futures.get(int(self.template.data.get("user_id")))
-            print(future)
             file_path = await future
-            print(f"File path of image after future: {file_path}")
+            logger.debug(f"File path of image after future: {file_path}")
             self.template.data.update({"img_path": file_path})
 
         await self.template.process_backend_data() # process the backend data before creating the final label
@@ -47,7 +46,7 @@ class Label:
                                    default_stylesheets=(f"{self.template.folder_path}/style.css",))
         #pdf creation
         records = [self.template.data]
-        print(f"Records: {records}")
+        logger.debug(f"Records: {records}")
         label_writer.write_labels(records, target=self.pdf)
         #image creation
         pdf_to_image(self.pdf, self.image)
@@ -67,7 +66,7 @@ class Label:
                 mirror_image(self.image)
 
     async def clear_files(self):
-        print("clearing label files")
+        logger.info("clearing label files")
         if self.pdf is not None and await aiofiles.os.path.exists(self.pdf):
             await aiofiles.os.remove(self.pdf)
             self.pdf = None
@@ -77,7 +76,7 @@ class Label:
         if self.preview is not None and await aiofiles.os.path.exists(self.preview):
             await aiofiles.os.remove(self.preview)
             self.preview = None
-        print(f"pdf: {self.pdf}, image: {self.image}")
+        logger.debug(f"pdf: {self.pdf}, image: {self.image}")
 
     async def reset(self):
         await self.clear_files()

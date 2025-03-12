@@ -1,5 +1,7 @@
 import requests
 import random
+from label_cog.src.logging_dotenv import setup_logger
+logger = setup_logger(__name__)
 
 '''
 example response from the API:d
@@ -71,17 +73,17 @@ def fetch_meme():
     count = 50
 
     data = api_call(api_endpoint, count)
-    print("All meme titles:")
+    logger.debug("All meme titles:")
     for meme in data["memes"]:
-        print(meme["title"])
+        logger.debug(meme["title"])
 
     if data is None:
         return None
     # random out of count memes and check if it has blacklisted words if it has delete the meme the continue the loop
     for i in range(count):
         meme = random.choice(data["memes"])
-        print("Random Meme:")
-        print(meme["title"])
+        logger.debug("Random Meme:")
+        logger.debug(meme["title"])
         if any(word in meme["title"].lower() for word in blacklisted_words):
             data["memes"].remove(meme)
             continue
@@ -93,9 +95,9 @@ def fetch_meme():
 async def process_data(data):
     meme_url = fetch_meme()
     if meme_url:
-        print(f"Meme URL: {meme_url}")
+        logger.debug(f"Meme URL: {meme_url}")
         return {"meme_url": meme_url}
     else:
-        print("Failed to fetch meme")
+        logger.debug("Failed to fetch meme")
         return None
 

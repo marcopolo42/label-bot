@@ -1,10 +1,8 @@
 import os
 import base64
 import mimetypes
-
-
-# Debugging: Print current working directory
-print(f"Current working directory: {os.getcwd()}")
+from label_cog.src.logging_dotenv import setup_logger
+logger = setup_logger(__name__)
 
 
 # Convert an image to a Base64-encoded string with MIME prefix
@@ -21,10 +19,10 @@ def image_to_base64(image_name):
             base64_data = base64.b64encode(image_file.read()).decode("utf-8")
             return f"data:{mime_type};base64,{base64_data}"
     except FileNotFoundError:
-        print(f"Error: File '{image_path}' not found.")
+        logger.error(f"Error: File '{image_path}' not found.")
         return None
     except Exception as e:
-        print(f"An error occurred while processing the file: {e}")
+        logger.error(f"An error occurred while processing the file: {e}")
         return None
 
 

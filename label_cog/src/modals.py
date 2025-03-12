@@ -1,6 +1,8 @@
 
 import discord
 from label_cog.src.utils import get_translation, get_lang
+from label_cog.src.logging_dotenv import setup_logger
+logger = setup_logger(__name__)
 
 
 class CustomLabelModal(discord.ui.Modal):
@@ -36,5 +38,5 @@ class CustomLabelModal(discord.ui.Modal):
         for idx, item in enumerate(self.label.template.fields):
             self.label.template.data.update({item["key"]: self.children[idx].value})
         else:
-            print("Deferring callback modal custom label")
+            logger.debug("Deferring callback modal custom label")
             await interaction.response.defer()

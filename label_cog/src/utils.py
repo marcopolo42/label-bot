@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 from label_cog.src.config import Config
 import os
 import socket
+from label_cog.src.logging_dotenv import setup_logger
+logger = setup_logger(__name__)
 
 
 def get_lang(dict, lang):
@@ -9,7 +11,7 @@ def get_lang(dict, lang):
         return None
     languages_codes = [language.get("key") for language in Config().get("languages")]
     if lang not in languages_codes:
-        print(f"Language {lang} not found in the config file")
+        logger.warning(f"Language {lang} not found in the config file")
         lang = "en"
     if lang not in dict:
         return dict[list(dict.keys())[0]]
@@ -58,7 +60,7 @@ def get_cache_directory(file_name=None):
     if env == 'dev':
         return os.path.join(os.getcwd(), 'label_cog', 'cache', file_name)
     else:
-        print("ENV is not set")
+        logger.warning("ENV is not set")
         return os.path.join(os.getcwd(), 'label_cog', 'cache', file_name)
 
 

@@ -1,0 +1,241 @@
+display_messages:
+  default:
+    color: 0x53B7BA
+    title:
+        en: "This is the default message."
+        fr: "Ceci est le message par défaut."
+        de: "Dies ist die Standardnachricht."
+    description:
+        en: "it means that the message that was supposed to be displayed is missing in the configuration file."
+        fr: "cela signifie que le message qui devait être affiché est manquant dans le fichier de configuration."
+        de: "Das bedeutet, dass die anzuzeigende Nachricht in der Konfigurationsdatei fehlt."
+
+  preview:
+    color: 0x53B7BA
+    title:
+        en: "Preview of the label"
+        fr: "Aperçu de l'étiquette"
+        de: "Vorschau des Etiketts"
+    description:
+        en: "This is how your label will look like."
+        fr: "Voici à quoi ressemblera votre étiquette."
+        de: "So wird Ihr Etikett aussehen."
+
+  creating:
+    color: 0x53B7BA
+    title:
+        en: "Creating the label !"
+        fr: "Création de l'étiquette !"
+        de: "Das Etikett wird erstellt !"
+    description:
+        en: "please wait ..."
+        fr: "Veuillez patienter ..."
+        de: "Bitte warten ..."
+
+  daily_limit_reached:
+    color: 0xFF0000
+    title:
+        en: "Daily limit reached !"
+        fr: "Limite quotidienne atteinte !"
+        de: "Tageslimit erreicht !"
+    description:
+        en: "You have reached the daily limit for this label."
+        fr: "Vous avez atteint la limite quotidienne pour cette étiquette."
+        de: "Sie haben das Tageslimit für dieses Etikett erreicht."
+
+  waiting_fields:
+    color: 0x53B7BA
+    title:
+        en: "Please fill the requested fields."
+        fr: "Veuillez remplir les champs demandés."
+        de: "Bitte füllen Sie die angeforderten Felder aus."
+    description:
+        en: "You must fill all the fields to create the label."
+        fr: "Vous devez remplir tous les champs pour créer l'étiquette."
+        de: "Sie müssen alle Felder ausfüllen, um das Etikett zu erstellen."
+
+  waiting_upload:
+    color: 0x53B7BA
+    title:
+        en: "Please upload the image for this label in the bot DM."
+        fr: "Veuillez envoyer l'image pour cette étiquette en MP au bot."
+        de: "Bitte senden Sie das Bild für dieses Etikett im Bot-DM."
+    description:
+        en: "You must send the image as an attachment to the bot."
+        fr: "Vous devez envoyer l'image en pièce jointe au bot."
+        de: "Sie müssen das Bild als Anhang an den Bot senden."
+
+  how_to_upload:
+    color: 0x53B7BA
+    title:
+        en: "Please send the image that should be used for the label here."
+        fr: "Veuillez envoyer l'image qui doit être utilisée pour l'étiquette ici."
+        de: "Bitte senden Sie das Bild, das für das Etikett verwendet werden soll, hier."
+    description:
+        en: "You can send the image as an attachment and a confirmation message will be sent to you."
+        fr: "Vous pouvez envoyer l'image en pièce jointe et un message de confirmation vous sera envoyé."
+        de: "Sie können das Bild als Anhang senden und es wird Ihnen eine Bestätigungsnachricht gesendet."
+
+  file_saved:
+    color: 0x00FF00
+    title:
+        en: "Image saved successfully !"
+        fr: "Image sauvegardée avec succès !"
+        de: "Bild erfolgreich gespeichert !"
+    description:
+        en: "Now can go back to the label creation process using this link."
+        fr: "Vous pouvez maintenant revenir au processus de création de l'étiquette en utilisant ce lien."
+        de: "Jetzt können Sie mit diesem Link zum Etiketterstellungsprozess zurückkehren."
+
+  no_attachments:
+    color: 0x808080
+    title:
+        en: "No attachments found !"
+        fr: "Aucune pièce jointe trouvée !"
+        de: "Keine Anhänge gefunden !"
+    description:
+        en: "You must send an image as an attachment to save it."
+        fr: "Vous devez envoyer une image en pièce jointe pour la sauvegarder."
+        de: "Sie müssen ein Bild als Anhang senden, um es zu speichern."
+
+  drive_full:
+    color: 0xFF0000
+    title:
+        en: "the drive for file uploads is full !"
+        fr: "le disque pour les téléchargements de fichiers est plein !"
+        de: "das Laufwerk für Datei-Uploads ist voll !"
+    description:
+        en: "to many people tried to upload files, wait a bit for the older files to be deleted."
+        fr: "Le disque pour les téléchargements de fichiers est plein, veuillez contacter un administrateur."
+        de: "Das Laufwerk für Datei-Uploads ist voll, bitte kontaktieren Sie einen Administrator."
+
+  timeout:
+    color: 0x808080
+    title:
+        en: "Timed out"
+        fr: "Temps écoulé"
+        de: "Zeit abgelaufen"
+    description:
+        en: "You took too long to create the label."
+        fr: "Vous avez mis trop de temps pour créer l'étiquette."
+        de: "Sie haben zu lange gebraucht, um das Etikett zu erstellen."
+
+  canceled:
+    color: 0x808080
+    title:
+        en: "Canceled"
+        fr: "Annulé"
+        de: "Abgebrochen"
+    description:
+        en: "The creation of the label has been canceled. This message will disappear shortly."
+        fr: "La création de l'étiquette a été annulée. Ce message disparaîtra sous peu."
+        de: "Die Erstellung des Etiketts wurde abgebrochen. Diese Nachricht wird in Kürze verschwinden."
+
+  printing:
+    color: 0x53B7BA
+    title:
+        en: "Printing the label !"
+        fr: "Impression de l'étiquette !"
+        de: "Das Etikett wird gedruckt !"
+    description:
+        en: "please wait ..."
+        fr: "Veuillez patienter ..."
+        de: "Bitte warten ..."
+
+  printed:
+    color: 0x00FF00
+    title:
+        en: "Label printed !"
+        fr: "Étiquette imprimée !"
+        de: "Etikett gedruckt !"
+    description:
+        en: "The label has been printed."
+        fr: "L'étiquette a été imprimée."
+        de: "Das Etikett wurde gedruckt."
+
+  error:
+    color: 0xFF0000
+    title:
+        en: "An error occurred !"
+        fr: "Une erreur est survenue !"
+        de: "Ein Fehler ist aufgetreten !"
+    description:
+        en: "An unecpected error occurred. check the logs for more information."
+        fr: "Une erreur inattendue est survenue. Vérifiez les logs pour plus d'informations."
+        de: "Ein unerwarteter Fehler ist aufgetreten. Überprüfen Sie die Protokolle für weitere Informationen."
+
+  error_print:
+    color: 0xFF0000
+    title:
+        en: "Failed to print the label !"
+        fr: "Échec de l'impression de l'étiquette !"
+        de: "Fehler beim Drucken des Etiketts !"
+    description:
+        en: "An error occurred while printing the label."
+        fr: "Une erreur est survenue lors de l'impression de l'étiquette."
+        de: "Beim Drucken des Etiketts ist ein Fehler aufgetreten."
+  error_generate:
+    color: 0xFF0000
+    title:
+        en: "Error generating the label !"
+        fr: "Erreur lors de la génération de l'étiquette !"
+        de: "Fehler beim Generieren des Etiketts !"
+    description:
+        en: "An error occurred while generating the label."
+        fr: "Une erreur est survenue lors de la génération de l'étiquette."
+        de: "Beim Generieren des Etiketts ist ein Fehler aufgetreten."
+
+  no_templates:
+    color: 0x808080
+    title:
+        en: "No templates are available to you."
+        fr: "Aucun modèle n'est disponible pour vous."
+        de: "Keine Vorlagen sind für Sie verfügbar."
+    description:
+        en: "You don't have access to any templates probably because you are not part of any roles that can print stickers."
+        fr: "Vous n'avez pas accès à de modèles probablement parce que vous ne faites pas partie de rôles qui peuvent imprimer des stickers."
+        de: "Sie haben wahrscheinlich keinen Zugriff auf Vorlagen, weil Sie nicht Teil von Rollen sind, die Aufkleber drucken können."
+
+  missing_template_config:
+    color: 0xFF0000
+    title:
+        en: "Missing template configuration !"
+        fr: "Configuration du template manquante !"
+        de: "Fehlende Vorlagenkonfiguration !"
+    description:
+        en: "The configuration for the template you are trying to use is missing."
+        fr: "La configuration du template que vous essayez d'utiliser est manquante."
+        de: "Die Konfiguration für die Vorlage, die Sie verwenden möchten, fehlt."
+
+  missing_template_folder:
+    color: 0xFF0000
+    title:
+        en: "Missing template folder !"
+        fr: "Dossier du template manquant !"
+        de: "Fehlender Vorlagenordner !"
+    description:
+        en: "The folder for the template you are trying to use is missing."
+        fr: "Le dossier du template que vous essayez d'utiliser est manquant."
+        de: "Der Ordner für die Vorlage, die Sie verwenden möchten, fehlt."
+
+  language_changed:
+    color: 0x00FF00
+    title:
+        en: "Language preference have been updated successfully."
+        fr: "Les préférences de langue ont été mises à jour avec succès."
+        de: "Spracheinstellungen wurden erfolgreich aktualisiert."
+    description:
+        en: ""
+        fr: ""
+        de: ""
+
+  help:
+    color: 0x53B7BA
+    title:
+        en: "Help"
+        fr: "Aide"
+        de: "Hilfe"
+    description:
+        en: "to fill later ..."
+        fr: "à remplir plus tard ..."
+        de: "später ausfüllen ..."

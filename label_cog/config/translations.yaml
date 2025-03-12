@@ -1,0 +1,38 @@
+languages: # List of languages supported by the bot
+  - key: "en"
+    name: "English"
+    emoji: "🇬🇧"
+  - key: "fr"
+    name: "Français"
+    emoji: "🇫🇷"
+  - key: "de"
+    name: "Deutsch"
+    emoji: "🇩🇪"
+
+
+
+translations:
+  select_type_placeholder:
+    en: "Choose your sticker..."
+    fr: "Choisissez votre étiquette..."
+    de: "Wählen Sie Ihr Etikett..."
+  select_count_placeholder:
+    en: "Choose how many..."
+    fr: "Choisissez combien..."
+    de: "Wählen Sie, wie viele..."
+  print_button_label:
+    en: "Print"
+    fr: "Imprimer"
+    de: "Drucken"
+  cancel_button_label:
+    en: "Cancel"
+    fr: "Annuler"
+    de: "Abbrechen"
+  help_button_label:
+    en: "Help"
+    fr: "Aide"
+    de: "Hilfe"
+  custom_label_modal_title:
+    en: "What would you like on your label ?"
+    fr: "Que voulez-vous sur votre étiquette ?"
+    de: "Was möchten Sie auf Ihrem Etikett ?"

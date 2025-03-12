@@ -3,7 +3,8 @@ import discord
 from label_cog.src.config import Config
 from label_cog.src.view_utils import update_displayed_status
 from label_cog.src.db import update_user_language
-
+from label_cog.src.logging_dotenv import setup_logger
+logger = setup_logger(__name__)
 
 class ChangeLanguageView(discord.ui.View):
     def __init__(self, session):

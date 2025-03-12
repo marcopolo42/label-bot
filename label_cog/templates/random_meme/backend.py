@@ -1,5 +1,6 @@
 import requests
-
+from label_cog.src.logging_dotenv import setup_logger
+logger = setup_logger(__name__)
 
 def fetch_meme():
     api_endpoint = "https://meme-api.com/gimme"
@@ -13,9 +14,6 @@ def fetch_meme():
         data = response.json()
 
         # Extract the image URL
-        print("Data:")
-        print(data)
-        print("Data end")
         meme_url = data.get('url', None)
         if not meme_url:
             raise ValueError("No 'url' field in the API response.")
@@ -36,12 +34,9 @@ async def process_data(data):
     result = fetch_meme()
     if result["success"]:
         data = {"meme_url": result["url"]}
-        print("Meme fetched successfully!")
-        print(f"Meme URL: {result['url']}")
-        print("Data out:")
-        print(data)
-        print("Data out end")
+        logger.debug("Meme fetched successfully!")
+        logger.debug(f"Meme URL: {result['url']}")
         return data
     else:
-        print(result["message"])
+        logger.debug(result["message"])
         return None

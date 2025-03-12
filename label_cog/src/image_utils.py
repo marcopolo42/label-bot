@@ -2,6 +2,9 @@ import os
 from PIL import Image, ImageOps
 import fitz # PyMuPDF
 
+from label_cog.src.logging_dotenv import setup_logger
+logger = setup_logger(__name__)
+
 Image.MAX_IMAGE_PIXELS = None  # Increase pixel limit for the PIL dependency (8K)
 
 
@@ -47,7 +50,7 @@ def add_margin(image_path, output_path, margin_mm, dpi=300):
 
     # Save the resulting image
     new_img.save(output_path)
-    print(f"Image with margin saved to {output_path}")
+    logger.info(f"Image with margin saved to {output_path}")
 
 
 def invert_image(image_path):

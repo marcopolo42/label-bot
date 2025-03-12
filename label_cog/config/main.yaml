@@ -1,0 +1,34 @@
+settings:
+#maybe usefull later #todo
+
+
+
+bocal_role_name: "bocal" # The name of your bocal role (meant to be changed in other campuses)
+
+
+
+#roles that can print the same stickers as the bocal role
+bocal_roles:
+  - bocal
+  - experience
+  - ADM
+  - intern
+  - comité
+  - padawans
+
+
+
+admin_users: # List of users that can print unlimited stickers and have access to all the templates
+  - id: 508712588381782046
+    name: "Marco"
+    reason: "creator of the project"
+    agreement: "I agree to use the printer responsibly and to purchase refills when using it for my personal use."
+  - id: 378496894441095168
+    name: "Jerome"
+    reason: "contributor in the development of the project"
+    agreement: "I agree to use the printer responsibly and to purchase a refills when using it for my personal use."
+
+
+
+
+

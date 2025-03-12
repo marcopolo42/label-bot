@@ -4,6 +4,8 @@ import aiofiles
 from label_cog.src.view_utils import get_embed
 
 import label_cog.src.global_vars as global_vars
+from label_cog.src.logging_dotenv import setup_logger
+logger = setup_logger(__name__)
 
 
 def get_folder_size(folder):
@@ -34,17 +36,17 @@ def get_file_name_and_url(message):
 
 
 async def save_file_uploaded(message, folder, lang):
-    print(f"Message: {message}")
+    logger.debug(f"Message: {message}")
     name, url = get_file_name_and_url(message)
     if name is None or url is None:
         await message.channel.send(embed=get_embed("no_file_attached", lang))
         return
     if folder_is_full(folder, 10):
-        print("Error: Drive is full")
+        logger.error("Error: Drive is full")
         await message.channel.send(embed=get_embed("drive_full", lang))
         return
     if not url.startswith("https://cdn.discordapp.com"):
-        print("Error: Invalid URL")
+        logger.error("Error: Invalid URL")
         await message.channel.send(embed=get_embed("error", lang))
         return
     async with aiohttp.ClientSession(headers={"Connection": "keep-alive"}) as session: # todo check if keep-alive is needed
@@ -55,23 +57,23 @@ async def save_file_uploaded(message, folder, lang):
                 async with aiofiles.open(file_path, 'wb') as out_file:
                     async for chunk in r.content.iter_chunked(8192):
                         await out_file.write(chunk)
-                print(f"Success: File saved as {name}")
+                logger.info(f"Success: File saved as {name}")
                 await message.channel.send(embed=get_embed("file_saved", lang))
-                print(f"File uploads futures 3: {global_vars.file_uploads_futures}")
+                logger.debug(f"File uploads futures 3: {global_vars.file_uploads_futures}")
                 await message.channel.send(global_vars.channel_link.pop(message.author.id, "Error: not label creation interaction found."))
                 #sets the result of the file future with the file path
-                print(f"Message author ID: {message.author.id}")
+                logger.debug(f"Message author ID: {message.author.id}")
                 future = global_vars.file_uploads_futures.pop(message.author.id)
                 future.set_result(file_path) # this sends the file path to the coroutine that is waiting for it.
 
-                print(f"Jump URLs: {global_vars.channel_link}")
+                logger.debug(f"Jump URLs: {global_vars.channel_link}")
             except OSError as e:
                 if e.errno == 28:  # Error number for "No space left on device"
-                    print("Error: Drive is full")
+                    logger.error("Error: Drive is full")
                     await message.channel.send(embed=get_embed("drive_full", lang))
                 else:
-                    print(f"Error: {e}")
+                    logger.error(f"Error: {e}")
                     await message.channel.send(embed=get_embed("error", lang))
             except Exception as e:
-                print(f"Unexpected error: {e}")
+                logger.error(f"Unexpected error: {e}")
                 raise e

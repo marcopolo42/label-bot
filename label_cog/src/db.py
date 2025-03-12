@@ -2,6 +2,9 @@ from label_cog.src.utils import get_discord_url
 
 import aiosqlite
 
+from label_cog.src.logging_dotenv import setup_logger
+logger = setup_logger(__name__)
+
 
 class Database:
     _instance = None
@@ -74,7 +77,7 @@ async def get_logs():
     logs = await Database().fetchall("SELECT * FROM logs")
     str_logs = ""
     for log in logs:
-        print(log)
+        logger.debug(log)
         logs += log.__str__() + "\n"
     return str_logs
 
@@ -105,20 +108,20 @@ async def update_user_language(author, language):
 
 
 async def get_user_language(author):
-    print(f"DB connection: {Database().conn}")
+    logger.debug(f"DB connection: {Database().conn}")
     language = await Database().fetchone("SELECT language FROM users WHERE discord_id = ?", (author.id,))
     if language is None:
-        print("Default language, because user not found in database, now adding user")
+        logger.info("Default language, because user not found in database, now adding user")
         await add_user(author, "en")
         return "en"
-    print(f"Successfully fetched language {language[0]}")
+    logger.debug(f"Successfully fetched language {language[0]}")
     return language[0]
 
 
 async def get_user_coins(author):
     coins = await Database.fetchone("SELECT coins FROM users WHERE discord_id = ?", (author.id,))
     if coins is None:
-        print("No coins, because user not found in database")
+        logger.info("No coins, because user not found in database")
         return 0
     return coins[0]
 

@@ -34,11 +34,10 @@ from label_cog.src.utils import get_current_ip
 
 from label_cog.src.admin_utils import is_admin, run_admin_script
 
-from label_cog.src.logging_dotenv import logging
+from label_cog.src.logging_dotenv import setup_logger
+logger = setup_logger(__name__)
 
-logger = logging.getLogger(__name__)
-
-
+import time
 
 
 def cog_setup():
@@ -46,13 +45,14 @@ def cog_setup():
     if os.getenv('ENV') == 'prod':
         os.makedirs(os.path.join("/dev/shm", 'label_cog', 'cache'), exist_ok=True)
         print("Created cache folder in /dev/shm")
+        logger.info("Created cache folder in /dev/shm")
     os.makedirs(os.path.join(os.getcwd(), 'label_cog', 'cache'), exist_ok=True)
     if not os.path.exists(get_local_directory("templates")):
         raise FileNotFoundError("Templates folder 'templates' is missing")
     if not os.listdir(get_local_directory("templates")):
         raise FileNotFoundError("Templates folder 'templates' is empty")
-    if not os.path.exists(get_local_directory("config.yaml")):
-        raise FileNotFoundError("Config file 'config.yaml' is missing")
+    if not os.path.exists(get_local_directory("config")):
+        raise FileNotFoundError("Config folder 'config' is missing")
     if os.path.exists(get_local_directory("database.sqlite")):
         os.remove(get_local_directory("database.sqlite")) # todo dev only
     # start the cleanup thread that will delete old files every 24 hours
@@ -60,7 +60,7 @@ def cog_setup():
         [get_cache_directory(), os.path.join(os.getcwd(), 'label_cog', 'cache')], #todo clean later
         15,
         1)
-
+    Config().load_config_files()
 
 class Session:
     def __init__(self, author, lang):
@@ -80,7 +80,7 @@ class Roles:
 
     def add_bocal_if_needed(self):
         if self.is_bocal_role():
-            print("User has a bocal role")
+            logger.info("User has a bocal role")
             self.names_lower.append(Config().get("bocal_role_name").lower())
 
     def set_as_only_role(self, role):
@@ -100,28 +100,26 @@ class LabelCog(commands.Cog):
         cog_setup()
 
     async def cog_before_invoke(self, ctx):
-        print("cog_before_invoke: database initialization")
-        Config().update_from_file()
+        logger.debug("cog_before_invoke: database initialization")
         await Database().initialize("label_cog/database.sqlite")
         await create_tables()
 
     async def cog_after_invoke(self, ctx):
         await Database().close()
-        print("cog_before_invoke: database closed successfully")
+        logger.debug("cog_before_invoke: database closed successfully")
 
     def cog_unload(self):
-        print("Unloading LabelCog...")
+        logger.debug("Unloading LabelCog...")
 
     @commands.Cog.listener()
     async def on_ready(self):
         logger.info(f"{self.bot.user} is ready and online and the current IP is {get_current_ip()}")
-        print(f"{self.bot.user} is ready and online and the current IP is {get_current_ip()}")
 
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author == self.bot.user: # prevent the bot from responding to itself
             return
-        print(f"before save_file_uploaded")
+        logger.debug(f"before save_file_uploaded")
         await save_file_uploaded(message, "label_cog/cache", "en")
 
     @discord.slash_command(name="label", description="Print a label")
@@ -131,7 +129,6 @@ class LabelCog(commands.Cog):
             await ctx.respond("This command can only be used in the 42 server.", ephemeral=True)
             return
         #update the config in case it has changed
-        Config().update_from_file()
         session = Session(ctx.author, await get_user_language(ctx.author))
         await choose_and_print_label(ctx, session)
 
@@ -148,7 +145,6 @@ class LabelCog(commands.Cog):
 
     @admin.command(name="test_role", description="enable you to test the bot as a specific role", )
     async def test_role(self, ctx, role: discord.Role):
-        Config().update_from_file()
         if is_admin(ctx):
             session = Session(ctx.author, await get_user_language(ctx.author))
             session.roles.set_as_only_role(role.name)
@@ -159,7 +155,7 @@ class LabelCog(commands.Cog):
     @admin.command(name="logs", description="Display logs")
     async def logs(self, ctx):
         conn = sqlite3.connect('label_cog/database.sqlite')
-        print("Displaying logs...")
+        logger.debug("Displaying logs...")
         logs = get_logs()
         conn.close()
         if logs:
@@ -189,5 +185,5 @@ def setup(bot):
 
 
 def teardown(bot):
-    print("teardown of LabelCog")
+    logger.debug("teardown of LabelCog")
 

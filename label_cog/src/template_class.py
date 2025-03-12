@@ -9,6 +9,8 @@ import importlib.util
 import os
 
 from label_cog.src.utils import get_discord_url, get_local_directory
+from label_cog.src.logging_dotenv import setup_logger
+logger = setup_logger(__name__)
 
 
 class TemplateException(Exception):
@@ -108,10 +110,10 @@ class Template:
         spec = importlib.util.spec_from_file_location("backend", self.backend_path)
         backend_module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(backend_module)
-        # backend.py should define an async function `process_data` that returns a dictionary and has a parameter `data` to use the settings data
+        # backend.pry should define an async function `process_data` that returns a dictionary and has a parameter `data` to use the settings data
         if hasattr(backend_module, 'process_data'):
             processed_data = await backend_module.process_data(self.data)
             if processed_data is not None:
                 self.data.update(processed_data)
         else:
-            print(f"Backend for {self.key} is missing the process_data function")
+            logger.error(f"Backend for {self.key} is missing the process_data function")

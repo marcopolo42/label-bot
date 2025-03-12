@@ -3,6 +3,8 @@ import requests
 from io import BytesIO
 from PIL import Image
 import mimetypes
+from label_cog.src.logging_dotenv import setup_logger
+logger = setup_logger(__name__)
 
 Image.MAX_IMAGE_PIXELS = None  # Increase pixel limit for the PIL dependency (8K)
 
@@ -42,27 +44,25 @@ def get_mime_type(url):
 def get_maximum_size_for_paper(size):
     smaller_side = 62
     width, height = size
-    print(f"Original size: {width}x{height}")
+    logger.debug(f"Original size: {width}x{height}")
     if height < width:
         aspect_ratio = height / width
-        print(f"Aspect ratio: {aspect_ratio}")
+        logger.debug(f"Aspect ratio: {aspect_ratio}")
         width = smaller_side / aspect_ratio
         height = smaller_side
     else:
         aspect_ratio = width / height
-        print(f"Aspect ratio: {aspect_ratio}")
+        logger.debug(f"Aspect ratio: {aspect_ratio}")
         height = smaller_side / aspect_ratio
         width = smaller_side
     # round to no decimal places
     width = round(width)
     height = round(height)
-    print(f"Page size in width: {width}mm and height: {height}mm")
+    logger.debug(f"Page size in width: {width}mm and height: {height}mm")
     return height, width
 
 
 async def process_data(data):
-    print("Data received in backend")
-    print(data)
     image_url = data.get("image_url", "")
     try:
         img = get_image_from_url(image_url)

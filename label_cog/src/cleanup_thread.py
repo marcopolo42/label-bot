@@ -2,7 +2,8 @@ import os
 import time
 from datetime import datetime, timedelta
 import threading
-
+from label_cog.src.logging_dotenv import setup_logger
+logger = setup_logger(__name__)
 
 def delete_old_files(folder_path, minutes_old):
     #Deletes files in the specified folder that are older than a given number of days.
@@ -16,9 +17,9 @@ def delete_old_files(folder_path, minutes_old):
             if file_modification_time < cutoff_time:
                 try:
                     os.remove(file_path)
-                    print(f"Deleted {file_path}")
+                    logger.info(f"Deleted {file_path}")
                 except Exception as e:
-                    print(f"Error deleting {file_path}: {e}")
+                    logger.error(f"Error deleting {file_path}: {e}")
 
 
 #Runs the delete_old_files function at specified intervals in a background thread.

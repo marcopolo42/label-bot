@@ -5,7 +5,8 @@ from label_cog.src.config import Config
 from label_cog.src.db import get_user_language
 from label_cog.src.utils import get_lang
 from label_cog.src.utils import get_local_directory
-import subprocess
+from label_cog.src.logging_dotenv import setup_logger
+logger = setup_logger(__name__)
 
 
 
@@ -41,17 +42,17 @@ async def modify_message(key, lang, image=None, original_message=None, interacti
     if interaction is not None:
         if interaction.response.is_done():
             if image is not None:
-                print(f"embed modified with image. \"{embed.title}\"")
+                logger.debug(f"embed modified with image. \"{embed.title}\"")
                 await interaction.edit_original_response(embed=embed, file=discord.File(image), view=view)
             else:
-                print(f"embed modified without image. title: \"{embed.title}\"")
+                logger.debug(f"embed modified without image. title: \"{embed.title}\"")
                 await interaction.edit_original_response(embed=embed, files=[], attachments=[], view=view)
         else:
             if image is not None:
-                print(f"embed responded with image. text: \"{embed.title}\"")
+                logger.debug(f"embed responded with image. text: \"{embed.title}\"")
                 await interaction.response.edit_message(embed=embed, file=discord.File(image), view=view)
             else:
-                print(f"embed responded without image. text: {embed.title}")
+                logger.debug(f"embed responded without image. text: {embed.title}")
                 await interaction.response.edit_message(embed=embed, files=[], attachments=[], view=view)
     if original_message is not None:
         if view is None:

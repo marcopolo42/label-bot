@@ -1,0 +1,332 @@
+templates:
+  - key: "fridge"  # This is the key that will be used to identify the template (use the same for the template folder)
+    name:
+      en: "Fridge Label" # The name of the template
+      fr: "Étiquette frigo"
+      de: "Kühlschranketikett"
+    description:
+      en: "use for fridge items"
+      fr: "utilisé pour les articles au frigo"
+      de: "für Kühlschrankartikel verwenden"
+    emoji: "<:fridge:1320873241773998090>" # The emoji that will be used to represent the template here it is a custom emoji
+    settings:  # settings are optional data used by the sticker template or backend
+      expiration_alumni: 6  # The expiration time in days
+      expiration_student: 6
+      expiration_piscine: 2
+      reload_button: true
+    allowed_roles:  # The roles that can use this template. (case insensitive) to authorize all roles use "@everyone"
+      - student
+      - piscine
+      - bocal
+      - alumni
+    daily_role_limits:  # The number of stickers each role can print per day (default is 25)
+      student: 5
+
+  - key: "freezer"
+    name:
+        en: "Freezer label"
+        fr: "Étiquette congélateur"
+        de: "Gefrierschranketikett"
+    description:
+        en: "use for freezer items"
+        fr: "utilisé pour les articles au congélateur"
+        de: "für Gefrierschrankartikel verwenden"
+    emoji: "<:freezer:1320873294190088232>"
+    settings:
+      expiration_alumni: 30
+      expiration_student: 30
+      expiration_piscine: 30
+      reload_button: true
+    allowed_roles:
+      - student
+      - piscine
+      - bocal
+      - alumni
+    daily_role_limits:
+      student: 5
+
+  - key: "bocal_small"
+    name:
+        en: "Small Bocal sticker"
+        fr: "Petit sticker Bocal"
+        de: "Kleiner Bocal-Aufkleber"
+    description:
+        en: "can be used to label food or small objects"
+        fr: "peut être utilisé pour étiqueter de la nourriture ou de petits objets"
+        de: "kann verwendet werden, um Lebensmittel oder kleine Objekte zu kennzeichnen"
+    settings:
+      reload_button: true
+    allowed_roles:
+      - bocal
+
+  - key: "logo_42"
+    name:
+      en: "42 Logo Label"
+      fr: "Étiquette du logo 42"
+      de: "42-Logoetikett"
+    description:
+      en: "The label to use for 42 logo stickers"
+      fr: "L'étiquette à utiliser pour les stickers du logo 42"
+      de: "Das Etikett für 42-Logo-Sticker"
+    emoji: "<:42:1320879119944253591>"
+    allowed_roles:
+      - student
+      - piscine
+      - BDE
+      - tuteur
+      - bocal
+    daily_role_limits:
+      student: 1
+      piscine: 0
+      BDE: 5
+      tuteur: 2
+
+  - key: "random_meme"
+    name:
+        en: "Random Reddit Meme"
+        fr: "Meme Reddit aléatoire"
+        de: "Zufälliges Reddit-Meme"
+    description:
+        en: "Get a random meme from Reddit"
+        fr: "Obtenez un meme aléatoire de Reddit"
+        de: "Holen Sie sich ein zufälliges Meme von Reddit"
+    emoji: "🖼️"
+    allowed_roles:
+      - bocal
+    settings:
+      reload_button: true # enable the reload button for stickers that have a random element that users may want to refresh
+
+  - key: "random_french_meme"
+    name:
+        en: "Random French Meme"
+        fr: "Meme français aléatoire"
+        de: "Zufälliges französisches Meme"
+    description:
+        en: "Get a random meme from the FrenchMemes subreddit"
+        fr: "Obtenez un meme aléatoire du subreddit FrenchMemes"
+        de: "Holen Sie sich ein zufälliges Meme aus dem FrenchMemes-Subreddit"
+    emoji: "🖼️"
+    allowed_roles:
+      - bocal
+    settings:
+        reload_button: true
+
+  - key: "random_smash_reddit"
+    name:
+        en: "Random Smash Reddit Image"
+        fr: "Image Reddit Smash aléatoire"
+        de: "Zufälliges Smash Reddit-Bild"
+    description:
+        en: "Get a random image from the SmashBrosUltimate subreddit"
+        fr: "Obtenez une image aléatoire du subreddit SmashBrosUltimate"
+        de: "Holen Sie sich ein zufälliges Bild aus dem SmashBrosUltimate-Subreddit"
+    emoji: "🖼️"
+    allowed_roles:
+      - bocal
+    settings:
+      reload_button: true
+
+  - key: "profile_picture"
+    name:
+      en: "Profile Picture"
+      fr: "Photo de profil"
+      de: "Profilbild"
+    description:
+      en: "print your profile picture"
+      fr: "imprimez votre photo de profil"
+      de: "drucken Sie Ihr Profilbild"
+    emoji: "📷"
+    allowed_roles:
+      - student
+
+  - key: "coalition_flag"
+    name:
+        en: "Coalition Flag"
+        fr: "Drapeau de la Coalition"
+        de: "Coalition-Flagge"
+    description:
+        en: "The flag of the Coalition"
+        fr: "Le drapeau de la Coalition"
+        de: "Die Flagge der Koalition"
+    emoji: "⚔️"
+    allowed_roles:
+      - student
+
+  - key: "random_dev_meme"
+    name:
+      en: "Random Dev Meme"
+      fr: "Meme de Dev aléatoire"
+      de: "Zufälliges Dev-Meme"
+    description:
+      en: "Get a random meme from the ProgrammerHumor subreddit"
+      fr: "Obtenez un meme aléatoire du subreddit ProgrammerHumor"
+      de: "Holen Sie sich ein zufälliges Meme aus dem ProgrammerHumor-Subreddit"
+    emoji: "🖼️"
+    allowed_roles:
+      - bocal
+    settings:
+      reload_button: true
+
+  - key: "custom_small_text"
+    name:
+      en: "Small Custom Text"
+      fr: "Petit texte personnalisé"
+      de: "Kleiner benutzerdefinierter Text"
+    description:
+      en: "Small custom text stickers (max 18 characters)"
+      fr: "Petits stickers de texte personnalisé (max 18 caractères)"
+      de: "Kleine benutzerdefinierte Textsticker (max 18 Zeichen)"
+    emoji: "📝"
+    allowed_roles:
+      - Bocal
+    fields:
+      - key: "text"
+        max_length: 18
+        name:
+          en: "Please enter the text you want on the label"
+          fr: "Veuillez entrer le texte que vous voulez sur l'étiquette"
+          de: "Bitte geben Sie den Text ein, den Sie auf dem Etikett möchten"
+        placeholder:
+          en: "max 18 characters"
+          fr: "max 18 caractères"
+          de: "max 18 Zeichen"
+
+  - key: "custom_square_image"
+    name:
+      en: "Custom Square Image"
+      fr: "image carrée personnalisée"
+      de: "Benutzerdefiniertes quadratisches Bildetikett"
+    description:
+      en: "Use an URL to provide your own image"
+      fr: "Utilisez une URL pour fournir votre propre image"
+      de: "Verwenden Sie eine URL, um Ihr eigenes Bild bereitzustellen"
+    emoji: "🖼️"
+    allowed_roles:
+      - bocal
+    fields:
+      - key: "image_url"
+        max_length: 200
+        name:
+            en: "Image URL"
+            fr: "URL de l'image"
+            de: "Bild-URL"
+        placeholder:
+          en: "Use img.doerig.dev to host your image: "
+          fr: "Utilisez img.doerig.dev pour héberger votre image."
+          de: "Verwenden Sie img.doerig.dev, um Ihr Bild zu hosten."
+
+  - key: "custom_big_image"
+    name:
+        en: "Custom Big Image"
+        fr: "Grande image personnalisée"
+        de: "Benutzerdefiniertes großes Bild"
+    description:
+        en: "Use an URL to provide your own image"
+        fr: "Utilisez une URL pour fournir votre propre image"
+        de: "Verwenden Sie eine URL, um Ihr eigenes Bild bereitzustellen"
+    emoji: "🖼️"
+    allowed_roles:
+      - bocal
+    settings:
+      image_upload: true
+
+  - key: "custom_qr_code"
+    name:
+      en: "QR Code"
+      fr: "QR Code"
+      de: "QR-Code"
+    description:
+      en: "Create a 61 mm x 61 mm QR code"
+      fr: "Créez un code QR de 61 mm x 61 mm"
+      de: "Erstellen Sie einen 61 mm x 61 mm QR-Code"
+    emoji: "🔗"
+    allowed_roles:
+      - Bocal
+    fields:
+      - key: "qr_code"
+        max_length: 200
+        name:
+          en: "QR Code URL"
+          fr: "URL du code QR"
+          de: "QR-Code-URL"
+        placeholder:
+          en: "The URL that will be encoded in the QR code."
+          fr: "L'URL qui sera encodée dans le code QR."
+          de: "Die URL, die im QR-Code codiert wird."
+
+  - key: "fragbox_cable"
+    name:
+      en: "Fragbox cable"
+      fr: "câble Fragbox"
+      de: "Fragbox-Kabel"
+    description:
+      en: "can be used to label a cable or a small object"
+      fr: "peut être utilisé pour étiqueter un câble ou un petit objet"
+      de: "kann verwendet werden, um ein Kabel oder ein kleines Objekt zu kennzeichnen"
+    emoji: "🖼️"
+    allowed_roles:
+      - fragbox
+
+  - key: "fragbox_logo"
+    name:
+      en: "Fragbox Logo"
+      fr: "Logo Fragbox"
+      de: "Fragbox-Logo"
+    description:
+      en: "Un logo Fragbox de 61 mm sur 61 mm"
+      fr: "Un logo Fragbox de 61 mm sur 61 mm"
+      de: "Un logo Fragbox de 61 mm sur 61 mm"
+    emoji: "🖼️"
+    allowed_roles:
+      - fragbox
+
+  - key: "test"
+    name:
+      en: "Test Label"
+      fr: "Étiquette de test"
+      de: "Testetikett"
+    description:
+      en: "The label to use for testing"
+      fr: "L'étiquette à utiliser pour les tests"
+      de: "Das Etikett für Tests"
+    emoji: "🧪"
+    allowed_roles:
+      - bocal
+    fields:  # Additional fields (maximum 5) that the template may need to ask the user for (can only be of type text)
+      - key: "name"
+        max_length: 20
+        name:
+          en: "Name"
+          fr: "Nom"
+          de: "Name"
+        placeholder: "max 20 characters"
+      - key: "description"
+        max_length: 100
+        name:
+          en: "Description"
+          fr: "Description"
+          de: "Beschreibung"
+        placeholder:
+          en: "max 100 characters"
+          fr: "max 100 caractères"
+          de: "max 100 Zeichen"
+      - key: "picture"
+        max_length: 100
+        name:
+          en: "Picture URL"
+          fr: "URL de l'image"
+          de: "Bild-URL"
+        placeholder:
+          en: "The URL of the picture to display on the label."
+          fr: "L'URL de l'image à afficher sur l'étiquette."
+          de: "Die URL des Bildes, das auf dem Etikett angezeigt werden soll."
+      - key: "custom_qr_code"
+        max_length: 100
+        name:
+          en: "QR Code URL"
+          fr: "URL du code QR"
+          de: "QR-Code-URL"
+        placeholder:
+          en: "The URL that will be encoded in the QR code."
+          fr: "L'URL qui sera encodée dans le code QR."
+          de: "Die URL, die im QR-Code codiert wird."

@@ -19,7 +19,8 @@ from label_cog.src.view_utils import get_embed, display_and_stop, get_templates_
 import asyncio
 
 import label_cog.src.global_vars as global_vars
-
+from label_cog.src.logging_dotenv import setup_logger
+logger = setup_logger(__name__)
 
 class ChooseLabelView(discord.ui.View):
     def __init__(self, session, label):
@@ -148,14 +149,14 @@ class ChooseLabelView(discord.ui.View):
         await update_displayed_status("printing", self.lang, interaction=interaction, view=self)
         label = self.label
         await add_log(f"Label {label.template.key} {label.count} was printed", self.author, label)
-        print(f"You have chosen to print the label {label.template.key} {label.count} times.")
+        logger.info(f"You have chosen to print the label {label.template.key} {label.count} times.")
 
         try:
             status = ql_brother_print_usb(label.image, label.count)
         except Exception as e:
-            print(f"error: {e}")
-            print(e, type(e), e.__traceback__, e.__dict__)
-            print(f"\033[91mError while printing: {e}\033[0m")
+            logger.error(f"error: {e}")
+            logger.error(e, type(e), e.__traceback__, e.__dict__)
+            logger.error(f"\033[91mError while printing: {e}\033[0m")
             await display_and_stop(self,interaction, "error_print")
         else:
             outcome = status.get("outcome")
@@ -174,7 +175,7 @@ class ChooseLabelView(discord.ui.View):
         await update_displayed_status("help", self.lang, interaction=interaction, view=self)
 
     async def on_timeout(self):
-        print("Timeout")
+        logger.info("Timeout of ChooseLabelView")
         await self.label.clear_files()
         self.disable_all_items()
         await update_displayed_status("timeout", self.lang, original_message=self.parent, view=self)
@@ -198,7 +199,7 @@ class ChooseLabelView(discord.ui.View):
             value = template.settings.get("image_upload", None)
         if value is not None:
             global_vars.file_uploads_futures.update({interaction.user.id: asyncio.Future()})
-            print(f"File uploads futures 1: {global_vars.file_uploads_futures}")
+            logger.debug(f"File uploads futures: {global_vars.file_uploads_futures}")
             global_vars.channel_link.update({interaction.user.id: interaction.channel.mention})
             await interaction.user.send(embed=get_embed("how_to_upload", self.lang))
 
@@ -252,7 +253,7 @@ class ChooseLabelView(discord.ui.View):
             await update_displayed_status("waiting_upload", self.lang, interaction=interaction, view=self)
         else:
             await update_displayed_status("creating", self.lang, interaction=interaction, view=self)
-        print("label.make() ...")
+        logger.debug("label.make() ...")
         await self.label.make()
         self.select_count.disabled = False
         self.print_button.disabled = False
