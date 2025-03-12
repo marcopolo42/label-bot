@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# Ensure the script is run as root
-if [ "$EUID" -ne 0 ]; then
-  echo "Please run as root"
-  exit 1
-fi
-
 # Setup of the label-bot working environment
 cd /home/admin/label-bot || { echo "Directory /home/admin/label-bot not found"; exit 1; }
 

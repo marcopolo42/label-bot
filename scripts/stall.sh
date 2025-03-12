@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# Ensure the script is run as root
-if [ "$EUID" -ne 0 ]; then
-  echo "Please run as root"
-  exit 1
-fi
-
 # Stop the service for 30 minutes then start it again
 if sudo systemctl stop labelbot.service; then
   echo "Service stopped for 30 minutes."
