@@ -22,6 +22,7 @@ def is_admin(author):
 
 def launch_script(script):
     script_path = os.path.join(os.getcwd(), "scripts", script)
+    os.chmod(script_path, 0o755) # make the script executable
     process = subprocess.Popen(['sudo', script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     output = stdout.decode() + stderr.decode()
