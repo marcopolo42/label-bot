@@ -46,7 +46,6 @@ class Label:
                                    default_stylesheets=(f"{self.template.folder_path}/style.css",))
         #pdf creation
         records = [self.template.data]
-        logger.debug(f"Records: {records}")
         label_writer.write_labels(records, target=self.pdf)
         #image creation
         pdf_to_image(self.pdf, self.image)

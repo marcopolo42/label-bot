@@ -181,15 +181,17 @@ templates:
       - Bocal
     fields:
       - key: "text"
-        max_length: 18
+        max_length: 32
         name:
           en: "Please enter the text you want on the label"
           fr: "Veuillez entrer le texte que vous voulez sur l'étiquette"
           de: "Bitte geben Sie den Text ein, den Sie auf dem Etikett möchten"
         placeholder:
-          en: "max 18 characters"
-          fr: "max 18 caractères"
-          de: "max 18 Zeichen"
+          en: "max 32 characters"
+          fr: "max 32 caractères"
+          de: "max 32 Zeichen"
+    settings:
+      reload_button: true
 
   - key: "custom_square_image"
     name:

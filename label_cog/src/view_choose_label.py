@@ -18,6 +18,8 @@ from label_cog.src.view_utils import get_embed, display_and_stop, get_templates_
 
 import asyncio
 
+import os
+
 import label_cog.src.global_vars as global_vars
 from label_cog.src.logging_dotenv import setup_logger
 logger = setup_logger(__name__)
@@ -94,7 +96,7 @@ class ChooseLabelView(discord.ui.View):
 
         self.reload_button = discord.ui.Button(
             row=3,
-            label="Reload",
+            label=get_translation("reload_button_label", self.lang),
             style=discord.ButtonStyle.secondary,
             emoji="🔄",
         )
@@ -111,6 +113,8 @@ class ChooseLabelView(discord.ui.View):
         self.add_item(self.help_button)
 
     async def select_type_callback(self, interaction):
+        if os.getenv("ENV") == "dev":
+            Config().load_config_files()
         await self.label.reset()
         try:
             self.label.template = Template(self.select_type.values[0], self.lang, self.author)

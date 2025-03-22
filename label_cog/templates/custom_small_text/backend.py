@@ -1,7 +1,7 @@
 import base64
 import requests
 from io import BytesIO
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 import mimetypes
 import os
 
@@ -46,8 +46,6 @@ async def read_image(image_path):
     return img
 
 
-
-
 def get_maximum_size_for_paper(size):
     smaller_side = 62
     width, height = size
@@ -69,22 +67,52 @@ def get_maximum_size_for_paper(size):
     return height, width
 
 
-async def process_data(data):
-    user_id = data.get("user_id", "")
+#create a image with text inside it the size is defined by the font size
+def create_image_with_text(text, font_size):
+    # Load a font (Ensure the font file is accessible)
+    # if dev fonts from macos and if prod fonts from linux
+    if os.getenv("ENV") == "dev": #macos
+        user_path = Path.home()
+        font_path = os.path.join(user_path, "Library", "Fonts", "DejaVuSans.ttf") #the dev needs to install the font
+    elif os.getenv("ENV") == "prod": #linux
+        font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+    else:
+        raise ValueError("ENV is not defined")
 
-    img_path = data.get("img_path", None)
-    logger.debug(f"File found: {img_path}")
-    if img_path is None: # Timeout of 5 minutes
-        logger.debug("img_path is None")
-        return {}
-    img = await read_image(img_path)
-    height, width = get_maximum_size_for_paper(img.size)
-    mime_type = get_mime_type(img_path)
-    img_base64 = convert_pil_to_base64_image(img, mime_type)
+    if not os.path.exists(font_path):
+        raise FileNotFoundError(f"Font file not found: {font_path}")
+
+    # Get the font and calculate text size
+    font = ImageFont.truetype(font_path, font_size)
+    left, top, right, bottom = font.getbbox(text)
+    text_width = right
+    text_height = bottom
+
+    logger.debug(f"Text size: {text_width}x{text_height}")
+    # Add padding
+    padding = 0
+    image_width = int(text_width + (padding * 2))
+    image_height = int(text_height + (padding * 2))
+
+    # Create a white image
+    img = Image.new('RGB', (image_width, image_height), color='white')
+    draw = ImageDraw.Draw(img)
+
+    # Draw the text centered on the image
+    text_x = padding
+    text_y = padding
+    draw.text((text_x, text_y), text, font=font, fill='black')
+    logger.debug(f"imagesize: {img.size}")
+    logger.debug(f"Created image with dimensions: {image_width}x{image_height}")
+    return img
+
+
+async def process_data(data):
+    text = data.get("text", "Error: No text provided")
+    img = create_image_with_text(text, 256)
+    img_base64 = convert_pil_to_base64_image(img, "image/png")
     new_data = {
         "img_base64": img_base64,
-        "img_height": height,
-        "img_width": width
     }
     return new_data
 

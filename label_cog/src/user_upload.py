@@ -60,7 +60,7 @@ async def save_file_uploaded(message, folder, lang):
                 logger.info(f"Success: File saved as {name}")
                 await message.channel.send(embed=get_embed("file_saved", lang))
                 logger.debug(f"File uploads futures 3: {global_vars.file_uploads_futures}")
-                await message.channel.send(global_vars.channel_link.pop(message.author.id, "Error: not label creation interaction found."))
+                await message.channel.send(global_vars.channel_link.pop(message.author.id, "Error: You did not start creating a label before sending the file."))
                 #sets the result of the file future with the file path
                 logger.debug(f"Message author ID: {message.author.id}")
                 future = global_vars.file_uploads_futures.pop(message.author.id)

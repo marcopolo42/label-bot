@@ -19,7 +19,7 @@ def setup_logger(name, level=logging.INFO):
     """
     # Define a custom formatter including file, function, and line details
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(funcName)s():\n    %(message)s'
+        '    %(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(funcName)s():\n%(message)s'
     )
 
     # Set up a stream handler (logs to console)
@@ -29,13 +29,13 @@ def setup_logger(name, level=logging.INFO):
     # custom part
     environment = os.getenv('ENV')
     if environment == 'prod':
+        print("Work environment is prod.")
         level = logging.INFO
     elif environment == 'dev':
-        print("Work environment set to dev in .env handler flush set to ensure logs are written instantly")
+        print("Work environment is dev.")
         level = logging.DEBUG
-        handler.flush = lambda: handler.stream.flush()  # Ensure logs are written instantly
     else:
-        print("Work environment not set in .env, Defaulting to debug logging level ")
+        print("Work environment is not set.")
         level = logging.DEBUG
 
     # Create the logger with the specified name and level

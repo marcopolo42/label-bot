@@ -32,6 +32,11 @@ translations:
     en: "Help"
     fr: "Aide"
     de: "Hilfe"
+  reload_button_label:
+    en: "retry"
+    fr: "réessayer"
+    de: "erneut versuchen"
+
   custom_label_modal_title:
     en: "What would you like on your label ?"
     fr: "Que voulez-vous sur votre étiquette ?"
