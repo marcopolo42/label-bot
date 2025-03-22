@@ -85,6 +85,8 @@ class Template:
         return available
 
     def add_author_data(self, author):
+        if author is None:
+            return
         # default information that is always available. More info can be added based on the template configuration file
         new_data = dict(
             user_id=str(author.id),

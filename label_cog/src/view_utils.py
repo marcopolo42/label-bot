@@ -67,6 +67,7 @@ async def update_displayed_status(key, lang, image=None, interaction=None, origi
         raise ValueError("Display messages are missing from the config file")
     message = display_messages.get(key)
     if message is None:
+        logger.warning(f"Message with key {key} not found in display_messages")
         message = display_messages.get("default")
     await modify_message(
         key=key,
@@ -109,3 +110,16 @@ def get_templates_options(roles_names_lower, lang):
             description="You don't have access to any templates",
         ))
     return options
+
+
+def get_templates_values():
+    templates = Config().get("templates")
+    logger.debug(f"Templates: {templates}")
+    values = []
+    for template in templates:
+        logger.debug(f"Template: {template}")
+        values.append(template.get("key"))
+    if len(values) == 0:
+        values.append("no_templates_available")
+    return values
+
