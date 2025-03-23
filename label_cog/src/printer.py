@@ -1,6 +1,7 @@
 from brother_ql.conversion import convert
 from brother_ql.backends.helpers import send
 from brother_ql.raster import BrotherQLRaster
+from label_cog.src.database import can_user_afford, spend_user_coins
 
 from PIL import Image
 
@@ -9,6 +10,28 @@ Image.MAX_IMAGE_PIXELS = None  # Increase pixel limit for the PIL dependency (8K
 import os
 from label_cog.src.logging_dotenv import setup_logger
 logger = setup_logger(__name__)
+
+
+def print_label(label, author):
+    display_status = None
+    if not can_user_afford(author.id, label.template.price):
+        return "not_enough_coins"
+    try:
+        print_status = ql_brother_print_usb(label.image, label.template.price)
+    except Exception as e:
+        logger.error(e, type(e), e.__traceback__, e.__dict__)
+        logger.error(f"\033[91mError while printing: {e}\033[0m")
+        display_status = "error_print"
+    else:
+        outcome = print_status.get("outcome")
+        if outcome == "error":
+            display_status = "error_print"
+        elif outcome == "printed":
+            display_status = "printed"
+            spend_user_coins(author.id, label.template.price)
+        else:
+            raise ValueError(f"Unexpected outcome: {outcome}")
+    return display_status
 
 
 def ql_brother_print_usb(image, count):

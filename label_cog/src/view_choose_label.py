@@ -16,6 +16,8 @@ from label_cog.src.utils import get_translation, get_lang
 
 from label_cog.src.view_utils import get_embed, display_and_stop, get_templates_options
 
+from label_cog.src.printer import print_label
+
 import asyncio
 
 import os
@@ -141,35 +143,12 @@ class ChooseLabelView(discord.ui.View):
         set_current_value_as_default(self.select_count, self.select_count.values[0])
         await interaction.response.defer()
 
-    '''status = {
-                'instructions_sent': True, # The instructions were sent to the printer.
-                'outcome': 'unknown', # String description of the outcome of the sending operation like: 'unknown', 'sent', 'printed', 'error'
-                'printer_state': None, # If the selected backend supports reading back the printer state, this key will contain it.
-                'did_print': False, # If True, a print was produced. It defaults to False if the outcome is uncertain (due to a backend without read-back capability).
-                'ready_for_next_job': False, # If True, the printer is ready to receive the next instructions. It defaults to False if the state is unknown.
-            }
-            '''
     async def print_button_callback(self, interaction):
         await update_displayed_status("printing", self.lang, interaction=interaction, view=self)
         label = self.label
         await add_log(f"Label {label.template.key} {label.count} was printed", self.author, label)
-        logger.info(f"You have chosen to print the label {label.template.key} {label.count} times.")
-
-        try:
-            status = ql_brother_print_usb(label.image, label.count)
-        except Exception as e:
-            logger.error(f"error: {e}")
-            logger.error(e, type(e), e.__traceback__, e.__dict__)
-            logger.error(f"\033[91mError while printing: {e}\033[0m")
-            await display_and_stop(self,interaction, "error_print")
-        else:
-            outcome = status.get("outcome")
-            if outcome == "error":
-                await display_and_stop(self,interaction, "error_print")
-            elif outcome == "printed":
-                await display_and_stop(self,interaction, "printed")
-            else:
-                raise ValueError(f"Unexpected outcome: {outcome}")
+        status = print_label(label, self.author)
+        await display_and_stop(self, interaction, status)
 
     async def cancel_button_callback(self, interaction):
         await self.label.clear_files()

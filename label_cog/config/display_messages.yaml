@@ -43,6 +43,17 @@ display_messages:
         fr: "Vous avez atteint la limite quotidienne pour cette étiquette."
         de: "Sie haben das Tageslimit für dieses Etikett erreicht."
 
+  not_enough_coins:
+    color: 0xFF0000
+    title:
+        en: "Not enough coins !"
+        fr: "Pas assez de pièces !"
+        de: "Nicht genug Münzen !"
+    description:
+        en: "You don't have enough coins to print this label."
+        fr: "Vous n'avez pas assez de pièces pour imprimer cette étiquette."
+        de: "Sie haben nicht genug Münzen, um dieses Etikett zu drucken."
+
   waiting_fields:
     color: 0x53B7BA
     title:

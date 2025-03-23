@@ -3,6 +3,8 @@ from label_cog.src.utils import get_discord_url
 import aiosqlite
 
 from label_cog.src.logging_dotenv import setup_logger
+
+from label_cog.src.config import Config
 logger = setup_logger(__name__)
 
 
@@ -54,7 +56,6 @@ async def create_tables():
                         coins INTEGER DEFAULT 0,
                         creation_date TEXT DEFAULT CURRENT_TIMESTAMP
                       )''')
-    #for future language and TIG feature support
     await db.execute('''CREATE TABLE IF NOT EXISTS users
                         (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -90,9 +91,11 @@ async def get_today_prints_count(author, template_key):
     return count[0]
 
 
-async def add_user(author, language):
-    await Database().execute("INSERT INTO users (discord_id, display_name, avatar_url, discord_url, language) VALUES (?, ?, ?, ?, ?)",
-            (author.id, author.display_name, author.avatar.url, get_discord_url(author.id), language))
+async def add_user(author):
+    language = Config().get("default_language")
+    coins = Config().get("default_coins")
+    await Database().execute("INSERT INTO users (discord_id, display_name, avatar_url, discord_url, language, coins) VALUES (?, ?, ?, ?, ?, ?)",
+                      (author.id, author.display_name, author.avatar.url, get_discord_url(str(author.id)), language, coins))
 
 
 async def get_user(author):
@@ -112,42 +115,41 @@ async def get_user_language(author):
     language = await Database().fetchone("SELECT language FROM users WHERE discord_id = ?", (author.id,))
     if language is None:
         logger.info("Default language, because user not found in database, now adding user")
-        await add_user(author, "en")
+        await add_user(author)
         return "en"
     logger.debug(f"Successfully fetched language {language[0]}")
     return language[0]
 
 
 async def get_user_coins(author):
-    coins = await Database.fetchone("SELECT coins FROM users WHERE discord_id = ?", (author.id,))
+    coins = await Database().fetchone("SELECT coins FROM users WHERE discord_id = ?", (author.id,))
     if coins is None:
+        await add_user(author)  # todo add default language to config
         logger.info("No coins, because user not found in database")
         return 0
     return coins[0]
 
 
 async def update_user_coins(author, coins):
-    await Database.execute("UPDATE users SET coins = ? WHERE discord_id = ?", (coins, author.id))
+    await Database().execute("UPDATE users SET coins = ? WHERE discord_id = ?", (coins, author.id))
 
 
 async def add_user_coins(author, coins):
-    user_coins = await Database().fetchone("SELECT coins FROM users WHERE discord_id = ?", (author.id,))
-    if user_coins is None:
-        await add_user(author, "en")
-        user_coins = 0
-    else:
-        user_coins = user_coins[0]
-    await Database.execute("UPDATE users SET coins = ? WHERE discord_id = ?", (user_coins + coins, author.id))
+    user_coins = await get_user_coins(author)
+    await update_user_coins(author, user_coins + coins)
 
 
-async def spend_user_coins(author, coins):
-    user_coins = await Database().fetchone("SELECT coins FROM users WHERE discord_id = ?", (author.id,))
-    if user_coins is None:
-        await add_user(author, "en")
-        user_coins = 0
-    else:
-        user_coins = user_coins[0]
-    if user_coins < coins:
+async def can_user_afford(author, price):
+    user_coins = await get_user_coins(author)
+    if user_coins < price:
         return False
-    await Database().execute("UPDATE users SET coins = ? WHERE discord_id = ?", (user_coins - coins, author.id))
     return True
+
+
+async def spend_user_coins(author, price):
+    user_coins = await get_user_coins(author)
+    if user_coins < price:
+        return False
+    else:
+        await Database().execute("UPDATE users SET coins = ? WHERE discord_id = ?", (user_coins - price, author.id))
+        return True

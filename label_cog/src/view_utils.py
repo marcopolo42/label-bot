@@ -6,6 +6,8 @@ from label_cog.src.database import get_user_language
 from label_cog.src.utils import get_lang
 from label_cog.src.utils import get_local_directory
 from label_cog.src.logging_dotenv import setup_logger
+from label_cog.src.coins_render import render_coins_image
+from label_cog.src.database import get_user_coins
 logger = setup_logger(__name__)
 
 
@@ -18,39 +20,48 @@ def set_current_value_as_default(select, key):
             i.default = False
 
 
-def get_embed(key, lang, image=None):
+def get_display_message(key):
     display_messages = Config().get("display_messages")
     if display_messages is None:
         raise ValueError("Display messages are missing from the config file")
     message = display_messages.get(key)
     if message is None:
+        logger.warning(f"Message with key {key} not found in display_messages")
         message = display_messages.get("default")
+    return message
+
+
+def get_embed(key, lang, image=None, thumbnail=None):
+    message = get_display_message(key)
     embed = discord.Embed(
         title=get_lang(message.get("title"), lang),
         description=get_lang(message.get("description"), lang),
         color=message.get("color")
     )
+    if thumbnail is not None:
+        embed.set_thumbnail(url=f"attachment://{os.path.basename(thumbnail)}")
     if image is not None:
         embed.set_image(url=f"attachment://{os.path.basename(image)}")
     return embed
 
 
-async def modify_message(key, lang, image=None, original_message=None, interaction=None, view=None):
+# This function is as ugly as shit we both know it and will not talk about it, thanks.
+async def modify_message(key, lang, image=None, thumbnail=None, original_message=None, interaction=None, view=None):
     if view is None:
         image = None
-    embed = get_embed(key, lang, image)
+    embed = get_embed(key, lang, image, thumbnail)
     if interaction is not None:
         if interaction.response.is_done():
             if image is not None:
                 logger.debug(f"embed modified with image. \"{embed.title}\"")
-                await interaction.edit_original_response(embed=embed, file=discord.File(image), view=view)
+                await interaction.edit_original_response(embed=embed, files=[discord.File(image), discord.File(thumbnail)], view=view)
             else:
                 logger.debug(f"embed modified without image. title: \"{embed.title}\"")
                 await interaction.edit_original_response(embed=embed, files=[], attachments=[], view=view)
         else:
             if image is not None:
                 logger.debug(f"embed responded with image. text: \"{embed.title}\"")
-                await interaction.response.edit_message(embed=embed, file=discord.File(image), view=view)
+                await interaction.response.edit_message(embed=embed, files=[discord.File(image), discord.File(thumbnail)], view=view)
             else:
                 logger.debug(f"embed responded without image. text: {embed.title}")
                 await interaction.response.edit_message(embed=embed, files=[], attachments=[], view=view)
@@ -62,17 +73,15 @@ async def modify_message(key, lang, image=None, original_message=None, interacti
 
 
 async def update_displayed_status(key, lang, image=None, interaction=None, original_message=None, view=None):
-    display_messages = Config().get("display_messages")
-    if display_messages is None:
-        raise ValueError("Display messages are missing from the config file")
-    message = display_messages.get(key)
-    if message is None:
-        logger.warning(f"Message with key {key} not found in display_messages")
-        message = display_messages.get("default")
+    if image is None:
+        thumbnail = None
+    else:
+        thumbnail = render_coins_image(await get_user_coins(interaction.user))
     await modify_message(
         key=key,
         lang=lang,
         image=image,
+        thumbnail=thumbnail,
         original_message=original_message,
         interaction=interaction,
         view=view

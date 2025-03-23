@@ -34,6 +34,7 @@ class Template:
         self.allowed_roles = raw.get("allowed_roles")
         self.daily_role_limits = raw.get("daily_role_limits")
         self.fields = raw.get("fields")
+        self.price = int(raw.get("price", 0))
 
         self.html_path = os.path.join(self.folder_path, "template.html")
         self.style_path = os.path.join(self.folder_path, "style.css")

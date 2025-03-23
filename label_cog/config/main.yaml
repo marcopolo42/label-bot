@@ -1,5 +1,4 @@
-settings:
-#maybe usefull later #todo
+default_coins: 10 # Default number of coins given to a user
 
 
 

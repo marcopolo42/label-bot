@@ -15,58 +15,13 @@ import time
 
 import datetime
 from label_cog.src.logging_dotenv import setup_logger
+from label_cog.src.image_utils import open_image_aio, convert_pil_to_base64_image, get_mime_type
+from label_cog.src.template_backend_utils import get_maximum_size_for_paper
 logger = setup_logger(__name__)
 
 Image.MAX_IMAGE_PIXELS = None  # Increase pixel limit for the PIL dependency (8K)
 CACHE_FOLDER = os.path.join(os.getcwd(), "label_cog", "cache")
 
-
-def get_mime_type(img_name):
-    mime_type, _ = mimetypes.guess_type(img_name)
-    if mime_type is None:
-        raise ValueError(f"Cannot determine MIME type for file: {img_name}")
-    return mime_type
-
-
-# Convert an image to a Base64-encoded string with MIME prefix
-def convert_pil_to_base64_image(img, mime_type):
-    try:
-        buffered = BytesIO()
-        img.save(buffered, format="PNG")
-        img_str = base64.b64encode(buffered.getvalue()).decode()
-        return f"data:{mime_type};base64,{img_str}"
-    except Exception as e:
-        raise Exception(f"Error while converting image to base64: {e}")
-
-
-async def read_image(image_path):
-    async with aiofiles.open(image_path, 'rb') as f:
-        img_data = await f.read()
-    img = Image.open(BytesIO(img_data))
-    return img
-
-
-
-
-def get_maximum_size_for_paper(size):
-    smaller_side = 62
-    width, height = size
-    logger.debug(f"Original size: {width}x{height}")
-    if height < width:
-        aspect_ratio = height / width
-        logger.debug(f"Aspect ratio: {aspect_ratio}")
-        width = smaller_side / aspect_ratio
-        height = smaller_side
-    else:
-        aspect_ratio = width / height
-        logger.debug(f"Aspect ratio: {aspect_ratio}")
-        height = smaller_side / aspect_ratio
-        width = smaller_side
-    # round to no decimal places
-    width = round(width)
-    height = round(height)
-    logger.debug(f"Page size in width: {width}mm and height: {height}mm")
-    return height, width
 
 
 async def process_data(data):
@@ -77,7 +32,7 @@ async def process_data(data):
     if img_path is None: # Timeout of 5 minutes
         logger.debug("img_path is None")
         return {}
-    img = await read_image(img_path)
+    img = await open_image_aio(img_path)
     height, width = get_maximum_size_for_paper(img.size)
     mime_type = get_mime_type(img_path)
     img_base64 = convert_pil_to_base64_image(img, mime_type)
