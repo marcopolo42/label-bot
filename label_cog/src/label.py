@@ -32,9 +32,8 @@ class Label:
         # wait for the user provided image and add it to the data
         if self.template.settings is not None and self.template.settings.get("image_upload") is not None:
             future = global_vars.file_uploads_futures.get(int(self.template.data.get("user_id")))
-            file_path = await future
-            logger.debug(f"File path of image after future: {file_path}")
-            self.template.data.update({"img_path": file_path})
+            file_bytes = await future
+            self.template.data.update({"img_bytes": file_bytes})
 
         await self.template.process_backend_data() # process the backend data before creating the final label
 

@@ -147,7 +147,7 @@ class ChooseLabelView(discord.ui.View):
         await update_displayed_status("printing", self.lang, interaction=interaction, view=self)
         label = self.label
         await add_log(f"Label {label.template.key} {label.count} was printed", self.author, label)
-        status = print_label(label, self.author)
+        status = await print_label(label, self.author)
         await display_and_stop(self, interaction, status)
 
     async def cancel_button_callback(self, interaction):

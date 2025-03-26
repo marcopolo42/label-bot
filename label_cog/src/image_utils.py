@@ -25,6 +25,10 @@ logger = setup_logger(__name__)
 Image.MAX_IMAGE_PIXELS = None  # Increase pixel limit for the PIL dependency (8K)
 
 
+def bytes_to_pil_image(img_bytes):
+    img = Image.open(BytesIO(img_bytes))
+    return img
+
 def pil_to_BytesIO(img):
     img_io = BytesIO()
     img.save(img_io, 'PNG')
@@ -98,12 +102,12 @@ def get_mime_type(img_name):
 
 
 # Convert an image to a Base64-encoded string with MIME prefix
-def convert_pil_to_base64_image(img, mime_type):
+def convert_pil_to_base64_image(img):
     try:
         buffered = BytesIO()
         img.save(buffered, format="PNG")
         img_str = base64.b64encode(buffered.getvalue()).decode()
-        return f"data:{mime_type};base64,{img_str}"
+        return f"data:image/png;base64,{img_str}"
     except Exception as e:
         raise Exception(f"Error while converting image to base64: {e}")
 

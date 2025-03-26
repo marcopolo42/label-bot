@@ -12,9 +12,9 @@ from label_cog.src.logging_dotenv import setup_logger
 logger = setup_logger(__name__)
 
 
-def print_label(label, author):
+async def print_label(label, author):
     display_status = None
-    if not can_user_afford(author.id, label.template.price):
+    if not await can_user_afford(author, label.template.price):
         return "not_enough_coins"
     try:
         print_status = ql_brother_print_usb(label.img_print, label.template.price)
@@ -28,7 +28,7 @@ def print_label(label, author):
             display_status = "error_print"
         elif outcome == "printed":
             display_status = "printed"
-            spend_user_coins(author.id, label.template.price)
+            await spend_user_coins(author, label.template.price)
         else:
             raise ValueError(f"Unexpected outcome: {outcome}")
     return display_status

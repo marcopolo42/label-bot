@@ -41,39 +41,22 @@ async def save_file_uploaded(message, folder, lang):
     if name is None or url is None:
         await message.channel.send(embed=get_embed("no_file_attached", lang))
         return
-    if folder_is_full(folder, 10):
-        logger.error("Error: Drive is full")
-        await message.channel.send(embed=get_embed("drive_full", lang))
-        return
     if not url.startswith("https://cdn.discordapp.com"):
         logger.error("Error: Invalid URL")
         await message.channel.send(embed=get_embed("error", lang))
         return
     async with aiohttp.ClientSession(headers={"Connection": "keep-alive"}) as session: # todo check if keep-alive is needed
         async with session.get(url) as r:
-            name = f"{message.author.id}_{name}"
-            file_path = os.path.join(folder, name)
-            try:
-                async with aiofiles.open(file_path, 'wb') as out_file:
-                    async for chunk in r.content.iter_chunked(8192):
-                        await out_file.write(chunk)
-                logger.info(f"Success: File saved as {name}")
-                await message.channel.send(embed=get_embed("file_saved", lang))
-                logger.debug(f"File uploads futures 3: {global_vars.file_uploads_futures}")
-                await message.channel.send(global_vars.channel_link.pop(message.author.id, "Error: You did not start creating a label before sending the file."))
-                #sets the result of the file future with the file path
-                logger.debug(f"Message author ID: {message.author.id}")
-                future = global_vars.file_uploads_futures.pop(message.author.id)
-                future.set_result(file_path) # this sends the file path to the coroutine that is waiting for it.
+            if r.status != 200:
+                logger.error(f"Error fetching file: {r.status}")
+                await message.channel.send(embed=get_embed("error", lang))
+                return
+            # Read file directly into bytes
+            file_bytes = await r.read()
 
-                logger.debug(f"Jump URLs: {global_vars.channel_link}")
-            except OSError as e:
-                if e.errno == 28:  # Error number for "No space left on device"
-                    logger.error("Error: Drive is full")
-                    await message.channel.send(embed=get_embed("drive_full", lang))
-                else:
-                    logger.error(f"Error: {e}")
-                    await message.channel.send(embed=get_embed("error", lang))
-            except Exception as e:
-                logger.error(f"Unexpected error: {e}")
-                raise e
+            await message.channel.send(embed=get_embed("file_saved", lang))
+            await message.channel.send(global_vars.channel_link.pop(message.author.id, "Error: You did not start creating a label before sending the file."))
+
+            # Set the result to contain both the bytes and the filename
+            future = global_vars.file_uploads_futures.pop(message.author.id)
+            future.set_result(file_bytes)

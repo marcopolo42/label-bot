@@ -20,22 +20,16 @@ from label_cog.src.template_backend_utils import get_maximum_size_for_paper
 logger = setup_logger(__name__)
 
 Image.MAX_IMAGE_PIXELS = None  # Increase pixel limit for the PIL dependency (8K)
-CACHE_FOLDER = os.path.join(os.getcwd(), "label_cog", "cache")
-
 
 
 async def process_data(data):
-    user_id = data.get("user_id", "")
-
-    img_path = data.get("img_path", None)
-    logger.debug(f"File found: {img_path}")
-    if img_path is None: # Timeout of 5 minutes
+    img_bytes = data.get("img_bytes", None)
+    if img_bytes is None: # to handle the timeout of 5 minutes
         logger.debug("img_path is None")
         return {}
-    img = await open_image_aio(img_path)
+    img = Image.open(BytesIO(img_bytes))
     height, width = get_maximum_size_for_paper(img.size)
-    mime_type = get_mime_type(img_path)
-    img_base64 = convert_pil_to_base64_image(img, mime_type)
+    img_base64 = convert_pil_to_base64_image(img)
     new_data = {
         "img_base64": img_base64,
         "img_height": height,
