@@ -16,7 +16,10 @@ class Assets(dict):
         return cls._instance
 
     def load_image(self, image_file):
-        self.update({os.path.basename(image_file): Image.open(image_file)})
+        with open(image_file, 'rb') as f: #using this instead of raw image.open to make sure it is read only.
+            img = Image.open(f)
+            img.load() #loading in memory so that it may lag only the first time.
+            self.update({os.path.basename(image_file): img})
 
     def load_assets(self):
         logger.debug("Loading assets")

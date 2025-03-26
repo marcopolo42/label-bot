@@ -10,6 +10,8 @@ import os
 import asyncio
 import aiofiles
 from pathlib import Path
+from memory_tempfile import MemoryTempfile
+
 
 #for tests
 import time
@@ -23,32 +25,38 @@ logger = setup_logger(__name__)
 Image.MAX_IMAGE_PIXELS = None  # Increase pixel limit for the PIL dependency (8K)
 
 
-def convert_to_grayscale(image_path):
-    image = Image.open(image_path)
-    grayscale_image = ImageOps.grayscale(image)
-    grayscale_image.save(image_path)
+def pil_to_BytesIO(img):
+    img_io = BytesIO()
+    img.save(img_io, 'PNG')
+    img_io.seek(0)
+    return img_io
 
 
-def pdf_to_image(pdf, image_path):
-    doc = fitz.open(pdf)  # we are using pymupdf because it is easier to install than pdf2image(poppler)
+async def open_image_aio(image_path):
+    async with aiofiles.open(image_path, 'rb') as f:
+        img_data = await f.read()
+    img = Image.open(BytesIO(img_data))
+    return img
+
+
+def pdf_to_pil_img(raw_pdf):
+    doc = fitz.open(stream=raw_pdf, filetype="pdf")  # we are using pymupdf because it is easier to install than pdf2image(poppler)
     page = doc.load_page(0)
     # get the pixmap of the page at 600 dpi
     pix = page.get_pixmap(alpha=False, dpi=600)  # todo does 600 instead of 300 work better ?
-    pix.save(image_path)
+    img = pix.pil_image()
     doc.close()
+    return img
 
 
-def add_margin(image_path, output_path, margin_mm, dpi=300):
+def add_margin(img, margin_mm, dpi=300):
     """
-    Adds a white margin around an image.
-
-    :param image_path: Path to the original image.
-    :param output_path: Path to save the new image with the margin.
-    :param margin_mm: Size of the margin in millimeters.
-    :param dpi: Dots per inch of the image for conversion to pixels.
+    Add margins to an image
+    :param img: PIL image
+    :param margin_mm: Margin size in millimeters
+    :param dpi: Dots per inch
+    :return: PIL image with margins
     """
-    # Open the original image
-    img = Image.open(image_path)
 
     # Convert mm to pixels
     margin_px = int((margin_mm / 25.4) * dpi)
@@ -58,32 +66,27 @@ def add_margin(image_path, output_path, margin_mm, dpi=300):
     new_height = img.height + 2 * margin_px
 
     # Create a new image with white background
-    new_img = Image.new("RGB", (new_width, new_height), color="white")
+    img_margins = Image.new("RGB", (new_width, new_height), color="white")
 
     # Paste the original image onto the new image, centered
-    new_img.paste(img, (margin_px, margin_px))
+    img_margins.paste(img, (margin_px, margin_px))
 
     # Save the resulting image
-    new_img.save(output_path)
-    logger.info(f"Image with margin saved to {output_path}")
+    return img_margins
 
 
-def invert_image(image_path):
-    image = Image.open(image_path)
-    inverted_image = ImageOps.invert(image)
-    inverted_image.save(image_path)
+def convert_to_grayscale(img):
+    img = ImageOps.grayscale(img)
+    return img
 
 
-def mirror_image(image_path):
-    image = Image.open(image_path)
-    mirrored_image = ImageOps.mirror(image)
-    mirrored_image.save(image_path)
+def invert_image(img):
+    img = ImageOps.invert(img)
+    return img
 
 
-async def open_image_aio(image_path):
-    async with aiofiles.open(image_path, 'rb') as f:
-        img_data = await f.read()
-    img = Image.open(BytesIO(img_data))
+def mirror_image(img):
+    img = ImageOps.mirror(img) # todo check if this is works by directly modifying the image
     return img
 
 

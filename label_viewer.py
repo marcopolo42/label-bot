@@ -52,7 +52,7 @@ class LabelTesterApp:
         try:
             self.label.template = Template(label_type, self.lang, None)
             await self.label.make()
-            self.display_preview(self.label.preview)
+            self.display_preview(self.label.img_preview)
         except TemplateException as e:
             logger.error(f"TemplateException: {e}")
         except Exception as e:

@@ -240,7 +240,7 @@ class ChooseLabelView(discord.ui.View):
         await self.label.make()
         self.select_count.disabled = False
         self.print_button.disabled = False
-        await update_displayed_status("preview", self.lang, image=self.label.preview, interaction=interaction, view=self)
+        await update_displayed_status("preview", self.lang, image=self.label.img_preview, interaction=interaction, view=self)
 
 
 

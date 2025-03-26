@@ -2,12 +2,16 @@ import os
 from datetime import datetime
 from label_cog.src.utils import get_cache_directory
 from blabel import LabelWriter
-from label_cog.src.image_utils import pdf_to_image, convert_to_grayscale, add_margin, invert_image, mirror_image
+from label_cog.src.image_utils import pdf_to_pil_img, convert_to_grayscale, add_margin, invert_image, mirror_image, open_image_aio, pil_to_BytesIO
+from label_cog.src.coins_render import add_price_icon
 import random
 import aiofiles
 import aiofiles.os
 import label_cog.src.global_vars as global_vars
 from label_cog.src.logging_dotenv import setup_logger
+from memory_tempfile import MemoryTempfile
+from io import BytesIO
+from PIL import Image
 logger = setup_logger(__name__)
 
 
@@ -16,9 +20,8 @@ class Label:
         self.template = None
         self.count = 1
         #return files
-        self.pdf = None
-        self.image = None
-        self.preview = None
+        self.img_print = None
+        self.img_preview = None
 
     async def make(self):
         # removes previous files
@@ -36,46 +39,38 @@ class Label:
         await self.template.process_backend_data() # process the backend data before creating the final label
 
         # the file name is created using the author's ID and the current timestamp
-        file_name = f"{self.template.data.get('user_name')}_{datetime.now().strftime('%d-%m-%Y_%H-%M-%S')}"
-        base_path = get_cache_directory(file_name=file_name)
-        self.pdf = base_path + ".pdf"
-        self.image = base_path + ".png"
-        self.preview = base_path + "_preview.png"
+        #file_name = f"{self.template.data.get('user_name')}_{datetime.now().strftime('%d-%m-%Y_%H-%M-%S')}"
+        #base_path = get_cache_directory(file_name=file_name)
 
+        #image creation
         label_writer = LabelWriter(item_template_path=f"{self.template.folder_path}/template.html",
                                    default_stylesheets=(f"{self.template.folder_path}/style.css",))
-        #pdf creation
         records = [self.template.data]
-        label_writer.write_labels(records, target=self.pdf)
-        #image creation
-        pdf_to_image(self.pdf, self.image)
-        convert_to_grayscale(self.image)
-        #creation of the preview from the printed image
-        add_margin(self.image, self.preview, margin_mm=3, dpi=300)
+        raw_pdf = label_writer.write_labels(records)
+        self.img_print = pdf_to_pil_img(raw_pdf)
+        self.img_print = convert_to_grayscale(self.img_print)
+
+        #preview creation
+        self.img_preview = add_margin(self.img_print, margin_mm=3, dpi=300) #todo check if 600 dpi works better
+        self.img_preview = add_price_icon(self.img_preview, self.template.price)
+
         self.easter_egg()
 
     def easter_egg(self):
         # one out of 100 labels will be inverted or mirrored
         if "food" in self.template.key:  # todo update with final templates names
             if random.randint(0, 100) == 0:
-                invert_image(self.preview)
-                invert_image(self.image)
+                invert_image(self.img_preview)
+                invert_image(self.img_print)
             if random.randint(0, 100) == 0:
-                mirror_image(self.preview)
-                mirror_image(self.image)
+                mirror_image(self.img_preview)
+                mirror_image(self.img_print)
 
     async def clear_files(self):
         logger.info("clearing label files")
-        if self.pdf is not None and await aiofiles.os.path.exists(self.pdf):
-            await aiofiles.os.remove(self.pdf)
-            self.pdf = None
-        if self.image is not None and await aiofiles.os.path.exists(self.image):
-            await aiofiles.os.remove(self.image)
-            self.image = None
-        if self.preview is not None and await aiofiles.os.path.exists(self.preview):
-            await aiofiles.os.remove(self.preview)
-            self.preview = None
-        logger.debug(f"pdf: {self.pdf}, image: {self.image}")
+        #todo this function might need to be deleted
+        self.img_print = None
+        self.img_preview = None
 
     async def reset(self):
         await self.clear_files()

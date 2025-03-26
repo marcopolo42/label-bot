@@ -95,6 +95,7 @@ templates:
       - bocal
     settings:
       reload_button: true # enable the reload button for stickers that have a random element that users may want to refresh
+    price: 10
 
   - key: "random_french_meme"
     name:

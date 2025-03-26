@@ -17,7 +17,7 @@ def print_label(label, author):
     if not can_user_afford(author.id, label.template.price):
         return "not_enough_coins"
     try:
-        print_status = ql_brother_print_usb(label.image, label.template.price)
+        print_status = ql_brother_print_usb(label.img_print, label.template.price)
     except Exception as e:
         logger.error(e, type(e), e.__traceback__, e.__dict__)
         logger.error(f"\033[91mError while printing: {e}\033[0m")
@@ -34,24 +34,23 @@ def print_label(label, author):
     return display_status
 
 
-def ql_brother_print_usb(image, count):
+def ql_brother_print_usb(img, count):
     printer = os.getenv("PRINTER_ID")
     backend = os.getenv("PRINTER_BACKEND") # 'pyusb', 'linux_kernel', 'network'
     model = os.getenv("PRINTER_MODEL")
-    if image is None:
-        return
-    im = Image.open(image)
+    if img is None:
+        raise ValueError("img is None")
     qlr = BrotherQLRaster(model)
     # enable if in dev mode
     qlr.exception_on_warning = True if os.getenv("ENV") == "dev" else False
-    if im.size[0] > 1465 and im.size[1] > 1465: # todo enable proper error handling and test this
+    if img.size[0] > 1465 and img.size[1] > 1465: # todo enable proper error handling and test this
         logger.info("Image is too big to be printed in a 62mm label")
         raise ValueError("Image is too big to be printed in a 62mm label")
     instructions = convert(
         qlr=qlr,
-        images=[im] * count, # Takes a list of file names or PIL objects.
+        images=[img] * count, # Takes a list of file names or PIL objects.
         label='62',
-        rotate=('0' if im.size[0] <= 1465 else '90'),  # 'Auto', '0', '90', '270'. 1465 is the width of a 62mm label in pixels
+        rotate=('0' if img.size[0] <= 1465 else '90'),  # 'Auto', '0', '90', '270'. 1465 is the width of a 62mm label in pixels
         threshold=70.0,  # Black and white threshold in percent.
         dither=True,
         compress=False,
