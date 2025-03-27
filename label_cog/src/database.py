@@ -38,8 +38,13 @@ class Database:
             return await cursor.fetchall()
 
     async def close(self):
-        await self.conn.close()
-        self.conn = None
+        try:
+            if self.conn:
+                await self.conn.close()
+        except Exception as e:
+            logger.info(e)
+        finally:
+            self.conn = None
 
 
 async def create_tables():
@@ -124,7 +129,7 @@ async def get_user_language(author):
 async def get_user_coins(author):
     coins = await Database().fetchone("SELECT coins FROM users WHERE discord_id = ?", (author.id,))
     if coins is None:
-        await add_user(author)  # todo add default language to config
+        await add_user(author)
         logger.info("No coins, because user not found in database")
         return 0
     return coins[0]

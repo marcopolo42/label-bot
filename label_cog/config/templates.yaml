@@ -9,7 +9,7 @@ templates:
       fr: "utilisé pour les articles au frigo"
       de: "für Kühlschrankartikel verwenden"
     emoji: "<:fridge:1320873241773998090>" # The emoji that will be used to represent the template here it is a custom emoji
-    settings:  # settings are optional data used by the sticker template or backend
+    settings:  # settings are optional data used by the template backend.py or html
       expiration_alumni: 6  # The expiration time in days
       expiration_student: 6
       expiration_piscine: 2

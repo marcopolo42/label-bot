@@ -24,7 +24,7 @@ from label_cog.src.printer import ql_brother_print_usb
 from label_cog.src.cleanup_thread import start_cleanup
 
 from label_cog.src.user_upload import save_file_uploaded
-from label_cog.src.utils import get_cache_directory, get_local_directory
+from label_cog.src.utils import get_local_directory
 
 import socket
 
@@ -43,28 +43,22 @@ from label_cog.src.session import Session
 
 
 def cog_setup():
-    # create the cache folders if they don't exist
-    if os.getenv('ENV') == 'prod':
-        os.makedirs(os.path.join("/dev/shm", 'label_cog', 'cache'), exist_ok=True)
-        print("Created cache folder in /dev/shm")
-        logger.info("Created cache folder in /dev/shm")
-    os.makedirs(os.path.join(os.getcwd(), 'label_cog', 'cache'), exist_ok=True)
+    if os.getenv('ENV') == 'dev':
+        if os.path.exists(get_local_directory("database.sqlite")):
+            os.remove(get_local_directory("database.sqlite"))
+
     if not os.path.exists(get_local_directory("templates")):
         raise FileNotFoundError("Templates folder 'templates' is missing")
     if not os.listdir(get_local_directory("templates")):
         raise FileNotFoundError("Templates folder 'templates' is empty")
     if not os.path.exists(get_local_directory("config")):
         raise FileNotFoundError("Config folder 'config' is missing")
-    if os.path.exists(get_local_directory("database.sqlite")):
-        os.remove(get_local_directory("database.sqlite")) # todo dev only
     # start the cleanup thread that will delete old files every 24 hours
-    start_cleanup(
-        [get_cache_directory(), os.path.join(os.getcwd(), 'label_cog', 'cache')], #todo clean later
-        15,
-        1)
+    #start_cleanup(
+    #    [get_cache_directory(), os.path.join(os.getcwd(), 'label_cog', 'cache')], #todo clean later
+    #    15,
+    #    1)
     Config().load_config_files()
-
-
 
 
 async def choose_and_print_label(ctx, session):
@@ -100,7 +94,8 @@ class LabelCog(commands.Cog):
         if message.author == self.bot.user: # prevent the bot from responding to itself
             return
         logger.debug(f"before save_file_uploaded")
-        await save_file_uploaded(message, "label_cog/cache", "en")
+        lang = await get_user_language(message.author)
+        await save_file_uploaded(message, lang)
 
     @discord.slash_command(name="label", description="Print a label")
     async def label(self, ctx):
@@ -108,7 +103,6 @@ class LabelCog(commands.Cog):
         if ctx.guild is None:
             await ctx.respond("This command can only be used in the 42 server.", ephemeral=True)
             return
-        #update the config in case it has changed
         session = Session(ctx.author, await get_user_language(ctx.author))
         await choose_and_print_label(ctx, session)
 

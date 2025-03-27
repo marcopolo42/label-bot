@@ -12,7 +12,6 @@ from pathlib import Path
 
 import datetime
 from label_cog.src.logging_dotenv import setup_logger
-from label_cog.src.image_utils import open_image_aio, convert_pil_to_base64_image, get_mime_type
 logger = setup_logger(__name__)
 
 

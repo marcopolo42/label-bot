@@ -35,7 +35,7 @@ def get_file_name_and_url(message):
         return name, url
 
 
-async def save_file_uploaded(message, folder, lang):
+async def save_file_uploaded(message, lang):
     logger.debug(f"Message: {message}")
     name, url = get_file_name_and_url(message)
     if name is None or url is None:
@@ -53,10 +53,9 @@ async def save_file_uploaded(message, folder, lang):
                 return
             # Read file directly into bytes
             file_bytes = await r.read()
-
+            #Inform the user that the file has been saved
             await message.channel.send(embed=get_embed("file_saved", lang))
             await message.channel.send(global_vars.channel_link.pop(message.author.id, "Error: You did not start creating a label before sending the file."))
-
-            # Set the result to contain both the bytes and the filename
+            # Send the file to the future that is waiting for it
             future = global_vars.file_uploads_futures.pop(message.author.id)
             future.set_result(file_bytes)

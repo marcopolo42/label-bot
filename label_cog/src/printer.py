@@ -2,6 +2,7 @@ from brother_ql.conversion import convert
 from brother_ql.backends.helpers import send
 from brother_ql.raster import BrotherQLRaster
 from label_cog.src.database import can_user_afford, spend_user_coins
+from asyncio import sleep as aio_sleep
 
 from PIL import Image
 
@@ -17,12 +18,13 @@ async def print_label(label, author):
     if not await can_user_afford(author, label.template.price):
         return "not_enough_coins"
     try:
-        print_status = ql_brother_print_usb(label.img_print, label.template.price)
+        print_status = ql_brother_print_usb(label.img_print, label.count)
     except Exception as e:
         logger.error(e, type(e), e.__traceback__, e.__dict__)
         logger.error(f"\033[91mError while printing: {e}\033[0m")
-        display_status = "error_print"
+        return "error_print"
     else:
+        logger.debug(f"Print status: {print_status}")
         outcome = print_status.get("outcome")
         if outcome == "error":
             display_status = "error_print"
@@ -40,6 +42,8 @@ def ql_brother_print_usb(img, count):
     model = os.getenv("PRINTER_MODEL")
     if img is None:
         raise ValueError("img is None")
+    if count < 1:
+        raise ValueError("print count is less than 1")
     qlr = BrotherQLRaster(model)
     # enable if in dev mode
     qlr.exception_on_warning = True if os.getenv("ENV") == "dev" else False

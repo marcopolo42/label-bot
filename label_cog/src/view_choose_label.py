@@ -151,7 +151,6 @@ class ChooseLabelView(discord.ui.View):
         await display_and_stop(self, interaction, status)
 
     async def cancel_button_callback(self, interaction):
-        await self.label.clear_files()
         await display_and_stop(self, interaction, "canceled")
 
     async def help_button_callback(self, interaction):
@@ -159,7 +158,6 @@ class ChooseLabelView(discord.ui.View):
 
     async def on_timeout(self):
         logger.info("Timeout of ChooseLabelView")
-        await self.label.clear_files()
         self.disable_all_items()
         await update_displayed_status("timeout", self.lang, original_message=self.parent, view=self)
         self.stop()

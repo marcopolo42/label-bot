@@ -58,7 +58,7 @@ class Template:
     def load_data(self, author):
         self.add_author_data(author)
         self.add_settings_data()
-        # backend data is processed when making the label
+        # backend data is processed later when making the label because it can use the user filled data
 
     def get_daily_role_limit(self, user_roles):
         if self.daily_role_limits is None:

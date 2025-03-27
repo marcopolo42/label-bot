@@ -51,19 +51,6 @@ def get_local_directory(folder=None, folder_or_file=None):
         return os.path.join(os.getcwd(), 'label_cog', folder, folder_or_file)
 
 
-def get_cache_directory(file_name=None):
-    if file_name is None:
-        file_name = ""
-    env = os.getenv('ENV')
-    if env == 'prod':
-        return os.path.join("/dev/shm", 'label_cog', 'cache', file_name)
-    if env == 'dev':
-        return os.path.join(os.getcwd(), 'label_cog', 'cache', file_name)
-    else:
-        logger.warning("ENV is not set")
-        return os.path.join(os.getcwd(), 'label_cog', 'cache', file_name)
-
-
 def get_current_ip():
     # Step 1: Get the local hostname.
     local_hostname = socket.gethostname()

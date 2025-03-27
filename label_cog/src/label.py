@@ -1,8 +1,7 @@
 import os
 from datetime import datetime
-from label_cog.src.utils import get_cache_directory
 from blabel import LabelWriter
-from label_cog.src.image_utils import pdf_to_pil_img, convert_to_grayscale, add_margin, invert_image, mirror_image, open_image_aio, pil_to_BytesIO
+from label_cog.src.image_utils import pdf_to_pil_img, convert_to_grayscale, add_margins, invert_image, mirror_image, pil_to_BytesIO
 from label_cog.src.coins_render import add_price_icon
 import random
 import aiofiles
@@ -25,7 +24,6 @@ class Label:
 
     async def make(self):
         # removes previous files
-        await self.clear_files()
         if self.template is None or self.count < 1:
             return
 
@@ -50,7 +48,7 @@ class Label:
         self.img_print = convert_to_grayscale(self.img_print)
 
         #preview creation
-        self.img_preview = add_margin(self.img_print, margin_mm=3, dpi=300) #todo check if 600 dpi works better
+        self.img_preview = add_margins(self.img_print, (3, 3, 3, 3), dpi=300) #todo check if 600 dpi works better
         self.img_preview = add_price_icon(self.img_preview, self.template.price)
 
         self.easter_egg()
@@ -59,19 +57,14 @@ class Label:
         # one out of 100 labels will be inverted or mirrored
         if "food" in self.template.key:  # todo update with final templates names
             if random.randint(0, 100) == 0:
-                invert_image(self.img_preview)
-                invert_image(self.img_print)
+                self.img_preview = invert_image(self.img_preview)
+                self.img_print = invert_image(self.img_print)
             if random.randint(0, 100) == 0:
-                mirror_image(self.img_preview)
-                mirror_image(self.img_print)
-
-    async def clear_files(self):
-        logger.info("clearing label files")
-        #todo this function might need to be deleted
-        self.img_print = None
-        self.img_preview = None
+                self.img_preview = mirror_image(self.img_preview)
+                self.img_print = mirror_image(self.img_print)
 
     async def reset(self):
-        await self.clear_files()
+        self.img_print = None
+        self.img_preview = None
         self.template = None
         self.count = 0

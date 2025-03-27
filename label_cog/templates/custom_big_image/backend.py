@@ -15,7 +15,7 @@ import time
 
 import datetime
 from label_cog.src.logging_dotenv import setup_logger
-from label_cog.src.image_utils import open_image_aio, convert_pil_to_base64_image, get_mime_type
+from label_cog.src.image_utils import convert_pil_to_base64_image
 from label_cog.src.template_backend_utils import get_maximum_size_for_paper
 logger = setup_logger(__name__)
 

@@ -8,8 +8,7 @@ from label_cog.src.utils import get_local_directory
 from label_cog.src.logging_dotenv import setup_logger
 from label_cog.src.coins_render import render_coins_image
 from label_cog.src.database import get_user_coins
-from label_cog.src.utils import get_cache_directory
-from label_cog.src.image_utils import pil_to_BytesIO
+from label_cog.src.image_utils import pil_to_BytesIO, add_margins
 logger = setup_logger(__name__)
 
 
@@ -41,7 +40,7 @@ def get_embed(key, lang, image=None, thumbnail=None):
         color=message.get("color")
     )
     if thumbnail is not None:
-        embed.set_thumbnail(url=f"attachment://{os.path.basename(thumbnail)}")
+        embed.set_thumbnail(url=f"attachment://thumbnail.png")
     if image is not None:
         embed.set_image(url=f"attachment://preview.png")
     return embed
@@ -56,16 +55,18 @@ async def modify_message(key, lang, image=None, thumbnail=None, original_message
         if interaction.response.is_done():
             if image is not None:
                 image = pil_to_BytesIO(image)
+                thumbnail = pil_to_BytesIO(thumbnail)
                 logger.debug(f"embed modified with image. \"{embed.title}\"")
-                await interaction.edit_original_response(embed=embed, files=[discord.File(image, filename="preview.png"), discord.File(thumbnail)], view=view)
+                await interaction.edit_original_response(embed=embed, files=[discord.File(image, filename="preview.png"), discord.File(thumbnail, filename="thumbnail.png")], view=view)
             else:
                 logger.debug(f"embed modified without image. title: \"{embed.title}\"")
                 await interaction.edit_original_response(embed=embed, files=[], attachments=[], view=view)
         else:
             if image is not None:
                 image = pil_to_BytesIO(image)
+                thumbnail = pil_to_BytesIO(thumbnail)
                 logger.debug(f"embed responded with image. text: \"{embed.title}\"")
-                await interaction.response.edit_message(embed=embed, files=[discord.File(image, filename="preview.png"), discord.File(thumbnail)], view=view)
+                await interaction.response.edit_message(embed=embed, files=[discord.File(image, filename="preview.png"), discord.File(thumbnail, filename="thumbnail.png")], view=view)
             else:
                 logger.debug(f"embed responded without image. text: {embed.title}")
                 await interaction.response.edit_message(embed=embed, files=[], attachments=[], view=view)
@@ -80,9 +81,9 @@ async def update_displayed_status(key, lang, image=None, interaction=None, origi
     if image is None:
         thumbnail = None
     else:
-        img_coin = render_coins_image(await get_user_coins(interaction.user))
-        thumbnail = get_cache_directory("coin.png")
-        img_coin.save(thumbnail)
+        thumbnail = render_coins_image(await get_user_coins(interaction.user))
+        thumbnail = add_margins(thumbnail, (0, 20, 0, 20), dpi=300, color=(0, 0, 0, 0))
+
     await modify_message(
         key=key,
         lang=lang,

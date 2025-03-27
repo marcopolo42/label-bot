@@ -12,7 +12,6 @@ import aiofiles
 from pathlib import Path
 from memory_tempfile import MemoryTempfile
 
-
 #for tests
 import time
 
@@ -29,6 +28,7 @@ def bytes_to_pil_image(img_bytes):
     img = Image.open(BytesIO(img_bytes))
     return img
 
+
 def pil_to_BytesIO(img):
     img_io = BytesIO()
     img.save(img_io, 'PNG')
@@ -36,7 +36,7 @@ def pil_to_BytesIO(img):
     return img_io
 
 
-async def open_image_aio(image_path):
+async def open_image_aio(image_path): # todo maybe unused
     async with aiofiles.open(image_path, 'rb') as f:
         img_data = await f.read()
     img = Image.open(BytesIO(img_data))
@@ -53,29 +53,20 @@ def pdf_to_pil_img(raw_pdf):
     return img
 
 
-def add_margin(img, margin_mm, dpi=300):
+def add_margins(img, margins_mm=(0, 0, 0, 0), dpi=300, color='white'):
     """
     Add margins to an image
+    :param margins_mm:
+    :param dpi:
     :param img: PIL image
-    :param margin_mm: Margin size in millimeters
-    :param dpi: Dots per inch
+    :param margins: tuple of margins in pixels (top, right, bottom, left)
     :return: PIL image with margins
     """
-
     # Convert mm to pixels
-    margin_px = int((margin_mm / 25.4) * dpi)
-
-    # Calculate new dimensions
-    new_width = img.width + 2 * margin_px
-    new_height = img.height + 2 * margin_px
-
-    # Create a new image with white background
-    img_margins = Image.new("RGB", (new_width, new_height), color="white")
-
-    # Paste the original image onto the new image, centered
-    img_margins.paste(img, (margin_px, margin_px))
-
-    # Save the resulting image
+    margins = tuple(int((margin_mm / 25.4) * dpi) for margin_mm in margins_mm)
+    if len(margins) != 4:
+        raise ValueError("Margins must be a tuple of 4 integers")
+    img_margins = ImageOps.expand(img, border=margins, fill=color)
     return img_margins
 
 
@@ -90,18 +81,17 @@ def invert_image(img):
 
 
 def mirror_image(img):
-    img = ImageOps.mirror(img) # todo check if this is works by directly modifying the image
+    img = ImageOps.mirror(img)
     return img
 
 
-def get_mime_type(img_name):
+def get_mime_type(img_name): # todo maybe unused
     mime_type, _ = mimetypes.guess_type(img_name)
     if mime_type is None:
         raise ValueError(f"Cannot determine MIME type for file: {img_name}")
     return mime_type
 
 
-# Convert an image to a Base64-encoded string with MIME prefix
 def convert_pil_to_base64_image(img):
     try:
         buffered = BytesIO()
@@ -114,10 +104,9 @@ def convert_pil_to_base64_image(img):
 
 def load_pil_font(font_size):
     # Load a font (Ensure the font file is accessible)
-    # if dev fonts from macos and if prod fonts from linux
+    # if dev get fonts from macos and if prod fonts from linux
     if os.getenv("ENV") == "dev":  # macos
-        user_path = Path.home()
-        font_path = os.path.join(user_path, "Library", "Fonts", "DejaVuSans.ttf")  # the dev needs to install the font
+        font_path = os.path.join(Path.home(), "Library", "Fonts", "DejaVuSans.ttf")  # the dev needs to install the font
     elif os.getenv("ENV") == "prod":  # linux
         font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
     else:
@@ -134,12 +123,11 @@ def get_pil_font_size(font, text):
     left, top, right, bottom = font.getbbox(text)
     text_width = int(right)
     text_height = int(bottom)
-
     logger.debug(f"Text size: {text_width}x{text_height}")
     return text_width, text_height
 
 
-def add_text_to_image(img, text, position, font_size):
+def add_text_to_image(img, text, position, font_size): # todo maybe unused
     font = load_pil_font(font_size)
     draw = ImageDraw.Draw(img)
     draw.text(position, text, font=font, fill='black')
