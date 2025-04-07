@@ -21,6 +21,7 @@ templates:
       - alumni
     daily_role_limits:  # The number of stickers each role can print per day (default is 25)
       student: 5
+    free: true
 
   - key: "freezer"
     name:
@@ -44,6 +45,7 @@ templates:
       - alumni
     daily_role_limits:
       student: 5
+    free: true
 
   - key: "bocal_small"
     name:
@@ -95,7 +97,7 @@ templates:
       - bocal
     settings:
       reload_button: true # enable the reload button for stickers that have a random element that users may want to refresh
-    price: 10
+    free: true # if true, the sticker will be free to print for all roles
 
   - key: "random_french_meme"
     name:

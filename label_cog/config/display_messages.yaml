@@ -175,6 +175,17 @@ display_messages:
         fr: "Une erreur inattendue est survenue. Vérifiez les logs pour plus d'informations."
         de: "Ein unerwarteter Fehler ist aufgetreten. Überprüfen Sie die Protokolle für weitere Informationen."
 
+  printer_not_found:
+    color: 0xFF0000
+    title:
+        en: "Printer not found !"
+        fr: "Imprimante introuvable !"
+        de: "Drucker nicht gefunden !"
+    description:
+        en: "Check if the printer is plugged in and turned on."
+        fr: "Vérifiez si l'imprimante est branchée et allumée."
+        de: "Überprüfen Sie, ob der Drucker angeschlossen und eingeschaltet ist."
+
   error_print:
     color: 0xFF0000
     title:

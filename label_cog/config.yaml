@@ -1,7 +1,3 @@
-settings:
-#maybe usefull later #todo
-
-
 templates:
   - key: "fridge"  # This is the key that will be used to identify the template (use the same for the template folder)
     name:

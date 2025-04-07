@@ -8,6 +8,7 @@ import aiofiles
 import aiofiles.os
 import label_cog.src.global_vars as global_vars
 from label_cog.src.logging_dotenv import setup_logger
+from label_cog.src.coins import cost_of_sticker_in_coins
 from memory_tempfile import MemoryTempfile
 from io import BytesIO
 from PIL import Image
@@ -18,6 +19,7 @@ class Label:
     def __init__(self):
         self.template = None
         self.count = 1
+        self.cost = 0
         #return files
         self.img_print = None
         self.img_preview = None
@@ -46,22 +48,23 @@ class Label:
         raw_pdf = label_writer.write_labels(records)
         self.img_print = pdf_to_pil_img(raw_pdf)
         self.img_print = convert_to_grayscale(self.img_print)
+        self.cost = cost_of_sticker_in_coins(self)
 
         #preview creation
-        self.img_preview = add_margins(self.img_print, (3, 3, 3, 3), dpi=300) #todo check if 600 dpi works better
-        self.img_preview = add_price_icon(self.img_preview, self.template.price)
+        self.img_preview = add_margins(self.img_print, (3, 3, 3, 3), dpi=300)
+        self.img_preview = add_price_icon(self.img_preview, self.cost)
 
         self.easter_egg()
 
     def easter_egg(self):
         # one out of 100 labels will be inverted or mirrored
-        if "food" in self.template.key:  # todo update with final templates names
-            if random.randint(0, 100) == 0:
-                self.img_preview = invert_image(self.img_preview)
-                self.img_print = invert_image(self.img_print)
-            if random.randint(0, 100) == 0:
-                self.img_preview = mirror_image(self.img_preview)
-                self.img_print = mirror_image(self.img_print)
+        #if "food" in self.template.key:  # todo update with final templates names
+        if random.randint(0, 100) == 0:
+            self.img_preview = invert_image(self.img_preview)
+            self.img_print = invert_image(self.img_print)
+        if random.randint(0, 100) == 0:
+            self.img_preview = mirror_image(self.img_preview)
+            self.img_print = mirror_image(self.img_print)
 
     async def reset(self):
         self.img_print = None

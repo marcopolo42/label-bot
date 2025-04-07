@@ -2,6 +2,8 @@ from brother_ql.conversion import convert
 from brother_ql.backends.helpers import send
 from brother_ql.raster import BrotherQLRaster
 from label_cog.src.database import can_user_afford, spend_user_coins
+from label_cog.src.coins import cost_of_sticker_in_coins
+from label_cog.src.config import Config
 from asyncio import sleep as aio_sleep
 
 from PIL import Image
@@ -14,26 +16,26 @@ logger = setup_logger(__name__)
 
 
 async def print_label(label, author):
-    display_status = None
-    if not await can_user_afford(author, label.template.price):
+    if not await can_user_afford(author, label.cost):
         return "not_enough_coins"
     try:
         print_status = ql_brother_print_usb(label.img_print, label.count)
     except Exception as e:
-        logger.error(e, type(e), e.__traceback__, e.__dict__)
-        logger.error(f"\033[91mError while printing: {e}\033[0m")
-        return "error_print"
-    else:
-        logger.debug(f"Print status: {print_status}")
-        outcome = print_status.get("outcome")
-        if outcome == "error":
-            display_status = "error_print"
-        elif outcome == "printed":
-            display_status = "printed"
-            await spend_user_coins(author, label.template.price)
+        if str(e) == "Device not found":
+            logger.error("Printer not found")
+            return "printer_not_found"
         else:
-            raise ValueError(f"Unexpected outcome: {outcome}")
-    return display_status
+            logger.error(e, type(e), e.__traceback__, e.__dict__)
+            logger.error(f"\033[91mError while printing: {e}\033[0m")
+            return "error_print"
+    else:
+        outcome = print_status.get("outcome")
+        if outcome == "printed":
+            await spend_user_coins(author, label.cost)
+            return "printed"
+        else:
+            logger.error(f"Print status: {print_status}")
+            return "error_print"
 
 
 def ql_brother_print_usb(img, count):
@@ -45,7 +47,7 @@ def ql_brother_print_usb(img, count):
     if count < 1:
         raise ValueError("print count is less than 1")
     qlr = BrotherQLRaster(model)
-    # enable if in dev mode
+    # enabled in dev mode
     qlr.exception_on_warning = True if os.getenv("ENV") == "dev" else False
     if img.size[0] > 1465 and img.size[1] > 1465: # todo enable proper error handling and test this
         logger.info("Image is too big to be printed in a 62mm label")
@@ -54,8 +56,8 @@ def ql_brother_print_usb(img, count):
         qlr=qlr,
         images=[img] * count, # Takes a list of file names or PIL objects.
         label='62',
-        rotate=('0' if img.size[0] <= 1465 else '90'),  # 'Auto', '0', '90', '270'. 1465 is the width of a 62mm label in pixels
-        threshold=70.0,  # Black and white threshold in percent.
+        rotate=('0' if img.size[0] <= 1465 else '90'),  # 'Auto', '0', '90', '270'. #
+        threshold=70.0,  # Black and white threshold in percent. # todo test this
         dither=True,
         compress=False,
         red=False,  # Only True if using Red/Black 62 mm label tape.

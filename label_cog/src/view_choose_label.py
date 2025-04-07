@@ -26,6 +26,7 @@ import label_cog.src.global_vars as global_vars
 from label_cog.src.logging_dotenv import setup_logger
 logger = setup_logger(__name__)
 
+
 class ChooseLabelView(discord.ui.View):
     def __init__(self, session, label):
         super().__init__(timeout=800)  # 13 minutes timeout

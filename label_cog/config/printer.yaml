@@ -1,0 +1,6 @@
+coin_value: 0.01 # the value of a coin in CHF
+
+# those values are used to calculate the price of the roll per millimeter
+roll_width: 62
+roll_length: 30480
+roll_price: 17.90

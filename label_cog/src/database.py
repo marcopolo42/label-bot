@@ -145,6 +145,8 @@ async def add_user_coins(author, coins):
 
 
 async def can_user_afford(author, price):
+    if price < 1:
+        return True
     user_coins = await get_user_coins(author)
     if user_coins < price:
         return False
@@ -152,6 +154,8 @@ async def can_user_afford(author, price):
 
 
 async def spend_user_coins(author, price):
+    if price < 1:
+        return True
     user_coins = await get_user_coins(author)
     if user_coins < price:
         return False
