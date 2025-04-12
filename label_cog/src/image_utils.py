@@ -10,7 +10,6 @@ import os
 import asyncio
 import aiofiles
 from pathlib import Path
-from memory_tempfile import MemoryTempfile
 
 #for tests
 import time

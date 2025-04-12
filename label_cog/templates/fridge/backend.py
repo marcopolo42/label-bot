@@ -3,6 +3,7 @@ from random import randint
 from label_cog.src.logging_dotenv import setup_logger
 logger = setup_logger(__name__)
 
+
 def get_user_role_icon(user_roles, user_name):
     #easter egg
     logger.debug(f"user_name: {user_name}")

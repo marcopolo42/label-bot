@@ -9,7 +9,6 @@ import aiofiles.os
 import label_cog.src.global_vars as global_vars
 from label_cog.src.logging_dotenv import setup_logger
 from label_cog.src.coins import cost_of_sticker_in_coins
-from memory_tempfile import MemoryTempfile
 from io import BytesIO
 from PIL import Image
 logger = setup_logger(__name__)
