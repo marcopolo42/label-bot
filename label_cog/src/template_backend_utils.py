@@ -103,6 +103,7 @@ example response from the API:d
 }
 '''
 
+
 def meme_api_call(endpoint, count):
     try:
         # Make a GET request to the API for many memes
@@ -115,7 +116,7 @@ def meme_api_call(endpoint, count):
         return data
 
     except requests.exceptions.RequestException as e:
-        # Handle request errors
+        logger.debug(f"Error fetching data from API: {e}")
         return None
     except ValueError as e:
         # Handle missing or malformed data errors

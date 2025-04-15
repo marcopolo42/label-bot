@@ -35,6 +35,7 @@ class Template:
         self.daily_role_limits = raw.get("daily_role_limits")
         self.fields = raw.get("fields")
         self.free = raw.get("free", False)
+        self.reload_button = raw.get("reload_button", False)
 
         self.html_path = os.path.join(self.folder_path, "template.html")
         self.style_path = os.path.join(self.folder_path, "style.css")

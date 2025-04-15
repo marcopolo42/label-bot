@@ -153,3 +153,18 @@ def create_image_with_text(text, font_size, background_color='white'):
     draw.text((0, 0), text, font=font, fill='black')
     logger.debug(f"Created create_image_with_text with dimensions: {text_width}x{text_height}")
     return img
+
+
+def join_images_vertically(img1, img2, padding_between=0):
+    # Create a new image with the height of both images and the width of the wider one
+    new_width = max(img1.width, img2.width)
+    new_height = img1.height + img2.height + padding_between
+    new_img = Image.new('RGBA', (new_width, new_height), color='white')
+    # Paste the images into the new image centered horizontally
+    img1_x = (new_width - img1.width) // 2
+    img1_y = 0
+    img2_x = (new_width - img2.width) // 2
+    img2_y = img1.height + padding_between
+    new_img.paste(img1, (img1_x, img1_y))
+    new_img.paste(img2, (img2_x, img2_y))
+    return new_img

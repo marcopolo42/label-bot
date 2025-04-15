@@ -13,7 +13,6 @@ templates:
       expiration_alumni: 6  # The expiration time in days
       expiration_student: 6
       expiration_piscine: 2
-      reload_button: true
     allowed_roles:  # The roles that can use this template. (case insensitive) to authorize all roles use "@everyone"
       - student
       - piscine
@@ -21,7 +20,8 @@ templates:
       - alumni
     daily_role_limits:  # The number of stickers each role can print per day (default is 25)
       student: 5
-    free: true
+    free: true # if true, the sticker will be free to print for all roles
+    reload_button: true
 
   - key: "freezer"
     name:
@@ -37,7 +37,6 @@ templates:
       expiration_alumni: 30
       expiration_student: 30
       expiration_piscine: 30
-      reload_button: true
     allowed_roles:
       - student
       - piscine
@@ -46,6 +45,7 @@ templates:
     daily_role_limits:
       student: 5
     free: true
+    reload_button: true
 
   - key: "bocal_small"
     name:
@@ -56,10 +56,9 @@ templates:
         en: "can be used to label food or small objects"
         fr: "peut être utilisé pour étiqueter de la nourriture ou de petits objets"
         de: "kann verwendet werden, um Lebensmittel oder kleine Objekte zu kennzeichnen"
-    settings:
-      reload_button: true
     allowed_roles:
       - bocal
+    reload_button: true
 
   - key: "logo_42"
     name:
@@ -95,9 +94,7 @@ templates:
     emoji: "🖼️"
     allowed_roles:
       - bocal
-    settings:
-      reload_button: true # enable the reload button for stickers that have a random element that users may want to refresh
-    free: true # if true, the sticker will be free to print for all roles
+    reload_button: true
 
   - key: "random_french_meme"
     name:
@@ -111,8 +108,8 @@ templates:
     emoji: "🖼️"
     allowed_roles:
       - bocal
-    settings:
-        reload_button: true
+    reload_button: true
+
 
   - key: "random_smash_reddit"
     name:
@@ -126,8 +123,7 @@ templates:
     emoji: "🖼️"
     allowed_roles:
       - bocal
-    settings:
-      reload_button: true
+    reload_button: true
 
   - key: "profile_picture"
     name:
@@ -167,18 +163,17 @@ templates:
     emoji: "🖼️"
     allowed_roles:
       - bocal
-    settings:
-      reload_button: true
+    reload_button: true
 
-  - key: "custom_small_text"
+  - key: "custom_text_one_line"
     name:
-      en: "Small Custom Text"
-      fr: "Petit texte personnalisé"
-      de: "Kleiner benutzerdefinierter Text"
+        en: "Custom Text One Line"
+        fr: "Texte personnalisé d'une ligne"
+        de: "Benutzerdefinierter Text eine Linie"
     description:
-      en: "Small custom text stickers (max 18 characters)"
-      fr: "Petits stickers de texte personnalisé (max 18 caractères)"
-      de: "Kleine benutzerdefinierte Textsticker (max 18 Zeichen)"
+        en: "Custom one line text sticker"
+        fr: "Autocollant texte personnalisé d'une ligne"
+        de: "Benutzerdefinierter Textaufkleber"
     emoji: "📝"
     allowed_roles:
       - Bocal
@@ -186,15 +181,95 @@ templates:
       - key: "text"
         max_length: 32
         name:
-          en: "Please enter the text you want on the label"
-          fr: "Veuillez entrer le texte que vous voulez sur l'étiquette"
-          de: "Bitte geben Sie den Text ein, den Sie auf dem Etikett möchten"
+          en: "the text you want on the label"
+          fr: "le texte que vous voulez sur l'étiquette"
+          de: "der Text, den Sie auf dem Etikett möchten"
         placeholder:
           en: "max 32 characters"
           fr: "max 32 caractères"
           de: "max 32 Zeichen"
-    settings:
-      reload_button: true
+    reload_button: true
+
+  - key: "custom_text_double_line"
+    name:
+        en: "Custom Text Double Line"
+        fr: "Texte personnalisé double ligne"
+        de: "Benutzerdefinierter Text doppelte Linie"
+    description:
+        en: "Custom double line text sticker"
+        fr: "Autocollant texte personnalisé double ligne"
+        de: "Benutzerdefinierter Textaufkleber doppelte Linie"
+    emoji: "📝"
+    allowed_roles:
+      - Bocal
+    reload_button: true
+    fields:
+      - key: "text"
+        max_length: 32
+        name:
+            en: "the text you want on the first line."
+            fr: "le texte de la première ligne"
+            de: "der Text auf der ersten Zeile"
+        placeholder:
+          en: "max 32 characters"
+          fr: "max 32 caractères"
+          de: "max 32 Zeichen"
+      - key: "text2"
+        max_length: 32
+        name:
+          en: "the text you want on the second line."
+          fr: "le texte de la deuxième ligne"
+          de: "der Text auf der zweiten Zeile"
+        placeholder:
+          en: "max 32 characters"
+          fr: "max 32 caractères"
+          de: "max 32 Zeichen"
+
+
+  - key: "custom_text_triple_line"
+    name:
+        en: "Custom Text Triple Line"
+        fr: "Texte personnalisé triple ligne"
+        de: "Benutzerdefinierter Text dreifache Linie"
+    description:
+        en: "Custom triple line text sticker"
+        fr: "texte personnalisé triple ligne"
+        de: "Benutzerdefinierter Textaufkleber dreifache Linie"
+    emoji: "📝"
+    allowed_roles:
+      - Bocal
+    reload_button: true
+    fields:
+      - key: "text"
+        max_length: 32
+        name:
+            en: "the text you want on the first line."
+            fr: "le texte de la première ligne"
+            de: "der Text auf der ersten Zeile"
+        placeholder:
+          en: "max 32 characters"
+          fr: "max 32 caractères"
+          de: "max 32 Zeichen"
+      - key: "text2"
+        max_length: 32
+        name:
+            en: "the text on the second line."
+            fr: "le texte de la deuxième ligne."
+            de: "der Text auf der zweiten Zeile"
+        placeholder:
+          en: "max 32 characters"
+          fr: "max 32 caractères"
+          de: "max 32 Zeichen"
+      - key: "text3"
+        max_length: 32
+        name:
+            en: "the text on the third line."
+            fr: "le texte de la troisième ligne."
+            de: "der Text auf der dritten Zeile"
+        placeholder:
+          en: "max 32 characters"
+          fr: "max 32 caractères"
+          de: "max 32 Zeichen"
 
   - key: "custom_square_image"
     name:

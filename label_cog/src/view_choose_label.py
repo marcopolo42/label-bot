@@ -164,11 +164,7 @@ class ChooseLabelView(discord.ui.View):
         self.stop()
 
     def update_reload_button(self, template):
-        if template.settings is None:
-            value = None
-        else:
-            value = template.settings.get("reload_button")
-        if value is not None:
+        if template.reload_button is True:
             if self.reload_button not in self.children:
                 self.add_item(self.reload_button)
         else:
