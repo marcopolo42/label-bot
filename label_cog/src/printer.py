@@ -4,6 +4,7 @@ from brother_ql.raster import BrotherQLRaster
 from label_cog.src.database import can_user_afford, spend_user_coins
 from label_cog.src.coins import cost_of_sticker_in_coins
 from label_cog.src.config import Config
+from label_cog.src.admin import is_admin
 from asyncio import sleep as aio_sleep
 
 from PIL import Image
@@ -16,7 +17,9 @@ logger = setup_logger(__name__)
 
 
 async def print_label(label, author):
-    if not await can_user_afford(author, label.cost):
+    if is_admin(author):
+        logger.info(f"User {author.name} is admin, skipping coin check")
+    elif not await can_user_afford(author, label.cost):
         return "not_enough_coins"
     try:
         print_status = ql_brother_print_usb(label.img_print, label.count)
