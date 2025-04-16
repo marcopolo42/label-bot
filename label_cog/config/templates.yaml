@@ -82,6 +82,19 @@ templates:
       BDE: 5
       tuteur: 2
 
+  - key: "logo_42_lausanne"
+    name:
+        en: "42 Lausanne Logo Label"
+        fr: "Étiquette du logo 42 Lausanne"
+        de: "42 Lausanne-Logoetikett"
+    description:
+        en: "The label to use for 42 Lausanne logo stickers"
+        fr: "L'étiquette à utiliser pour les stickers du logo 42 Lausanne"
+        de: "Das Etikett für 42 Lausanne-Logo-Sticker"
+    emoji: "<:42:1320879119944253591>"
+    allowed_roles:
+      - bocal
+
   - key: "random_meme"
     name:
         en: "Random Reddit Meme"

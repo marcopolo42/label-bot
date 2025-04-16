@@ -50,6 +50,8 @@ def get_maximum_size_for_paper(size):
 
 
 def get_img_base64_with_size(img):
+    if img is None:
+        return {}
     height, width = get_maximum_size_for_paper(img.size)
     img_base64 = convert_pil_to_base64_image(img)
     new_data = {
