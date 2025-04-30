@@ -2,6 +2,7 @@ from brother_ql.conversion import convert
 from brother_ql.backends.helpers import send
 from brother_ql.raster import BrotherQLRaster
 from label_cog.src.database import can_user_afford, spend_user_coins
+from label_cog.src.database import add_log
 from label_cog.src.coins import cost_of_sticker_in_coins
 from label_cog.src.config import Config
 from label_cog.src.admin import is_admin
@@ -17,6 +18,7 @@ logger = setup_logger(__name__)
 
 
 async def print_label(label, author):
+    await add_log(f"Label {label.template.key} {label.count} was printed", author, label)
     if is_admin(author):
         logger.info(f"User {author.name} is admin, skipping coin check")
     elif not await can_user_afford(author, label.cost):

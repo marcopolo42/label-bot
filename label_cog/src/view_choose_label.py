@@ -18,6 +18,9 @@ from label_cog.src.view_utils import get_embed, display_and_stop, get_templates_
 
 from label_cog.src.printer import print_label
 
+from label_cog.src.label import Label
+from label_cog.src.view_utils import get_select_count_options
+
 import asyncio
 
 import os
@@ -119,18 +122,15 @@ class ChooseLabelView(discord.ui.View):
         if os.getenv("ENV") == "dev":
             Config().load_config_files()
         await self.label.reset()
-        try:
-            self.label.template = Template(self.select_type.values[0], self.lang, self.author)
-        except TemplateException as e:
-            await display_and_stop(self, interaction, e)
-        except Exception as e:
-            raise e
+        exception_str = self.label.template.load(self.select_type.values[0], self.author, self.lang)
+        if exception_str is not None:
+            await display_and_stop(self, interaction, exception_str)
         else:
             set_current_value_as_default(self.select_type, self.select_type.values[0])
             await self.send_msg_how_to_upload(self.label.template, interaction)
             await self.ask_for_custom_label_fields(interaction, self.label)
             self.update_reload_button(self.label.template)
-            await self.update_select_count_options()
+            await self._update_select_count_options()
             await self.update_view(interaction)
 
     async def previous_button_callback(self, interaction): # todo
@@ -146,9 +146,7 @@ class ChooseLabelView(discord.ui.View):
 
     async def print_button_callback(self, interaction):
         await update_displayed_status("printing", self.lang, interaction=interaction, view=self)
-        label = self.label
-        await add_log(f"Label {label.template.key} {label.count} was printed", self.author, label)
-        status = await print_label(label, self.author)
+        status = await print_label(self.label, self.author)
         await display_and_stop(self, interaction, status)
 
     async def cancel_button_callback(self, interaction):
@@ -200,14 +198,9 @@ class ChooseLabelView(discord.ui.View):
     def get_options_page(self, page):
         return self.options[25 * page: 25 * (page + 1)]
 
-    async def update_select_count_options(self):
-        available_prints = await self.label.template.get_prints_available_today(self.author)
-        if available_prints == 0:
-            self.select_count.options = [discord.SelectOption(label="0", value="0")]
-        else:
-            self.select_count.options = [discord.SelectOption(label=str(i), value=str(i)) for i in range(1, available_prints + 1)]
+    async def _update_select_count_options(self):
+        self.select_count.options = await get_select_count_options(self.label.template, self.author)
         self.label.count = int(self.select_count.options[0].value)
-        self.select_count.options[0].default = True
 
     def are_custom_fields_filled(self):
         if self.label.template is None or self.label.template.fields is None:

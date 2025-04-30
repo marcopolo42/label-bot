@@ -9,6 +9,7 @@ import aiofiles.os
 import label_cog.src.global_vars as global_vars
 from label_cog.src.logging_dotenv import setup_logger
 from label_cog.src.coins import cost_of_sticker_in_coins
+from label_cog.src.template import Template
 from io import BytesIO
 from PIL import Image
 logger = setup_logger(__name__)
@@ -16,7 +17,7 @@ logger = setup_logger(__name__)
 
 class Label:
     def __init__(self):
-        self.template = None
+        self.template = Template()
         self.count = 1
         self.cost = 0
         #return files
@@ -30,9 +31,10 @@ class Label:
 
         # wait for the user provided image and add it to the data
         if self.template.settings is not None and self.template.settings.get("image_upload") is not None:
-            future = global_vars.file_uploads_futures.get(int(self.template.data.get("user_id")))
-            file_bytes = await future
-            self.template.data.update({"img_bytes": file_bytes})
+            if self.template.data.get("img_bytes") is None: # if the image is not already in the data from the image slash command for example
+                future = global_vars.file_uploads_futures.get(int(self.template.data.get("user_id")))
+                file_bytes = await future
+                self.template.data.update({"img_bytes": file_bytes})
 
         await self.template.process_backend_data() # process the backend data before creating the final label
 
@@ -41,8 +43,8 @@ class Label:
         #base_path = get_cache_directory(file_name=file_name)
 
         #image creation
-        label_writer = LabelWriter(item_template_path=f"{self.template.folder_path}/template.html",
-                                   default_stylesheets=(f"{self.template.folder_path}/style.css",))
+        label_writer = LabelWriter(item_template_path=self.template.html_path,
+                                   default_stylesheets=(self.template.style_path,))
         records = [self.template.data]
         raw_pdf = label_writer.write_labels(records)
         self.img_print = pdf_to_pil_img(raw_pdf)
@@ -68,5 +70,4 @@ class Label:
     async def reset(self):
         self.img_print = None
         self.img_preview = None
-        self.template = None
         self.count = 0

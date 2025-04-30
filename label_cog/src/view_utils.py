@@ -56,32 +56,38 @@ async def modify_message(key, lang, image=None, thumbnail=None, original_message
             if image is not None:
                 image = pil_to_BytesIO(image)
                 thumbnail = pil_to_BytesIO(thumbnail)
-                logger.debug(f"embed modified with image. \"{embed.title}\"")
                 await interaction.edit_original_response(embed=embed, files=[discord.File(image, filename="preview.png"), discord.File(thumbnail, filename="thumbnail.png")], view=view)
             else:
-                logger.debug(f"embed modified without image. title: \"{embed.title}\"")
-                await interaction.edit_original_response(embed=embed, files=[], attachments=[], view=view)
+                await interaction.edit_original_response(embed=embed, files=[], view=view)
         else:
             if image is not None:
                 image = pil_to_BytesIO(image)
                 thumbnail = pil_to_BytesIO(thumbnail)
-                logger.debug(f"embed responded with image. text: \"{embed.title}\"")
                 await interaction.response.edit_message(embed=embed, files=[discord.File(image, filename="preview.png"), discord.File(thumbnail, filename="thumbnail.png")], view=view)
             else:
-                logger.debug(f"embed responded without image. text: {embed.title}")
-                await interaction.response.edit_message(embed=embed, files=[], attachments=[], view=view)
-    if original_message is not None:
-        if view is None:
-            await original_message.edit(embed=embed, files=[], attachments=[])
+                await interaction.response.edit_message(embed=embed, files=[], view=view)
+    elif original_message is not None:
+        if image is not None:
+            image = pil_to_BytesIO(image)
+            thumbnail = pil_to_BytesIO(thumbnail)
+            await original_message.edit(embed=embed, files=[discord.File(image, filename="preview.png"), discord.File(thumbnail, filename="thumbnail.png")], view=view)
         else:
-            await original_message.edit(embed=embed, files=[], attachments=[], view=view)
+            await original_message.edit(embed=embed, files=[], view=view)
 
 
-async def update_displayed_status(key, lang, image=None, interaction=None, original_message=None, view=None):
+
+
+async def update_displayed_status(key, lang, image=None, interaction=None, original_message=None, user=None, view=None):
+    if interaction is None and original_message is None:
+        raise ValueError("Either interaction or original_message must be provided")
+    if interaction is not None:
+        user = interaction.user
+    else:
+        user = user
     if image is None:
         thumbnail = None
     else:
-        thumbnail = render_coins_image(await get_user_coins(interaction.user))
+        thumbnail = render_coins_image(await get_user_coins(user))
         thumbnail = add_margins(thumbnail, (0, 20, 0, 20), dpi=300, color=(0, 0, 0, 0))
 
     await modify_message(
@@ -138,4 +144,14 @@ def get_templates_values():
     if len(values) == 0:
         values.append("no_templates_available")
     return values
+
+
+async def get_select_count_options(template, author):
+    available_prints = await template.get_prints_available_today(author)
+    if available_prints <= 0:
+        options = [discord.SelectOption(label="0", value="0")]
+    else:
+        options = [discord.SelectOption(label=str(i), value=str(i)) for i in range(1, available_prints + 1)]
+    options[0].default = True
+    return options
 

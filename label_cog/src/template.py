@@ -18,32 +18,11 @@ class TemplateException(Exception):
 
 
 class Template:
-    def __init__(self, type, lang, author):
-        raw = self.load_template_config(type)
-        self.key = raw.get("key")
+    def __init__(self):
+        self.key = None
+        self.data = dict()
 
-        # the folder name of the template should be the same as the value
-        self.folder_path = get_local_directory("templates", self.key)
-        if not os.path.exists(self.folder_path):
-            raise TemplateException("missing_template_folder")
-
-        self.name = get_lang(raw.get("name"), lang)
-        self.description = get_lang(raw.get("description"), lang)
-        self.emoji = raw.get("emoji")
-        self.settings = raw.get("settings")
-        self.allowed_roles = raw.get("allowed_roles")
-        self.daily_role_limits = raw.get("daily_role_limits")
-        self.fields = raw.get("fields")
-        self.free = raw.get("free", False)
-        self.reload_button = raw.get("reload_button", False)
-
-        self.html_path = os.path.join(self.folder_path, "template.html")
-        self.style_path = os.path.join(self.folder_path, "style.css")
-        self.backend_path = os.path.join(self.folder_path, "backend.py")
-        self.data = {}
-        self.load_data(author)
-
-    def load_template_config(self, type):
+    def _load_raw_template_config(self, type):
         if type == "no_templates":
             raise TemplateException("no_templates")
         templates = Config().get("templates")
@@ -56,10 +35,52 @@ class Template:
             raise TemplateException("missing_template_config")
         return template
 
-    def load_data(self, author):
+    def load(self, type, author, lang):
+        try:
+            self._assign_values(type, lang)
+            self._add_and_validate_files()
+            self._load_data(author)
+        except TemplateException as e:
+            logger.error(f"Error loading template config: {e}")
+            return str(e)
+        except Exception as e:
+            logger.error(f"Error loading template config: {e}")
+            raise e
+
+    def _assign_values(self, type, lang):
+        raw = self._load_raw_template_config(type)
+        self.key = raw.get("key")
+
+        self._add_and_validate_files()
+
+        self.name = get_lang(raw.get("name"), lang)
+        self.description = get_lang(raw.get("description"), lang)
+        self.emoji = raw.get("emoji", "🏷")
+        self.settings = raw.get("settings", None)
+        self.allowed_roles = raw.get("allowed_roles", None)
+        self.daily_role_limits = raw.get("daily_role_limits", None)
+        self.fields = raw.get("fields", None)
+        self.free = raw.get("free", False)
+        self.reload_button = raw.get("reload_button", False)
+
+    def _add_and_validate_files(self):
+        self.folder_path = get_local_directory("templates", self.key)
+        if not os.path.isdir(self.folder_path):
+            raise TemplateException("missing_template_folder")
+
+        self.html_path = os.path.join(self.folder_path, "template.html")
+        self.style_path = os.path.join(self.folder_path, "style.css")
+        self.backend_path = os.path.join(self.folder_path, "backend.py")
+
+        if (not os.path.exists(self.html_path)
+                or not os.path.exists(self.style_path)):
+            raise TemplateException("missing_template_files")
+
+    def _load_data(self, author):
+        # data is not cleared before loading a new template to keep memmory of previously uploaded data from the user
         self.add_author_data(author)
         self.add_settings_data()
-        # backend data is processed later when making the label because it can use the user filled data
+        # backend data is processed later when making the label so that it can use the user filled data
 
     def get_daily_role_limit(self, user_roles):
         if self.daily_role_limits is None:

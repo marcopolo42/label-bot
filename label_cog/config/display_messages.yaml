@@ -240,6 +240,17 @@ display_messages:
         fr: "Le dossier du template que vous essayez d'utiliser est manquant."
         de: "Der Ordner für die Vorlage, die Sie verwenden möchten, fehlt."
 
+  missing_template_files:
+    color: 0xFF0000
+    title:
+        en: "Missing template files !"
+        fr: "Fichiers du template manquants !"
+        de: "Fehlende Vorlagendateien !"
+    description:
+        en: "The files for the template you are trying to use are missing."
+        fr: "Les fichiers du template que vous essayez d'utiliser sont manquants."
+        de: "Die Dateien für die Vorlage, die Sie verwenden möchten, fehlen."
+
   language_changed:
     color: 0x00FF00
     title:

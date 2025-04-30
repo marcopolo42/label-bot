@@ -17,7 +17,7 @@ def get_folder_size(folder):
     return total_size
 
 
-def folder_is_full(folder, size_gb):
+def folder_is_full(folder, size_gb): # todo might be unsused
     folder_size = get_folder_size(folder)
     if folder_size > size_gb * 1024 * 1024 * 1024: # Convert GB to bytes
         return True

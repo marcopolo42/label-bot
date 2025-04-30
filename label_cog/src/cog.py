@@ -16,6 +16,7 @@ from label_cog.src.label import Label
 from label_cog.src.view_choose_label import ChooseLabelView
 
 from label_cog.src.view_change_language import ChangeLanguageView
+from label_cog.src.view_print_image import PrintImageView
 
 from label_cog.src.config import Config
 
@@ -41,6 +42,12 @@ import time
 
 from label_cog.src.session import Session
 
+#tracemalloc is enabled only in dev mode
+import tracemalloc
+
+if os.getenv('ENV') == 'dev':
+    tracemalloc.start()
+
 
 def cog_setup():
     if os.getenv('ENV') == 'dev':
@@ -65,6 +72,13 @@ async def choose_and_print_label(ctx, session):
     label = Label()
     view = ChooseLabelView(session, label)
     await ctx.respond(embed=get_embed("help", session.lang), view=view, ephemeral=True)
+    await view.wait()
+
+
+async def print_image_label(ctx, session, file):
+    msg = await ctx.respond(embed=get_embed("creating", session.lang), ephemeral=True)
+    view = await PrintImageView.create(file, session)
+    await update_displayed_status("preview", session.lang, image=view.label.img_preview, original_message=msg, user=ctx.author, view=view)
     await view.wait()
 
 
@@ -105,6 +119,14 @@ class LabelCog(commands.Cog):
             return
         session = Session(ctx.author, await get_user_language(ctx.author))
         await choose_and_print_label(ctx, session)
+
+    @discord.slash_command(name="label_image", description="Print an image")
+    async def label_image(self, ctx, file: discord.Option(discord.Attachment, "Upload an image to print", required=True)):
+        # check if the user is in server
+        if ctx.guild is None:
+            await ctx.respond("This command can only be used in the 42 server.", ephemeral=True)
+            return
+        await print_image_label(ctx, Session(ctx.author, await get_user_language(ctx.author)), file)
 
     @discord.slash_command(name="change_language", description="Change the language used for the label bot")
     async def change_language(self, ctx):

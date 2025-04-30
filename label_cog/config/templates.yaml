@@ -308,7 +308,7 @@ templates:
           fr: "Utilisez img.doerig.dev pour héberger votre image."
           de: "Verwenden Sie img.doerig.dev, um Ihr Bild zu hosten."
 
-  - key: "custom_big_image"
+  - key: "custom_image"
     name:
         en: "Custom Big Image"
         fr: "Grande image personnalisée"
