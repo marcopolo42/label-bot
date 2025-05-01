@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Navigate to the project directory
-cd /home/admin/label-bot || exit
+cd /home/orangepi/label-bot || exit
 
 # File paths
 REQUIREMENTS_FILE="requirements.txt"

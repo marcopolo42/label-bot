@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Setup of the label-bot working environment
-cd /home/admin/label-bot || { echo "Directory /home/admin/label-bot not found"; exit 1; }
+cd /home/orangepi/label-bot || { echo "Directory /home/orangepi/label-bot not found"; exit 1; }
 
 # Update package list
 apt-get update
