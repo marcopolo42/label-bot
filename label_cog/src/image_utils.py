@@ -1,3 +1,4 @@
+import asyncio
 import os
 from PIL import Image, ImageOps
 import fitz # PyMuPDF
@@ -23,7 +24,7 @@ logger = setup_logger(__name__)
 Image.MAX_IMAGE_PIXELS = None  # Increase pixel limit for the PIL dependency (8K)
 
 
-def bytes_to_pil_image(img_bytes):
+def bytes_to_pil_image(img_bytes): # todo not used
     img = Image.open(BytesIO(img_bytes))
     return img
 
@@ -35,7 +36,7 @@ def pil_to_BytesIO(img):
     return img_io
 
 
-async def open_image_aio(image_path): # todo maybe unused
+async def open_image_aio(image_path): # todo not used
     async with aiofiles.open(image_path, 'rb') as f:
         img_data = await f.read()
     img = Image.open(BytesIO(img_data))
@@ -84,7 +85,7 @@ def mirror_image(img):
     return img
 
 
-def get_mime_type(img_name): # todo maybe unused
+def get_mime_type(img_name): # todo not used
     mime_type, _ = mimetypes.guess_type(img_name)
     if mime_type is None:
         raise ValueError(f"Cannot determine MIME type for file: {img_name}")
@@ -126,7 +127,7 @@ def get_pil_font_size(font, text):
     return text_width, text_height
 
 
-def add_text_to_image(img, text, position, font_size): # todo maybe unused
+def add_text_to_image(img, text, position, font_size): # todo not used
     font = load_pil_font(font_size)
     draw = ImageDraw.Draw(img)
     draw.text(position, text, font=font, fill='black')

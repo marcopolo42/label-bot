@@ -1,3 +1,4 @@
+import asyncio
 import discord
 import os
 
@@ -54,22 +55,22 @@ async def modify_message(key, lang, image=None, thumbnail=None, original_message
     if interaction is not None:
         if interaction.response.is_done():
             if image is not None:
-                image = pil_to_BytesIO(image)
-                thumbnail = pil_to_BytesIO(thumbnail)
+                image = await asyncio.to_thread(pil_to_BytesIO, image)
+                thumbnail = await asyncio.to_thread(pil_to_BytesIO, thumbnail)
                 await interaction.edit_original_response(embed=embed, files=[discord.File(image, filename="preview.png"), discord.File(thumbnail, filename="thumbnail.png")], view=view)
             else:
                 await interaction.edit_original_response(embed=embed, files=[], view=view)
         else:
             if image is not None:
-                image = pil_to_BytesIO(image)
-                thumbnail = pil_to_BytesIO(thumbnail)
+                image = await asyncio.to_thread(pil_to_BytesIO, image)
+                thumbnail = await asyncio.to_thread(pil_to_BytesIO, thumbnail)
                 await interaction.response.edit_message(embed=embed, files=[discord.File(image, filename="preview.png"), discord.File(thumbnail, filename="thumbnail.png")], view=view)
             else:
                 await interaction.response.edit_message(embed=embed, files=[], view=view)
     elif original_message is not None:
         if image is not None:
-            image = pil_to_BytesIO(image)
-            thumbnail = pil_to_BytesIO(thumbnail)
+            image = await asyncio.to_thread(pil_to_BytesIO, image)
+            thumbnail = await asyncio.to_thread(pil_to_BytesIO, thumbnail)
             await original_message.edit(embed=embed, files=[discord.File(image, filename="preview.png"), discord.File(thumbnail, filename="thumbnail.png")], view=view)
         else:
             await original_message.edit(embed=embed, files=[], view=view)
@@ -88,7 +89,7 @@ async def update_displayed_status(key, lang, image=None, interaction=None, origi
         thumbnail = None
     else:
         thumbnail = render_coins_image(await get_user_coins(user))
-        thumbnail = add_margins(thumbnail, (0, 20, 0, 20), dpi=300, color=(0, 0, 0, 0))
+        thumbnail = await asyncio.to_thread(add_margins, thumbnail, (0, 20, 0, 20), dpi=300, color=(0, 0, 0, 0))
 
     await modify_message(
         key=key,

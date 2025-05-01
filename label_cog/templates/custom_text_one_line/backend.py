@@ -1,3 +1,4 @@
+import asyncio
 import base64
 import requests
 from io import BytesIO
@@ -22,8 +23,8 @@ CACHE_FOLDER = os.path.join(os.getcwd(), "label_cog", "cache")
 
 async def process_data(data):
     text = data.get("text", "Error: No text provided")
-    img = create_image_with_text(text, 256)
-    img_base64 = convert_pil_to_base64_image(img)
+    img = await asyncio.to_thread(create_image_with_text, text, 256)
+    img_base64 = await asyncio.to_thread(convert_pil_to_base64_image, img)
     new_data = {
         "img_base64": img_base64,
     }

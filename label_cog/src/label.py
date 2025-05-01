@@ -1,3 +1,4 @@
+import asyncio
 import os
 from datetime import datetime
 from blabel import LabelWriter
@@ -47,25 +48,25 @@ class Label:
                                    default_stylesheets=(self.template.style_path,))
         records = [self.template.data]
         raw_pdf = label_writer.write_labels(records)
-        self.img_print = pdf_to_pil_img(raw_pdf)
-        self.img_print = convert_to_grayscale(self.img_print)
+        self.img_print = await asyncio.to_thread(pdf_to_pil_img, raw_pdf)
+        self.img_print = await asyncio.to_thread(convert_to_grayscale, self.img_print)
         self.cost = cost_of_sticker_in_coins(self)
 
         #preview creation
-        self.img_preview = add_margins(self.img_print, (3, 3, 3, 3), dpi=300)
+        self.img_preview = await asyncio.to_thread(add_margins, self.img_print, (3, 3, 3, 3), dpi=300)
         self.img_preview = add_price_icon(self.img_preview, self.cost)
 
-        self.easter_egg()
+        await self.easter_egg()
 
-    def easter_egg(self):
+    async def easter_egg(self):
         # one out of 100 labels will be inverted or mirrored
         #if "food" in self.template.key:  # todo update with final templates names
         if random.randint(0, 100) == 0:
-            self.img_preview = invert_image(self.img_preview)
-            self.img_print = invert_image(self.img_print)
+            self.img_preview = await asyncio.to_thread(invert_image, self.img_preview)
+            self.img_print = await asyncio.to_thread(invert_image, self.img_print)
         if random.randint(0, 100) == 0:
-            self.img_preview = mirror_image(self.img_preview)
-            self.img_print = mirror_image(self.img_print)
+            self.img_preview = await asyncio.to_thread(mirror_image, self.img_preview)
+            self.img_print = await asyncio.to_thread(mirror_image, self.img_print)
 
     async def reset(self):
         self.img_print = None

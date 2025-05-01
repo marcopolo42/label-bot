@@ -1,3 +1,4 @@
+import asyncio
 import base64
 import requests
 from io import BytesIO
@@ -6,7 +7,6 @@ import mimetypes
 import os
 
 
-import asyncio
 import aiofiles
 from pathlib import Path
 
@@ -29,6 +29,6 @@ async def process_data(data):
         logger.debug("img_path is None")
         return {}
     img = Image.open(BytesIO(img_bytes))
-    new_data = get_img_base64_with_size(img)
+    new_data = await asyncio.to_thread(get_img_base64_with_size, img)
     return new_data
 
