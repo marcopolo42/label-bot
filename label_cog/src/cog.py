@@ -24,6 +24,8 @@ from label_cog.src.printer import ql_brother_print_usb
 
 from label_cog.src.cleanup_thread import start_cleanup
 
+from label_cog.src.view_utils import display_and_stop
+
 from label_cog.src.user_upload import save_file_uploaded
 from label_cog.src.utils import get_local_directory
 
@@ -39,6 +41,8 @@ from label_cog.src.logging_dotenv import setup_logger
 logger = setup_logger(__name__)
 
 import time
+
+from label_cog.src.printer import print_label
 
 from label_cog.src.session import Session
 
@@ -82,6 +86,17 @@ async def print_image_label(ctx, session, file):
     await view.wait()
 
 
+async def print_specific_label(ctx, type, count, session):
+    msg = await ctx.respond(embed=get_embed("creating", session.lang), ephemeral=True)
+    label = Label()
+    label.count = count
+    label.template.load(type, session.author, session.lang)
+    await label.make()
+    label.img_preview.show()
+    status = await print_label(label, session.author)
+    await update_displayed_status(str(status), session.lang, original_message=msg, user=session.author)
+
+
 class LabelCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -120,13 +135,29 @@ class LabelCog(commands.Cog):
         session = Session(ctx.author, await get_user_language(ctx.author))
         await choose_and_print_label(ctx, session)
 
-    @discord.slash_command(name="label_image", description="Print an image")
-    async def label_image(self, ctx, file: discord.Option(discord.Attachment, "Upload an image to print", required=True)):
+    @discord.slash_command(name="image_label", description="Print an image")
+    async def image_label(self, ctx, file: discord.Option(discord.Attachment, "Upload an image to print", required=True)):
         # check if the user is in server
         if ctx.guild is None:
             await ctx.respond("This command can only be used in the 42 server.", ephemeral=True)
             return
         await print_image_label(ctx, Session(ctx.author, await get_user_language(ctx.author)), file)
+
+    @discord.slash_command(name="fridge_label", description="Print a fridge label")
+    async def fridge_label(self, ctx, copies: discord.Option(int, "Number of copies to print", required=False, default=1)):
+        # check if the user is in server
+        if ctx.guild is None:
+            await ctx.respond("This command can only be used in the 42 server.", ephemeral=True)
+            return
+        await print_specific_label(ctx, "fridge", copies, Session(ctx.author, await get_user_language(ctx.author)))
+
+    @discord.slash_command(name="freezer_label", description="Print a fridge label")
+    async def freezer_label(self, ctx, copies: discord.Option(int, "Number of copies to print", required=False, default=1)):
+        # check if the user is in server
+        if ctx.guild is None:
+            await ctx.respond("This command can only be used in the 42 server.", ephemeral=True)
+            return
+        await print_specific_label(ctx, "freezer", copies, Session(ctx.author, await get_user_language(ctx.author)))
 
     @discord.slash_command(name="change_language", description="Change the language used for the label bot")
     async def change_language(self, ctx):
