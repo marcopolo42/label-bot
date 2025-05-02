@@ -95,6 +95,20 @@ templates:
     allowed_roles:
       - bocal
 
+  - key: "random_smash_character"
+    name:
+        en: "Random Smash Character"
+        fr: "Personnage Smash aléatoire"
+        de: "Zufälliger Smash-Charakter"
+    description:
+        en: "Get a random character from the SmashBrosUltimate subreddit"
+        fr: "Obtenez un personnage aléatoire du subreddit SmashBrosUltimate"
+        de: "Holen Sie sich einen zufälligen Charakter aus dem SmashBrosUltimate-Subreddit"
+    emoji: "🥷🏻"
+    allowed_roles:
+      - bocal
+    reload_button: true
+
   - key: "random_meme"
     name:
         en: "Random Reddit Meme"
