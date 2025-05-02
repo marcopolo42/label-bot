@@ -47,8 +47,9 @@ def get_embed(key, lang, image=None, thumbnail=None):
     return embed
 
 
-# This function is as ugly as shit we both know it and will not talk about it, thanks.
+# This function is ugly as shit we both know it and will not talk about it, thanks.
 async def modify_message(key, lang, image=None, thumbnail=None, original_message=None, interaction=None, view=None):
+    logger.debug(f"key: {key}, lang: {lang}, image: {image}, thumbnail: {thumbnail}")
     if view is None:
         image = None
     embed = get_embed(key, lang, image, thumbnail)
@@ -59,23 +60,21 @@ async def modify_message(key, lang, image=None, thumbnail=None, original_message
                 thumbnail = await asyncio.to_thread(pil_to_BytesIO, thumbnail)
                 await interaction.edit_original_response(embed=embed, files=[discord.File(image, filename="preview.png"), discord.File(thumbnail, filename="thumbnail.png")], view=view)
             else:
-                await interaction.edit_original_response(embed=embed, files=[], view=view)
+                await interaction.edit_original_response(embed=embed, files=[], attachments=[], view=view)
         else:
             if image is not None:
                 image = await asyncio.to_thread(pil_to_BytesIO, image)
                 thumbnail = await asyncio.to_thread(pil_to_BytesIO, thumbnail)
                 await interaction.response.edit_message(embed=embed, files=[discord.File(image, filename="preview.png"), discord.File(thumbnail, filename="thumbnail.png")], view=view)
             else:
-                await interaction.response.edit_message(embed=embed, files=[], view=view)
+                await interaction.response.edit_message(embed=embed, files=[], attachments=[], view=view)
     elif original_message is not None:
         if image is not None:
             image = await asyncio.to_thread(pil_to_BytesIO, image)
             thumbnail = await asyncio.to_thread(pil_to_BytesIO, thumbnail)
             await original_message.edit(embed=embed, files=[discord.File(image, filename="preview.png"), discord.File(thumbnail, filename="thumbnail.png")], view=view)
         else:
-            await original_message.edit(embed=embed, files=[], view=view)
-
-
+            await original_message.edit(embed=embed, files=[], attachments=[], view=view)
 
 
 async def update_displayed_status(key, lang, image=None, interaction=None, original_message=None, user=None, view=None):

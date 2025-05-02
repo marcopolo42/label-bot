@@ -92,7 +92,7 @@ def fetch_meme():
 
 
 # Example usage:
-async def process_data(data):
+def process_data(data):
     meme_url = fetch_meme()
     if meme_url:
         logger.debug(f"Meme URL: {meme_url}")

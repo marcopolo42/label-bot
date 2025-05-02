@@ -12,7 +12,7 @@ def get_coalition(user_roles):
     return ""
 
 
-async def process_data(data):
+def process_data(data):
     new_data = {
         "coalition": get_coalition(data.get("user_roles", []))
     }

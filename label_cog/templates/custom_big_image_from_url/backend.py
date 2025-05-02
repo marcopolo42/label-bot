@@ -62,7 +62,7 @@ def get_maximum_size_for_paper(size):
     return height, width
 
 
-async def process_data(data):
+def process_data(data):
     image_url = data.get("image_url", "")
     try:
         img = get_image_from_url(image_url)

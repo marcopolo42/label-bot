@@ -51,7 +51,7 @@ def get_role_expiration_date(user_roles, data):
     return get_time(days_to_add)
 
 
-async def process_data(data):
+def process_data(data):
     new_data = {
         "expiration_date": get_role_expiration_date(data.get("user_roles", []), data),
         "user_icon": get_user_role_icon(data.get("user_roles", []), data.get("user_display_name")),

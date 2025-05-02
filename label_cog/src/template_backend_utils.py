@@ -17,15 +17,20 @@ from label_cog.src.logging_dotenv import setup_logger
 logger = setup_logger(__name__)
 
 
-async def save_img_from_url(url):
-    async with aiohttp.ClientSession(headers={"Connection": "keep-alive"}) as session: # todo check if keep-alive is needed
-        async with session.get(url) as r:
-            if r.status != 200:
-                logger.error(f"Error fetching file: {r.status}")
-                return None
-            file_bytes = await r.read()
-            img = Image.open(BytesIO(file_bytes))
-            return img
+def save_img_from_url(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raises an exception for HTTP errors
+
+        file_bytes = response.content
+        img = Image.open(BytesIO(file_bytes))
+        return img
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error fetching file from url: {e}")
+        return None
+    except Exception as e:
+        logger.error(f"Error processing image: {e}")
+        return None
 
 
 def get_maximum_size_for_paper(size):

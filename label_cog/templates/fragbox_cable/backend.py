@@ -26,7 +26,7 @@ def image_to_base64(image_name):
         return None
 
 
-async def process_data(data):
+def process_data(data):
     image_name = "text_fragbox.png"
     new_data = {
         "image_base64": image_to_base64(image_name),

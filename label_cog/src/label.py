@@ -31,13 +31,16 @@ class Label:
             return
 
         # wait for the user provided image and add it to the data
-        if self.template.settings is not None and self.template.settings.get("image_upload") is not None:
-            if self.template.data.get("img_bytes") is None: # if the image is not already in the data from the image slash command for example
+        if self.template.settings is not None and self.template.settings.get("image_upload") is not None: #move image upload form settings to template directly
+            if self.template.data.get("img_bytes") is None: # if the image is not already in data from the image slash command for example
                 future = global_vars.file_uploads_futures.get(int(self.template.data.get("user_id")))
-                file_bytes = await future
-                self.template.data.update({"img_bytes": file_bytes})
+                self.template.data.update({"img_bytes": await future})
 
-        await self.template.process_backend_data() # process the backend data before creating the final label
+        await asyncio.to_thread(self._creation)
+
+
+    def _creation(self):
+        self.template.process_backend_data() # process the backend data before creating the final label
 
         # the file name is created using the author's ID and the current timestamp
         #file_name = f"{self.template.data.get('user_name')}_{datetime.now().strftime('%d-%m-%Y_%H-%M-%S')}"
@@ -48,25 +51,25 @@ class Label:
                                    default_stylesheets=(self.template.style_path,))
         records = [self.template.data]
         raw_pdf = label_writer.write_labels(records)
-        self.img_print = await asyncio.to_thread(pdf_to_pil_img, raw_pdf)
-        self.img_print = await asyncio.to_thread(convert_to_grayscale, self.img_print)
+        self.img_print = pdf_to_pil_img(raw_pdf)
+        self.img_print = convert_to_grayscale(self.img_print)
         self.cost = cost_of_sticker_in_coins(self)
 
         #preview creation
-        self.img_preview = await asyncio.to_thread(add_margins, self.img_print, (3, 3, 3, 3), dpi=300)
+        self.img_preview = add_margins(self.img_print, (3, 3, 3, 3), dpi=300)
         self.img_preview = add_price_icon(self.img_preview, self.cost)
 
-        await self.easter_egg()
+        self.easter_egg()
 
-    async def easter_egg(self):
+    def easter_egg(self):
         # one out of 100 labels will be inverted or mirrored
         #if "food" in self.template.key:  # todo update with final templates names
         if random.randint(0, 100) == 0:
-            self.img_preview = await asyncio.to_thread(invert_image, self.img_preview)
-            self.img_print = await asyncio.to_thread(invert_image, self.img_print)
+            self.img_preview = invert_image(self.img_preview)
+            self.img_print = invert_image(self.img_print)
         if random.randint(0, 100) == 0:
-            self.img_preview = await asyncio.to_thread(mirror_image, self.img_preview)
-            self.img_print = await asyncio.to_thread(mirror_image, self.img_print)
+            self.img_preview = mirror_image(self.img_preview)
+            self.img_print = mirror_image(self.img_print)
 
     async def reset(self):
         self.img_print = None

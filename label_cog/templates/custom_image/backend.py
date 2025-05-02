@@ -23,12 +23,12 @@ logger = setup_logger(__name__)
 Image.MAX_IMAGE_PIXELS = None  # Increase pixel limit for the PIL dependency (8K)
 
 
-async def process_data(data):
+def process_data(data):
     img_bytes = data.get("img_bytes", None)
     if img_bytes is None: # to handle the timeout of 5 minutes
         logger.debug("img_path is None")
         return {}
     img = Image.open(BytesIO(img_bytes))
-    new_data = await asyncio.to_thread(get_img_base64_with_size, img)
+    new_data = get_img_base64_with_size(img)
     return new_data
 
