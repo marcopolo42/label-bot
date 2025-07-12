@@ -19,6 +19,7 @@ bot.load_extension("label_cog.src.cog")
 
 
 def main():
+    print("Starting the bot...")
     try:
         bot.run(os.getenv('DISCORD_TOKEN'))
     except ClientConnectorError:

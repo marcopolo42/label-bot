@@ -96,8 +96,9 @@ async def get_today_prints_count(author, template_key):
     return count[0]
 
 
-async def add_user(author):
-    language = Config().get("default_language")
+async def add_user(author, language=None):
+    if language is None:
+        language = Config().get("default_language")
     coins = Config().get("default_coins")
     await Database().execute("INSERT INTO users (discord_id, display_name, avatar_url, discord_url, language, coins) VALUES (?, ?, ?, ?, ?, ?)",
                       (author.id, author.display_name, author.avatar.url, get_discord_url(str(author.id)), language, coins))
@@ -127,6 +128,8 @@ async def get_user_language(author):
 
 
 async def get_user_coins(author):
+    if await get_user(author) is None:
+        await add_user(author)
     coins = await Database().fetchone("SELECT coins FROM users WHERE discord_id = ?", (author.id,))
     if coins is None:
         await add_user(author)
@@ -141,7 +144,9 @@ async def update_user_coins(author, coins):
 
 async def add_user_coins(author, coins):
     user_coins = await get_user_coins(author)
-    await update_user_coins(author, user_coins + coins)
+    new_coins_count = user_coins + coins
+    await update_user_coins(author, new_coins_count)
+    return new_coins_count
 
 
 async def can_user_afford(author, price):

@@ -26,6 +26,10 @@ translations:
     en: "Print"
     fr: "Imprimer"
     de: "Drucken"
+  confirm_button_label:
+    en: "Confirm"
+    fr: "Confirmer"
+    de: "Bestätigen"
   cancel_button_label:
     en: "Cancel"
     fr: "Annuler"
@@ -38,6 +42,10 @@ translations:
     en: "retry"
     fr: "réessayer"
     de: "erneut versuchen"
+  buy_coins_button_label:
+    en: "Buy coins"
+    fr: "Acheter des pièces"
+    de: "Münzen kaufen"
 
   custom_label_modal_title:
     en: "What would you like on your label ?"

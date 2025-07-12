@@ -6,6 +6,7 @@ from label_cog.src.database import update_user_language
 from label_cog.src.logging_dotenv import setup_logger
 logger = setup_logger(__name__)
 
+
 class ChangeLanguageView(discord.ui.View):
     def __init__(self, session):
         super().__init__(disable_on_timeout=True, timeout=300)  # 5 minutes timeout

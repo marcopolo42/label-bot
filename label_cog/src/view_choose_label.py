@@ -21,6 +21,10 @@ from label_cog.src.printer import print_label
 from label_cog.src.label import Label
 from label_cog.src.view_utils import get_select_count_options
 
+from label_cog.src.coins_render import render_wallet_image
+
+from label_cog.src.database import get_user_coins
+
 import asyncio
 
 import os
@@ -228,7 +232,8 @@ class ChooseLabelView(discord.ui.View):
         await self.label.make()
         self.select_count.disabled = False
         self.print_button.disabled = False
-        await update_displayed_status("preview", self.lang, image=self.label.img_preview, interaction=interaction, view=self)
+        thumbnail = await asyncio.to_thread(render_wallet_image, await get_user_coins(self.author))
+        await update_displayed_status("preview", self.lang, image=self.label.img_preview, thumbnail=thumbnail, interaction=interaction, view=self)
 
 
 

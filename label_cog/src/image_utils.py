@@ -104,16 +104,14 @@ def convert_pil_to_base64_image(img):
 
 def load_pil_font(font_size):
     # Load a font (Ensure the font file is accessible)
-    # if dev get fonts from macos and if prod fonts from linux
-    if os.getenv("ENV") == "dev":  # macos
-        font_path = os.path.join(Path.home(), "Library", "Fonts", "DejaVuSans.ttf")  # the dev needs to install the font
-    elif os.getenv("ENV") == "prod":  # linux
-        font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-    else:
-        raise ValueError("ENV is not defined")
+    #old code that enables the program to run directly on macos
+    #if os.getenv("ENV") == "dev":  # macos
+        #font_path = os.path.join(Path.home(), "Library", "Fonts", "DejaVuSans.ttf")  # the dev needs to install the font
+    #elif os.getenv("ENV") == "prod":  # linux
 
+    font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
     if not os.path.exists(font_path):
-        raise FileNotFoundError(f"Font file not found: {font_path}")
+        raise FileNotFoundError(f"Font file not found: {font_path} (probably wrong os as this is meant to run in a linux container)")
 
     font = ImageFont.truetype(font_path, int(font_size))
     return font

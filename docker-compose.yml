@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  labelbot:
+    build: .
+    container_name: labelbot
+    restart: unless-stopped
+    volumes:
+      - .:/app
+      - /dev:/dev             # to access USB printer
+    devices:
+      - /dev/usb/lp0:/dev/usb/lp0
+    privileged: true          # required for kernel-level access to printers

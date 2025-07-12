@@ -42,9 +42,19 @@ logger = setup_logger(__name__)
 
 import time
 
+import asyncio
+
 from label_cog.src.printer import print_label
 
 from label_cog.src.session import Session
+
+from label_cog.src.database import add_user_coins, get_user_coins
+
+from label_cog.src.coins_render import render_wallet_image
+
+from label_cog.src.view_add_coins import AddCoinsView
+
+
 
 #tracemalloc is enabled only in dev mode
 import tracemalloc
@@ -82,7 +92,9 @@ async def choose_and_print_label(ctx, session):
 async def print_image_label(ctx, session, file):
     msg = await ctx.respond(embed=get_embed("creating", session.lang), ephemeral=True)
     view = await PrintImageView.create(file, session)
-    await update_displayed_status("preview", session.lang, image=view.label.img_preview, original_message=msg, user=ctx.author, view=view)
+    user_coins = await get_user_coins(ctx.author)
+    thumbnail = await asyncio.to_thread(render_wallet_image, user_coins)
+    await update_displayed_status("preview", session.lang, image=view.label.img_preview, thumbnail=thumbnail,  original_message=msg, user=ctx.author, view=view)
     await view.wait()
 
 
@@ -94,25 +106,35 @@ async def print_specific_label(ctx, type, count, session):
     await label.make()
     label.img_preview.show()
     status = await print_label(label, session.author)
-    await update_displayed_status(str(status), session.lang, original_message=msg, user=session.author)
+    await update_displayed_status(str(status), session.lang, original_message=msg)
 
 
 class LabelCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         cog_setup()
+        self.bot.loop.create_task(self._initialize_database())
 
-    async def cog_before_invoke(self, ctx):
-        logger.debug("cog_before_invoke: database initialization")
+    async def _initialize_database(self):
+        """Initialize the database when the cog starts"""
+        logger.info("Initializing database connection")
         await Database().initialize("label_cog/database.sqlite")
         await create_tables()
 
-    async def cog_after_invoke(self, ctx):
+    async def _close_database(self):
+        """Close the database when the cog unloads"""
+        logger.info("Closing database connection")
         await Database().close()
-        logger.debug("cog_after_invoke: database closed successfully")
+
+    async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
+        if isinstance(error, commands.NoPrivateMessage):
+            await ctx.send("Sorry, this command can only be used in a server", reference=ctx.message)
+        else:
+            raise error
 
     def cog_unload(self):
-        logger.debug("Unloading LabelCog...")
+        self.bot.loop.create_task(self._close_database())
+
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -126,50 +148,47 @@ class LabelCog(commands.Cog):
         lang = await get_user_language(message.author)
         await save_file_uploaded(message, lang)
 
+    @commands.guild_only()
     @discord.slash_command(name="label", description="Print a label")
     async def label(self, ctx):
-        #check if the user is in server
-        if ctx.guild is None:
-            await ctx.respond("This command can only be used in the 42 server.", ephemeral=True)
-            return
         session = Session(ctx.author, await get_user_language(ctx.author))
         await choose_and_print_label(ctx, session)
 
+    @commands.guild_only()
     @discord.slash_command(name="image_label", description="Print an image")
     async def image_label(self, ctx, file: discord.Option(discord.Attachment, "Upload an image to print", required=True)):
-        # check if the user is in server
-        if ctx.guild is None:
-            await ctx.respond("This command can only be used in the 42 server.", ephemeral=True)
-            return
         await print_image_label(ctx, Session(ctx.author, await get_user_language(ctx.author)), file)
 
+    @commands.guild_only()
     @discord.slash_command(name="fridge_label", description="Print a fridge label")
     async def fridge_label(self, ctx, copies: discord.Option(int, "Number of copies to print", required=False, default=1)):
-        # check if the user is in server
-        if ctx.guild is None:
-            await ctx.respond("This command can only be used in the 42 server.", ephemeral=True)
-            return
         await print_specific_label(ctx, "fridge", copies, Session(ctx.author, await get_user_language(ctx.author)))
 
+    @commands.guild_only()
     @discord.slash_command(name="freezer_label", description="Print a fridge label")
     async def freezer_label(self, ctx, copies: discord.Option(int, "Number of copies to print", required=False, default=1)):
-        # check if the user is in server
-        if ctx.guild is None:
-            await ctx.respond("This command can only be used in the 42 server.", ephemeral=True)
-            return
         await print_specific_label(ctx, "freezer", copies, Session(ctx.author, await get_user_language(ctx.author)))
 
+    @commands.guild_only()
     @discord.slash_command(name="change_language", description="Change the language used for the label bot")
     async def change_language(self, ctx):
-        if ctx.guild is None:
-            await ctx.respond("This command can only be used in a server", ephemeral=True)
-            return
         session = Session(ctx.author, await get_user_language(ctx.author))
         await ctx.respond(view=ChangeLanguageView(session), ephemeral=True)
+
+    @commands.guild_only()
+    @discord.slash_command(name="add_coins", description="Add coins to print your own labels")
+    async def add_coins(self, ctx):
+        session = Session(ctx.author, await get_user_language(ctx.author))
+        embed = get_embed("add_coins_info", session.lang)
+        view = AddCoinsView(session)
+        await ctx.respond(embed=embed, view=view, ephemeral=True)
 
     #ADMIN COMMANDS
     admin = discord.SlashCommandGroup("admin", "admin only commands")
 
+
+    @commands.guild_only()
+    @commands.check(is_admin)
     @admin.command(name="test_role", description="enable you to test the bot as a specific role", )
     async def test_role(self, ctx, role: discord.Role):
         if is_admin(ctx):

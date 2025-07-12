@@ -55,3 +55,14 @@ def cost_of_sticker_in_coins(label):
     if cost_in_coins < 1:
         cost_in_coins = 1
     return cost_in_coins
+
+
+def coins_to_money(coins):
+    return int(coins * float(Config().get("coin_value")))
+
+
+def money_to_coins(money):
+    return int(money / float(Config().get("coin_value")))
+
+
+

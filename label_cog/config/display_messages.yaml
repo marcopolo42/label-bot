@@ -164,6 +164,46 @@ display_messages:
         fr: "L'étiquette a été imprimée."
         de: "Das Etikett wurde gedruckt."
 
+  add_coins_info:
+    color: 0x53B7BA
+    title:
+        en: "How to add coins to your account ?"
+        fr: "Comment ajouter des pièces à votre compte ?"
+        de: "Wie füge ich Münzen zu meinem Konto hinzu ?"
+    description:
+        en: "You can add coins to your account by sending the amount of money you wish to add using twint.\nat -> 079 203 92 88\n\nThen, you can add the corresponding amount here.\n 1.-CHF equals 100 coins.\n adding coins without sending the money will result in ban of the platform."
+        fr: "Vous pouvez ajouter des pièces à votre compte en envoyant le montant d'argent que vous souhaitez ajouter via twint.\nat -> 079 203 92 88\n\nEnsuite, vous pouvez ajouter le montant correspondant ici.\n 1.-CHF équivaut à 100 pièces.\n ajouter des pièces sans envoyer l'argent entraînera une interdiction de la plateforme."
+        de: "Sie können Münzen zu Ihrem Konto hinzufügen, indem Sie den Betrag, den Sie hinzufügen möchten, über Twint senden.\nat -> 079 203 92 88\n\nAnschließend können Sie den entsprechenden Betrag hier hinzufügen.\n 1.-CHF entspricht 100 Münzen.\n Das Hinzufügen von Münzen ohne Senden des Geldes führt zu einem Verbot der Plattform."
+  add_coins_help:
+    color: 0x53B7BA
+    title:
+        en: "Why do this ?"
+        fr: "Pourquoi faire cela ?"
+        de: "Warum das tun ?"
+    description:
+        en: "one issue is that printing is not free and i knew a lot of people would like to print fun or useful stickers for their personal use.\nSo, i decided to make a system where you can add coins to your account and use them to print labels.\nThis way, you can print as many labels as you want without having to pay for each one.\nThe money you send will be used to pay for the printing costs and the rest will be used to maintain printer itself."
+  coins_selected:
+    color: 0x53B7BA
+    title:
+        en: "{coins} coins selected for a price of {money} CHF !"
+        fr: "{coins} pièces sélectionnées pour un prix de {money} CHF !"
+        de: "{coins} Münzen ausgewählt für einen Preis von {money} CHF !"
+    description:
+        en: "Your new balance would be {total} coins."
+        fr: "Votre nouveau solde serait de {total} pièces."
+        de: "Ihr neues Guthaben beträgt {total} Münzen."
+
+  coins_added:
+    color: 0x00FF00
+    title:
+        en: "You added {coins} coins to your account !"
+        fr: "Vous avez ajouté {coins} pièces à votre compte !"
+        de: "Sie haben {coins} Münzen zu Ihrem Konto hinzugefügt !"
+    description:
+        en: "You now have {total} coins in your account."
+        fr: "Vous avez maintenant {total} pièces dans votre compte."
+        de: "Sie haben jetzt {total} Münzen auf Ihrem Konto."
+
   error:
     color: 0xFF0000
     title:
