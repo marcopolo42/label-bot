@@ -72,6 +72,7 @@ class AddCoinsView(discord.ui.View):
         user_coins = await get_user_coins(self.author)
         coin_img = await asyncio.to_thread(render_coins_image, coins_count) #maybe combine this two in a thread
         thumbnail = await asyncio.to_thread(render_wallet_image, user_coins)
+        set_current_value_as_default(self.coins_select, self.coins_select.values[0])
         await update_displayed_status_with_data(
             "coins_selected",
             {"coins": coins_count, "money": money, "total": user_coins + coins_count},

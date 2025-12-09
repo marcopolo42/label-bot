@@ -172,7 +172,7 @@ display_messages:
         de: "Wie füge ich Münzen zu meinem Konto hinzu ?"
     description:
         en: "You can add coins to your account by sending the amount of money you wish to add using twint.\nat -> 079 203 92 88\n\nThen, you can add the corresponding amount here.\n 1.-CHF equals 100 coins.\n adding coins without sending the money will result in a ban of the platform."
-        fr: "Vous pouvez ajouter des pièces à votre compte en envoyant le montant d'argent que vous souhaitez ajouter via twint.\nat -> 079 203 92 88\n\nEnsuite, vous pouvez ajouter le montant correspondant ici.\n 1.-CHF équivaut à 100 pièces.\n ajouter des pièces sans envoyer l'argent entraînera un ban de la plateforme."
+        fr: "Vous pouvez ajouter des pièces à votre compte en envoyant le montant au twint suivant.\n-> 079 203 92 88\n\n 1.-CHF équivaut à 100 pièces.\n ajouter des pièces sans envoyer l'argent entraînera un ban de la plateforme."
         de: "Sie können Münzen zu Ihrem Konto hinzufügen, indem Sie den Betrag, den Sie hinzufügen möchten, über Twint senden.\nat -> 079 203 92 88\n\nAnschließend können Sie den entsprechenden Betrag hier hinzufügen.\n 1.-CHF entspricht 100 Münzen.\n Das Hinzufügen von Münzen ohne Senden des Geldes führt zu einem Verbot der Plattform."
   add_coins_help:
     color: 0x53B7BA
