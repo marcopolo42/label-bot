@@ -8,7 +8,7 @@
 .label {
     display: grid;
     grid-template-areas:"picture text qr_code";
-    grid-template-columns: 13mm 35mm 13mm;
+    grid-template-columns: 13mm 35mm 13mm; /* Fixed width for picture and QR code, flexible for text */
     align-items: center; /* Align items vertically */
     gap: 0.5mm; /* Space between items */
     height: 13mm;
@@ -33,6 +33,8 @@
 }
 
 .text {
+    width: 35mm;
+    height: 13mm;
     padding-top: 0.3mm;
     grid-area: text;
     font-family: arial, sans-serif;
@@ -44,7 +46,7 @@
 .name {
     font-size: 12px;
     word-wrap: break-word;
-    white-space: normal;
+    min-width: 0;
 }
 
 .date

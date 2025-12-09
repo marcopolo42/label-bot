@@ -23,7 +23,7 @@ class AddCoinsView(discord.ui.View):
         self.lang = session.lang
 
         options = []
-        for i in range(1, 25):
+        for i in range(1, 21):
             options.append(discord.SelectOption(
                 label=f"{i} CHF",
                 value=str(i),
@@ -52,9 +52,18 @@ class AddCoinsView(discord.ui.View):
         )
         self.cancel_button.callback = self.cancel_button_callback
 
+        self.help_button = discord.ui.Button(
+            row=3,
+            label=get_translation("help_button_label", self.lang),
+            style=discord.ButtonStyle.blurple,
+            emoji="📖",
+        )
+        self.help_button.callback = self.help_button_callback
+
         self.add_item(self.coins_select)
         self.add_item(self.confirm_button)
         self.add_item(self.cancel_button)
+        self.add_item(self.help_button)
 
     async def coins_select_callback(self, interaction):
         money = int(self.coins_select.values[0])
@@ -73,9 +82,6 @@ class AddCoinsView(discord.ui.View):
             thumbnail=thumbnail,
         )
 
-    async def cancel_button_callback(self, interaction):
-        await display_and_stop(self, interaction, "canceled")
-
     async def confirm_button_callback(self, interaction):
         money = int(self.coins_select.values[0])
         coins_count = money_to_coins(money)
@@ -88,4 +94,13 @@ class AddCoinsView(discord.ui.View):
             interaction=interaction,
             thumbnail=thumbnail,
         )
+
+    async def cancel_button_callback(self, interaction):
+        await display_and_stop(self, interaction, "canceled")
+
+    async def help_button_callback(self, interaction):
+        await update_displayed_status("add_coins_help", self.lang, interaction=interaction, view=self)
+
+
+
 

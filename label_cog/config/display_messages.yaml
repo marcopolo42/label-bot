@@ -171,8 +171,8 @@ display_messages:
         fr: "Comment ajouter des pièces à votre compte ?"
         de: "Wie füge ich Münzen zu meinem Konto hinzu ?"
     description:
-        en: "You can add coins to your account by sending the amount of money you wish to add using twint.\nat -> 079 203 92 88\n\nThen, you can add the corresponding amount here.\n 1.-CHF equals 100 coins.\n adding coins without sending the money will result in ban of the platform."
-        fr: "Vous pouvez ajouter des pièces à votre compte en envoyant le montant d'argent que vous souhaitez ajouter via twint.\nat -> 079 203 92 88\n\nEnsuite, vous pouvez ajouter le montant correspondant ici.\n 1.-CHF équivaut à 100 pièces.\n ajouter des pièces sans envoyer l'argent entraînera une interdiction de la plateforme."
+        en: "You can add coins to your account by sending the amount of money you wish to add using twint.\nat -> 079 203 92 88\n\nThen, you can add the corresponding amount here.\n 1.-CHF equals 100 coins.\n adding coins without sending the money will result in a ban of the platform."
+        fr: "Vous pouvez ajouter des pièces à votre compte en envoyant le montant d'argent que vous souhaitez ajouter via twint.\nat -> 079 203 92 88\n\nEnsuite, vous pouvez ajouter le montant correspondant ici.\n 1.-CHF équivaut à 100 pièces.\n ajouter des pièces sans envoyer l'argent entraînera un ban de la plateforme."
         de: "Sie können Münzen zu Ihrem Konto hinzufügen, indem Sie den Betrag, den Sie hinzufügen möchten, über Twint senden.\nat -> 079 203 92 88\n\nAnschließend können Sie den entsprechenden Betrag hier hinzufügen.\n 1.-CHF entspricht 100 Münzen.\n Das Hinzufügen von Münzen ohne Senden des Geldes führt zu einem Verbot der Plattform."
   add_coins_help:
     color: 0x53B7BA
@@ -181,7 +181,9 @@ display_messages:
         fr: "Pourquoi faire cela ?"
         de: "Warum das tun ?"
     description:
-        en: "one issue is that printing is not free and i knew a lot of people would like to print fun or useful stickers for their personal use.\nSo, i decided to make a system where you can add coins to your account and use them to print labels.\nThis way, you can print as many labels as you want without having to pay for each one.\nThe money you send will be used to pay for the printing costs and the rest will be used to maintain printer itself."
+        en: "one issue is that printing is not free and i knew a lot of people would like to print fun or useful stickers for their personal use.\nSo, i decided to make a system where you can add a bit of money so that you can print the stickers that you want and as many as you want.\n We use coins that are worth 1 cent. nwithout having to pay for each one.\nThe money you send will be used to pay for the printing costs and the rest will be used to maintain the printer itself."
+        fr: "Un problème est que l'impression n'est pas gratuite et je savais que beaucoup de gens aimeraient imprimer des autocollants amusants ou utiles pour leur usage personnel.\nDonc, j'ai décidé de créer un système où vous pouvez ajouter des pièces à votre compte et les utiliser pour imprimer des étiquettes.\nDe cette façon, vous pouvez imprimer autant d'étiquettes que vous le souhaitez sans avoir à payer pour chacune d'elles.\nL'argent que vous envoyez sera utilisé pour payer les coûts d'impression et le reste sera utilisé pour entretenir l'imprimante elle-même."
+        de: "Ein Problem ist, dass das Drucken nicht kostenlos ist und ich wusste, dass viele Leute gerne lustige oder nützliche Aufkleber für ihren persönlichen Gebrauch drucken würden.\nAlso habe ich mich entschieden, ein System zu erstellen, bei dem Sie Münzen zu Ihrem Konto hinzufügen und diese zum Drucken von Etiketten verwenden können.\nAuf diese Weise können Sie so viele Etiketten drucken, wie Sie möchten, ohne für jedes einzelne bezahlen zu müssen.\nDas Geld, das Sie senden, wird verwendet, um die Druckkosten zu decken, und der Rest wird verwendet, um den Drucker selbst zu warten."
   coins_selected:
     color: 0x53B7BA
     title:

@@ -31,8 +31,6 @@ def add_price_icon(img, price):
 
     if price <= 0:
         return img
-    if img.width != img.height:
-        logger.warning("Coin image is not square, this may cause issues")
 
     img_price = render_coins_image(price)
     ratio = abs((img.width / img.height) - 1)

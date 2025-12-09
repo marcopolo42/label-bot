@@ -133,11 +133,11 @@ def add_text_to_image(img, text, position, font_size): # todo not used
 
 
 def add_text_in_middle_of_image(img, text, font_size):
-    offset_y = 10 # to make the text a bit higher so that is in the middle of the image when written in lower case
+    offset_y = -10 # to make the text a bit higher so that is in the middle of the image when written in lower case
     font = load_pil_font(font_size)
     text_width, text_height = get_pil_font_size(font, text)
     position = ((img.width - text_width) // 2, (img.height - text_height) // 2)
-    position = (position[0], position[1] - offset_y)
+    position = (position[0], position[1] + offset_y)
     draw = ImageDraw.Draw(img)
     draw.text(position, text, font=font, fill='black')
     return img

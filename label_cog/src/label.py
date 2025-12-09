@@ -40,11 +40,8 @@ class Label:
 
 
     def _creation(self):
-        self.template.process_backend_data() # process the backend data before creating the final label
-
-        # the file name is created using the author's ID and the current timestamp
-        #file_name = f"{self.template.data.get('user_name')}_{datetime.now().strftime('%d-%m-%Y_%H-%M-%S')}"
-        #base_path = get_cache_directory(file_name=file_name)
+        # process the backend data before creating the final label
+        self.template.process_backend_data()
 
         #image creation
         label_writer = LabelWriter(item_template_path=self.template.html_path,

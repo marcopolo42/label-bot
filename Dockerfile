@@ -14,10 +14,12 @@ RUN apt-get update && apt-get install -y \
     vim \
     screen \
     cups \
-    libpango1.0-0 \
+    libpango-1.0-0 \
+    libpangoft2-1.0-0 \
     fonts-dejavu \
     fonts-liberation \
     fonts-freefont-ttf \
+    fonts-noto-color-emoji \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
