@@ -7,10 +7,10 @@ logger = setup_logger(__name__)
 def get_user_role_icon(user_roles, user_name):
     # Find first matching name icon (case-insensitive)
     name_icons = {
-        "duck": "🦆",
         "jaqueme": "🦆",
-        "smash": "🏆",
-        "belarbi": "🏎️"
+        "belarbi": "🏎️",
+        "duck": "🦆",
+        "smash": "🏆"
     }
     username_lower = user_name.lower()
     if username_lower in name_icons:
@@ -18,9 +18,9 @@ def get_user_role_icon(user_roles, user_name):
 
     # Find first matching role (case-insensitive)
     role_icons = {
+        "bocal": "🐠",
         "alumni": "🎓",
         "student": "📚",
-        "bocal": "🐟",
         "piscine": "🏊"
     }
     for role in user_roles:

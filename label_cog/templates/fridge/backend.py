@@ -5,24 +5,29 @@ logger = setup_logger(__name__)
 
 
 def get_user_role_icon(user_roles, user_name):
-    #easter egg
-    logger.debug(f"user_name: {user_name}")
-    if "duck" in user_name.lower() or "jaqueme" in user_name.lower():
-        return "🦆"
-    if "smash" in user_name.lower():
-        return "🏆"
-    if "belarbi" in user_name.lower():
-        return " 🏎️"
+    # Find first matching name icon (case-insensitive)
+    name_icons = {
+        "jaqueme": "🦆",
+        "belarbi": "🏎️",
+        "duck": "🦆",
+        "smash": "🏆"
+    }
+    username_lower = user_name.lower()
+    if username_lower in name_icons:
+        return name_icons[username_lower]
 
-    logger.debug(f"roles: {user_roles}")
-    if "alumni" in user_roles:
-        return "🎓"
-    if "student" in user_roles:
-        return "📚"
-    if "bocal" in user_roles:
-        return "🐟"
-    if "piscine" in user_roles:
-        return "🏊"
+    # Find first matching role (case-insensitive)
+    role_icons = {
+        "bocal": "🐠",
+        "alumni": "🎓",
+        "student": "📚",
+        "piscine": "🏊"
+    }
+    for role in user_roles:
+        role_lower = role.lower()
+        if role_lower in role_icons:
+            return role_icons[role_lower]
+
     return ""
 
 
