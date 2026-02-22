@@ -108,6 +108,7 @@ async def get_user(author):
     user = await Database().fetchone("SELECT * FROM users WHERE discord_id = ?", (author.id,))
     return user
 
+###LANGUAGE
 
 async def update_user_language(author, language):
     if await get_user(author) is None:
@@ -126,6 +127,7 @@ async def get_user_language(author):
     logger.debug(f"Successfully fetched language {language[0]}")
     return language[0]
 
+###COINS
 
 async def get_user_coins(author):
     if await get_user(author) is None:

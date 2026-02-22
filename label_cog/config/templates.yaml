@@ -1,15 +1,15 @@
 templates:
   - key: "fridge"  # This is the key that will be used to identify the template (use the same for the template folder)
     name:
-      en: "Fridge Label" # The name of the template
+      en: "Fridge Label"
       fr: "Étiquette frigo"
       de: "Kühlschranketikett"
     description:
       en: "use for fridge items"
       fr: "utilisé pour les articles au frigo"
       de: "für Kühlschrankartikel verwenden"
-    emoji: "<:fridge:1320873241773998090>" # The emoji that will be used to represent the template here it is a custom emoji
-    settings:  # settings are optional data used by the template backend.py or html
+    emoji: "<:fridge:1320873241773998090>" # The emoji that will be used to represent the template. here a custom discord emoji is used
+    settings:  # settings are optional data used by the template backend.py or html #todo might be obsolete because of the introduction of custom backends
       expiration_alumni: 6  # The expiration time in days
       expiration_student: 6
       expiration_piscine: 2
@@ -56,6 +56,7 @@ templates:
         en: "can be used to label food or small objects"
         fr: "peut être utilisé pour étiqueter de la nourriture ou de petits objets"
         de: "kann verwendet werden, um Lebensmittel oder kleine Objekte zu kennzeichnen"
+    emoji: "<:bocal:1448708849791139993>"
     allowed_roles:
       - bocal
     reload_button: true
@@ -104,7 +105,7 @@ templates:
         en: "Get a random character from the SmashBrosUltimate subreddit"
         fr: "Obtenez un personnage aléatoire du subreddit SmashBrosUltimate"
         de: "Holen Sie sich einen zufälligen Charakter aus dem SmashBrosUltimate-Subreddit"
-    emoji: "🥷🏻"
+    emoji: "<:smash:1448940519815249931>"
     allowed_roles:
       - bocal
     reload_button: true
@@ -118,7 +119,7 @@ templates:
         en: "Get a random meme from Reddit"
         fr: "Obtenez un meme aléatoire de Reddit"
         de: "Holen Sie sich ein zufälliges Meme von Reddit"
-    emoji: "🖼️"
+    emoji: "<:reddit:1448940517244276757>"
     allowed_roles:
       - bocal
     reload_button: true
@@ -132,7 +133,7 @@ templates:
         en: "Get a random meme from the FrenchMemes subreddit"
         fr: "Obtenez un meme aléatoire du subreddit FrenchMemes"
         de: "Holen Sie sich ein zufälliges Meme aus dem FrenchMemes-Subreddit"
-    emoji: "🖼️"
+    emoji: "<:reddit:1448940517244276757>"
     allowed_roles:
       - bocal
     reload_button: true
@@ -147,7 +148,7 @@ templates:
         en: "Get a random image from the SmashBrosUltimate subreddit"
         fr: "Obtenez une image aléatoire du subreddit SmashBrosUltimate"
         de: "Holen Sie sich ein zufälliges Bild aus dem SmashBrosUltimate-Subreddit"
-    emoji: "🖼️"
+    emoji: "<:reddit:1448940517244276757>"
     allowed_roles:
       - bocal
     reload_button: true
@@ -187,7 +188,7 @@ templates:
       en: "Get a random meme from the ProgrammerHumor subreddit"
       fr: "Obtenez un meme aléatoire du subreddit ProgrammerHumor"
       de: "Holen Sie sich ein zufälliges Meme aus dem ProgrammerHumor-Subreddit"
-    emoji: "🖼️"
+    emoji: "<:reddit:1448940517244276757>"
     allowed_roles:
       - bocal
     reload_button: true
@@ -346,7 +347,7 @@ templates:
       en: "Create a 61 mm x 61 mm QR code"
       fr: "Créez un code QR de 61 mm x 61 mm"
       de: "Erstellen Sie einen 61 mm x 61 mm QR-Code"
-    emoji: "🔗"
+    emoji: "<:qr_code:1449206331021201530>"
     allowed_roles:
       - Bocal
     fields:

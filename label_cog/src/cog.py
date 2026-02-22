@@ -62,6 +62,8 @@ import tracemalloc
 if os.getenv('ENV') == 'dev':
     tracemalloc.start()
 
+#SETUP
+
 
 def cog_setup():
     if os.getenv('ENV') == 'dev':
@@ -74,13 +76,9 @@ def cog_setup():
         raise FileNotFoundError("Templates folder 'templates' is empty")
     if not os.path.exists(get_local_directory("config")):
         raise FileNotFoundError("Config folder 'config' is missing")
-    # start the cleanup thread that will delete old files every 24 hours
-    #start_cleanup(
-    #    [get_cache_directory(), os.path.join(os.getcwd(), 'label_cog', 'cache')], #todo clean later
-    #    15,
-    #    1)
     Config().load_config_files()
 
+#DISCORD COMMANDS MAIN FUNCTIONS
 
 async def choose_and_print_label(ctx, session):
     label = Label()
@@ -107,6 +105,9 @@ async def print_specific_label(ctx, type, count, session):
     label.img_preview.show()
     status = await print_label(label, session.author)
     await update_displayed_status(str(status), session.lang, original_message=msg)
+
+
+#COG DEFINITION
 
 
 class LabelCog(commands.Cog):
@@ -185,7 +186,6 @@ class LabelCog(commands.Cog):
 
     #ADMIN COMMANDS
     admin = discord.SlashCommandGroup("admin", "admin only commands")
-
 
     @commands.guild_only()
     @commands.check(is_admin)
