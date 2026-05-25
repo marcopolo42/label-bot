@@ -1,18 +1,49 @@
-# Project exclude paths
-/.venv/
-/.git/
-/.idea/
-/.vscode/
-/.pytest_cache/
-/.mypy_cache/
+cat > .gitignore <<'EOF'
+# === Virtual environments ===
+.venv/
+venv/
+env/
+*/.venv/
+*/venv/
+
+# === Python caches and bytecode ===
+__pycache__/
+*.py[cod]
+*$py.class
+
+# === Packaging / build artifacts ===
+/build/
+/dist/
+/*.egg-info/
+/*.egg
+.eggs/
+pip-wheel-metadata/
+
+# === Tool caches ===
+.pytest_cache/
+.mypy_cache/
+.cache/
+
+# === Local configuration / secrets ===
 .env
+.env.*
+database.sqlite
+
+# === Project-specific generated assets ===
 label_cog/pdfs/
 label_cog/images/
 label_cog/og_templates/
 cache/
-*__pycache__*
-*.swp
-database.sqlite
-#copyrigthed files
 smash_images/
-/venv/
+
+# === Editors / OS ===
+.idea/
+.vscode/
+*.swp
+.DS_Store
+*.sublime-workspace
+*.sublime-project
+
+# === Misc ===
+*.log
+EOF
