@@ -8,7 +8,7 @@ LABEL description="Label Bot is a python discord bot used to print stickers usin
 # Set working directory
 WORKDIR /app
 
-# System dependencies
+# System dependencies (including build tools for Pillow and other C extensions)
 RUN apt-get update && apt-get install -y \
     git \
     vim \
@@ -20,15 +20,26 @@ RUN apt-get update && apt-get install -y \
     fonts-liberation \
     fonts-freefont-ttf \
     fonts-noto-color-emoji \
+    libjpeg-dev \
+    libtiff-dev \
+    libffi-dev \
+    zlib1g-dev \
+    build-essential \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy application files
 COPY . /app
 
-#install Python dependencies
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+# Remove any host-generated build artifacts to avoid packaging metadata leaking into the image
+RUN rm -rf /app/*.egg-info /app/build /app/dist || true
 
-# Define entrypoint to run the bot
-ENTRYPOINT ["python", "bot.py"]
+# Install build tool
+RUN pip install --upgrade pip build
+
+# Build the wheel and install it into the system environment
+RUN python3 -m build --wheel && \
+    python3 -m pip install dist/*.whl
+
+# Define entrypoint to run the bot directly
+ENTRYPOINT ["labelbot"]

@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   labelbot:
     build: .
@@ -10,4 +8,8 @@ services:
       - /dev:/dev             # to access USB printer
     devices:
       - /dev/usb/lp0:/dev/usb/lp0
+    env_file:
+      - .env
     privileged: true          # required for kernel-level access to printers
+
+

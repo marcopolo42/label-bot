@@ -1,0 +1,12 @@
+dist/
+build/
+*.egg-info
+.venv
+venv
+.env
+.git
+.egg
+.eggs
+pip-wheel-metadata/
+__pycache__/
+
