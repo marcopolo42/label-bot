@@ -7,15 +7,18 @@ from label_cog.src.logging_dotenv import setup_logger
 logger = setup_logger(__name__)
 
 
-def is_admin(ctx):
-    if Config().get("bocal_role_name") in ctx.author.roles.names_lower:
+#could be ctx or author as parameter
+def is_admin(target):
+    author = getattr(target, "author", target)
+    names_lower = [role.name.lower() for role in author.roles]
+    if Config().get("bocal_role_name") in names_lower:
         return True
     unlimited_users = Config().get("unlimited_users")
     if unlimited_users is not None:
         logger.debug(f"unlimited_users: {unlimited_users}")
         for user in unlimited_users:
             logger.debug(f"user: {user}")
-            if user.get("id") == ctx.author.id:
+            if user.get("id") == author.id:
                 return True
     return False
 
