@@ -35,7 +35,7 @@ async def print_label(label, author):
             return "error_print"
     else:
         outcome = print_status.get("outcome")
-        if outcome == "printed":
+        if outcome == "sent": # used to be "printed" but impossible to verfy print status using the network backend
             await spend_user_coins(author, label.cost)
             return "printed"
         else:
