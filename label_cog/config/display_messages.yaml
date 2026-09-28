@@ -68,13 +68,13 @@ display_messages:
   waiting_upload:
     color: 0x53B7BA
     title:
-        en: "Please upload the image for this label in the bot DM."
+        en: "Please send the image for this label in the bot DM."
         fr: "Veuillez envoyer l'image pour cette étiquette en MP au bot."
         de: "Bitte senden Sie das Bild für dieses Etikett im Bot-DM."
     description:
-        en: "You must send the image as an attachment to the bot."
-        fr: "Vous devez envoyer l'image en pièce jointe au bot."
-        de: "Sie müssen das Bild als Anhang an den Bot senden."
+        en: "After sending, please wait a bit while the image is being processed."
+        fr: "Après l'envoi, patientez un peu pendant le traitement de l'image."
+        de: "Nach dem Senden warten Sie bitte einen Moment, während das Bild verarbeitet wird."
 
   how_to_upload:
     color: 0x53B7BA
