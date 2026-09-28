@@ -31,8 +31,8 @@ class Label:
             return
 
         # wait for the user provided image and add it to the data
-        if self.template.settings is not None and self.template.settings.get("image_upload") is not None: #move image upload form settings to template directly
-            if self.template.data.get("img_bytes") is None: # if the image is not already in data from the image slash command for example
+        if self.template.settings is not None and self.template.settings.get("image_upload") is not None: #todo move image upload form settings to template directly
+            if self.template.data.get("img_bytes") is None: # if the image is not already in data from the commande "/image_label file:"
                 future = global_vars.file_uploads_futures.get(int(self.template.data.get("user_id")))
                 self.template.data.update({"img_bytes": await future})
 
