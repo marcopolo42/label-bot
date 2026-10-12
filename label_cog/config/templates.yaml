@@ -253,7 +253,6 @@ templates:
           fr: "max 32 caractères"
           de: "max 32 Zeichen"
 
-
   - key: "custom_text_triple_line"
     name:
         en: "Custom Text Triple Line"
@@ -299,39 +298,15 @@ templates:
           fr: "max 32 caractères"
           de: "max 32 Zeichen"
 
-  - key: "custom_square_image"
-    name:
-      en: "Custom Square Image"
-      fr: "image carrée personnalisée"
-      de: "Benutzerdefiniertes quadratisches Bildetikett"
-    description:
-      en: "Use an URL to provide your own image"
-      fr: "Utilisez une URL pour fournir votre propre image"
-      de: "Verwenden Sie eine URL, um Ihr eigenes Bild bereitzustellen"
-    emoji: "🖼️"
-    allowed_roles:
-      - bocal
-    fields:
-      - key: "image_url"
-        max_length: 200
-        name:
-            en: "Image URL"
-            fr: "URL de l'image"
-            de: "Bild-URL"
-        placeholder:
-          en: "Use img.doerig.dev to host your image: "
-          fr: "Utilisez img.doerig.dev pour héberger votre image."
-          de: "Verwenden Sie img.doerig.dev, um Ihr Bild zu hosten."
-
   - key: "custom_image"
     name:
         en: "Custom Big Image"
         fr: "Grande image personnalisée"
         de: "Benutzerdefiniertes großes Bild"
     description:
-        en: "Use an URL to provide your own image"
-        fr: "Utilisez une URL pour fournir votre propre image"
-        de: "Verwenden Sie eine URL, um Ihr eigenes Bild bereitzustellen"
+        en: "send a your own image to print"
+        fr: "envoyez votre propre image à imprimer"
+        de: "senden Sie Ihr eigenes Bild zum Drucken"
     emoji: "🖼️"
     allowed_roles:
       - bocal
@@ -361,32 +336,6 @@ templates:
           en: "The URL that will be encoded in the QR code."
           fr: "L'URL qui sera encodée dans le code QR."
           de: "Die URL, die im QR-Code codiert wird."
-
-  - key: "fragbox_cable"
-    name:
-      en: "Fragbox cable"
-      fr: "câble Fragbox"
-      de: "Fragbox-Kabel"
-    description:
-      en: "can be used to label a cable or a small object"
-      fr: "peut être utilisé pour étiqueter un câble ou un petit objet"
-      de: "kann verwendet werden, um ein Kabel oder ein kleines Objekt zu kennzeichnen"
-    emoji: "🖼️"
-    allowed_roles:
-      - fragbox
-
-  - key: "fragbox_logo"
-    name:
-      en: "Fragbox Logo"
-      fr: "Logo Fragbox"
-      de: "Fragbox-Logo"
-    description:
-      en: "Un logo Fragbox de 61 mm sur 61 mm"
-      fr: "Un logo Fragbox de 61 mm sur 61 mm"
-      de: "Un logo Fragbox de 61 mm sur 61 mm"
-    emoji: "🖼️"
-    allowed_roles:
-      - fragbox
 
   - key: "test"
     name:
