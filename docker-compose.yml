@@ -3,13 +3,24 @@ services:
     build: .
     container_name: labelbot
     restart: unless-stopped
+    init: true
+    env_file: .env
+    environment:
+      DATABASE_PATH: /data/database.sqlite
     volumes:
-      - .:/app
-      - /dev:/dev             # to access USB printer
-    devices:
-      - /dev/usb/lp0:/dev/usb/lp0
-    env_file:
-      - .env
-    privileged: true          # required for kernel-level access to printers
+      - labelbot-data:/data
+      # Linux USB access; network printers simply do not use these devices.
+      - /dev:/dev
+    device_cgroup_rules:
+      - 'c 189:* rmw' # pyusb
+      - 'c 180:* rmw' # linux_kernel (/dev/usb/lp*)
+    healthcheck:
+      test: ["CMD", "python", "-m", "labelbot.backup", "health"]
+      interval: 5m
+      timeout: 10s
+      start_period: 10m
+      retries: 2
 
-
+volumes:
+  labelbot-data:
+    name: labelbot-data

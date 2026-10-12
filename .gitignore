@@ -1,4 +1,3 @@
-cat > .gitignore <<'EOF'
 # === Virtual environments ===
 .venv/
 venv/
@@ -14,7 +13,7 @@ __pycache__/
 # === Packaging / build artifacts ===
 /build/
 /dist/
-/*.egg-info/
+*.egg-info/
 /*.egg
 .eggs/
 pip-wheel-metadata/
@@ -46,4 +45,12 @@ smash_images/
 
 # === Misc ===
 *.log
-EOF
+# Backup credentials and SQLite sidecars
+secrets/
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite-journal
+restore/
+
+# Runtime state for local installations
+/data/

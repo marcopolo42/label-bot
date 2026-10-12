@@ -10,3 +10,20 @@ venv
 pip-wheel-metadata/
 __pycache__/
 
+.env.*
+secrets/
+.idea/
+*.sqlite*
+*.db
+*.db-*
+*.log
+label_cog/pdfs/
+label_cog/images/
+label_cog/og_templates/
+cache/
+smash_images/
+tests/
+restore/
+.DS_Store
+data/
+label_cog/

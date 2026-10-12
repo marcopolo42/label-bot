@@ -7,7 +7,7 @@ name = "labelprint"
 version = "0.1"
 description = "Label printing Discord bot"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 authors = [ { name = "LabelPrint" } ]
 license = { text = "AGPL-3.0-or-later" }
 
@@ -30,17 +30,16 @@ dependencies = [
 ]
 
 [project.scripts]
-labelbot = "bot:main"
+labelbot = "labelbot.bot:main"
 
 [tool.setuptools]
-py-modules = ["bot"]
+package-dir = {"" = "src"}
 include-package-data = true
 
 [tool.setuptools.packages.find]
-where = ["."]
-include = ["label_cog*"]
+where = ["src"]
+include = ["labelbot*"]
+namespaces = false
 
 [tool.setuptools.package-data]
-"label_cog" = ["templates/*/*", "assets/*", "config/*.yaml", "emojis/*", "templates/*/*/*"]
-
-
+labelbot = ["resources/**/*", "backup/ssh_config"]

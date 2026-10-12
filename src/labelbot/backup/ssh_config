@@ -1,0 +1,9 @@
+Host *
+    UserKnownHostsFile /data/known_hosts
+    StrictHostKeyChecking accept-new
+    PreferredAuthentications password,keyboard-interactive
+    PubkeyAuthentication no
+    NumberOfPasswordPrompts 1
+    ConnectTimeout 30
+    ServerAliveInterval 60
+    ServerAliveCountMax 3

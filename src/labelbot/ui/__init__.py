@@ -1,0 +1,1 @@
+"""LabelPrint Discord bot package."""

@@ -1,0 +1,48 @@
+import os
+import subprocess
+from labelbot.config import Config
+from labelbot.paths import get_resource_path
+
+from labelbot.logging import setup_logger
+logger = setup_logger(__name__)
+
+
+#could be ctx or author as parameter
+def is_admin(target):
+    author = getattr(target, "author", target)
+    names_lower = [role.name.lower() for role in author.roles]
+    if Config().get("bocal_role_name") in names_lower:
+        return True
+    unlimited_users = Config().get("unlimited_users")
+    if unlimited_users is not None:
+        logger.debug(f"unlimited_users: {unlimited_users}")
+        for user in unlimited_users:
+            logger.debug(f"user: {user}")
+            if user.get("id") == author.id:
+                return True
+    return False
+
+
+def launch_script(script):
+    script_path = os.path.join(os.getcwd(), "scripts", script)
+    os.chmod(script_path, 0o755) # make the script executable
+    process = subprocess.Popen(['sudo', script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = process.communicate()
+    output = stdout.decode() + stderr.decode()
+    return output
+
+
+async def run_admin_script(ctx, script):
+    if os.getenv("ENV") == "dev":
+        await ctx.respond("This command is disabled in dev mode", ephemeral=True)
+        return
+    if not is_admin(ctx.author):
+        await ctx.respond("You need to be from the bocal to use this command", ephemeral=True)
+        return
+    script_name = script.split(".")[0]
+    await ctx.respond(f"Running the {script} script...")
+    try:
+        output = launch_script(script)
+        await ctx.followup.send(f"{script_name} script ran successfully. Output:\n{output}")
+    except Exception as e:
+        await ctx.followup.send(f"Failed to run {script} script: {e}")

@@ -1,45 +1,23 @@
-# Base image
-FROM python:3.11-slim
-
-# Metadata
-LABEL maintainer="Marco_polo"
-LABEL description="Label Bot is a python discord bot used to print stickers using a brother ql printer."
-
-# Set working directory
-WORKDIR /app
-
-# System dependencies (including build tools for Pillow and other C extensions)
-RUN apt-get update && apt-get install -y \
-    git \
-    vim \
-    screen \
-    cups \
-    libpango-1.0-0 \
-    libpangoft2-1.0-0 \
-    fonts-dejavu \
-    fonts-liberation \
-    fonts-freefont-ttf \
-    fonts-noto-color-emoji \
-    libjpeg-dev \
-    libtiff-dev \
-    libffi-dev \
-    zlib1g-dev \
-    build-essential \
-    && apt-get clean \
+FROM python:3.11-slim-bookworm AS builder
+WORKDIR /build
+RUN apt-get update && apt-get install -y --no-install-recommends git build-essential libjpeg-dev libtiff-dev libffi-dev zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
+COPY pyproject.toml README.md ./
+COPY src/ ./src/
+RUN pip wheel --no-cache-dir --wheel-dir /wheels .
 
-# Copy application files
-COPY . /app
-
-# Remove any host-generated build artifacts to avoid packaging metadata leaking into the image
-RUN rm -rf /app/*.egg-info /app/build /app/dist || true
-
-# Install build tool
-RUN pip install --upgrade pip build
-
-# Build the wheel and install it into the system environment
-RUN python3 -m build --wheel && \
-    python3 -m pip install dist/*.whl
-
-# Define entrypoint to run the bot directly
-ENTRYPOINT ["labelbot"]
+FROM python:3.11-slim-bookworm
+LABEL description="Discord label printing bot"
+WORKDIR /app
+ENV PYTHONUNBUFFERED=1 DATABASE_PATH=/data/database.sqlite
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    restic openssh-client sshpass \
+    libpango-1.0-0 libpangoft2-1.0-0 libusb-1.0-0 \
+    fonts-dejavu fonts-liberation fonts-freefont-ttf fonts-noto-color-emoji \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=builder /wheels /wheels
+RUN pip install --no-cache-dir --no-index --no-deps /wheels/*.whl \
+    && rm -rf /wheels && mkdir /data
+COPY docker/entrypoint.py /opt/labelbot/
+COPY src/labelbot/backup/ssh_config /etc/ssh/ssh_config.d/backup.conf
+ENTRYPOINT ["python", "/opt/labelbot/entrypoint.py"]
